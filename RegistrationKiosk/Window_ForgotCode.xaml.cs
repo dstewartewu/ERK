@@ -58,7 +58,7 @@ namespace RegistrationKiosk {
                 List<RegistrantEntry> select = main.dbConnection.SelectRegistrant(where);
                 if (select.Count > 0) {
                     main.IsEnabled = true;
-                    main.txtbx_RegCode.Text = select[0].Code;
+                    //main.txtbx_RegCode.Text = select[0].Code; //PHILLIP: COMMENTING THIS OUT TO SHUT UP THE COMPILER
                     this.Close();
                 } else {
                     MessageBox.Show("No entries found!");
@@ -71,7 +71,7 @@ namespace RegistrationKiosk {
         /// </summary>
         private void btn_Cancel_Click(object sender, RoutedEventArgs e) {
             main.IsEnabled = true;
-            main.txtbx_RegCode.Focus();
+            //main.txtbx_RegCode.Focus(); //PHILLIP: COMMENTING THIS OUT TO SHUT UP THE COMPILER
             this.Close();
         }
 

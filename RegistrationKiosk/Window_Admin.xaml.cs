@@ -49,7 +49,7 @@ namespace RegistrationKiosk {
             // Check password
             if (main.GetSecurity().CheckAdminPassword(pass_Admin.Password)) {
                 main.IsEnabled = true;
-                main.GotoAdminPage();
+                //main.GotoAdminPage(); //PHILLIP: THE 'ADMIN PAGE' HAS BEEN REMOVED FROM THE MAIN KIOSK; IT MAY BE IMPLEMENTED AS A SEPARATE WINDOW INSTEAD. FOR NOW, I'M COMMENTING THIS OUT TO SHUT THE COMPILER UP
                 this.Close();
             } else {
                 MessageBox.Show("Invalid Password!");
