@@ -19,12 +19,12 @@ namespace RegistrationKiosk {
     /// </summary>
     public partial class Window_Password : Window {
         
-        private Window_Main main = null;
+        private Window_Kiosk main = null;
 
         //===========================================================================
         #region Initialize Window
         //===========================================================================
-        public Window_Password(Window_Main main) {
+        public Window_Password(Window_Kiosk main) {
             this.main = main;
             InitializeComponent();
             pass_PassOld.Focus();

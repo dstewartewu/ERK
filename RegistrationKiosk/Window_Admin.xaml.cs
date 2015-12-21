@@ -14,11 +14,74 @@ using System.Windows.Shapes;
 using System.IO;
 
 namespace RegistrationKiosk {
-    /// <summary>
-    /// Interaction logic for Window_Admin.xaml
-    /// </summary>
-    public partial class Window_Admin : Window {
+
+    public partial class Window_Admin : Window
+    {
+        private Window_Kiosk kiosk = null;
+
+        #region INITIALIZATION
+
+        public Window_Admin()
+        {
+            InitializeComponent();
+
+            //Promt for admin username + password
+
+            ResetAdminPanel();
+
+            kiosk = new Window_Kiosk(this);
+        }
+
+        private void ResetAdminPanel()
+        {
+            lblMessages.Content = String.Format("{1}{0}{2}",
+                Environment.NewLine,
+                "No database connected.",
+                "Click 'Connect to Database' to begin.");
+
+            btnConnectDB.IsEnabled = true;
+            btnConnectDB.Visibility = System.Windows.Visibility.Visible;
+
+            btnOpenKiosk.IsEnabled = false;
+            btnExport.IsEnabled = false;
+            btnSearch.IsEnabled = false;
+            datagrdSearchResults.IsEnabled = false;
+        }
+
+        #endregion
+
         
+
+        #region BUTTON EVENT HANDLERS
+
+        private void btnConnectDB_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Clicking this doesn't do anything yet, besides enable the kiosk button.");
+
+            btnOpenKiosk.IsEnabled = true;
+            btnOpenKiosk.Visibility = System.Windows.Visibility.Visible;
+        }
+
+
+
+        #endregion
+
+        private void btnOpenKiosk_Click(object sender, RoutedEventArgs e)
+        {
+            kiosk.IsEnabled = true;
+            kiosk.Visibility = System.Windows.Visibility.Visible;
+
+            this.Visibility = System.Windows.Visibility.Hidden;
+            this.IsEnabled = false;
+        }
+
+        private void btnQuit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        #region OLD CODE
+        /*
         private Window_Main main = null;
 
         //===========================================================================
@@ -69,5 +132,7 @@ namespace RegistrationKiosk {
 
         #endregion
         //===========================================================================
+        */
+        #endregion
     }
 }

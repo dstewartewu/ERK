@@ -19,12 +19,12 @@ namespace RegistrationKiosk {
     /// </summary>
     public partial class Window_ForgotCode : Window {
 
-        private Window_Main main = null;
+        private Window_Kiosk main = null;
 
         //===========================================================================
         #region Window Initialize
         //===========================================================================
-        public Window_ForgotCode(Window_Main main) {
+        public Window_ForgotCode(Window_Kiosk main) {
             this.main = main;
             InitializeComponent();
             txtbx_FirstName.Focus();

@@ -1,0 +1,83 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" x:Name="wdwMain" mc:Ignorable="d" x:Class="RegistrationKiosk.Window_Kiosk"
+        Title="Event Registration Kiosk" WindowStartupLocation="CenterScreen" MinWidth="400" MinHeight="300" WindowStyle="None" WindowState="Maximized" Foreground="{x:Null}" Background="#FF343434" Height="924" Width="873" Loaded="wdwMain_Loaded" KeyDown="wdwMain_KeyDown">
+    <Grid x:Name="grdAdminPrompt">
+        <Grid x:Name="grdMain" Background="#FFEE0000" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="70,88,69,88">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle x:Name="rctHeader" Grid.ColumnSpan="2" Margin="20,20,20,10" Stroke="#00000000" Fill="#FFF8F4E2" RadiusX="10" RadiusY="10" StrokeThickness="0" Height="95"/>
+            <Label x:Name="lblHeader" Content="Event Check-In" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ColumnSpan="2" FontSize="72" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0"/>
+            <Rectangle x:Name="rctMessages" Grid.ColumnSpan="2" Margin="20,10" Stroke="#00000000" Fill="#FFF8F4E2" RadiusX="10" RadiusY="10" StrokeThickness="0" Grid.Row="1" Height="120"/>
+            <Label x:Name="lblMessages" Content="Messages" FontSize="24" Grid.Row="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <Rectangle x:Name="rctLeftColumn" Margin="20,10,10,10" Stroke="#00000000" Fill="#FFF8F4E2" RadiusX="10" RadiusY="10" StrokeThickness="0" Grid.Row="2"/>
+            <Rectangle x:Name="rctRightColumn" Margin="10,10,20,10" Stroke="#00000000" Fill="#FFF8F4E2" RadiusX="10" RadiusY="10" StrokeThickness="0" Grid.Column="1" Grid.Row="2"/>
+            <Rectangle x:Name="rctFooter" Grid.ColumnSpan="2" Margin="20,10,20,20" Stroke="#00000000" Fill="#FFF8F4E2" RadiusX="10" RadiusY="10" StrokeThickness="0" Grid.Row="3"/>
+            <Grid x:Name="grdLeftColumn" Grid.Row="2" VerticalAlignment="Center" Margin="20,10,10,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBox x:Name="txtbxEnterCode" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="24" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="20,20,20,10" Width="141" TextChanged="txtbxEnterCode_TextChanged" KeyDown="txtbxEnterCode_KeyDown" Height="38"/>
+                <Button x:Name="btnEnterCode" Content="Enter Code" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Padding="10" Margin="20,10" Grid.Row="1" BorderThickness="1" Click="btnEnterCode_Click"/>
+                <Button x:Name="btnStartOver" Content="Start Over" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Grid.Row="1" Padding="10" Panel.ZIndex="1" Margin="20,0" Grid.RowSpan="2" Visibility="Hidden" Click="btnStartOver_Click"/>
+                <Label x:Name="lblLeftColumnOr" Content="- OR -" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Grid.Row="2" Margin="40,10"/>
+                <Button x:Name="btnRegister" Content="Register" VerticalAlignment="Center" FontSize="24" Grid.Row="3" Margin="20,20,20,10" Padding="10" Click="btnRegister_Click"/>
+            </Grid>
+            <Button x:Name="btnCheckIn" Content="Check In" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Padding="10" Grid.Row="3" Grid.ColumnSpan="2" IsEnabled="False" Margin="0,30,0,40" Width="141"/>
+            <Grid x:Name="grdRightColumn" Grid.Row="2" Grid.Column="1" Margin="10,10,20,10" VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="lblRegistrantType" Content="Registrant Type" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" Margin="20,20,10,10"/>
+                <ComboBox x:Name="cmbRegistrantType" VerticalAlignment="Center" Grid.Column="1" FontSize="24" Margin="10,20,20,10" Width="250" Height="38" SelectionChanged="cmbRegistrantType_SelectionChanged">
+                    <ComboBoxItem x:Name="cmbitmSelectType" Content="- Select -" HorizontalAlignment="Left" IsSelected="True"/>
+                    <ComboBoxItem x:Name="cmbitmStudentAlumnus" Content="Student/Alumnus" HorizontalAlignment="Left"/>
+                    <ComboBoxItem x:Name="cmbitmEmployerEmployee" Content="Employer/Employee" HorizontalAlignment="Left"/>
+                    <ComboBoxItem x:Name="cmbitmGeneral" Content="General" HorizontalAlignment="Left"/>
+                </ComboBox>
+                <Label x:Name="lblFirstName" Content="First name" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" Margin="20,10,10,10" Grid.Row="1"/>
+                <TextBox x:Name="txtbxFirstName" VerticalAlignment="Center" FontSize="24" Grid.Row="1" Grid.Column="1" Margin="10,10,20,10" VerticalContentAlignment="Center" Height="38" Width="250"/>
+                <Label x:Name="lblLastName" Content="Last name" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" Margin="20,10,10,10" Grid.Row="2"/>
+                <TextBox x:Name="txtbxLastName" VerticalAlignment="Center" FontSize="24" Grid.Row="2" Grid.Column="1" Margin="10,10,20,10" VerticalContentAlignment="Center" Height="38" Width="250"/>
+                <Label x:Name="lblSchoolOrganization" Content="School" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" Margin="20,10,10,10" Grid.Row="3"/>
+                <TextBox x:Name="txtbxSchoolOrganization" VerticalAlignment="Center" FontSize="24" Grid.Row="3" Grid.Column="1" Margin="10,10,20,10" VerticalContentAlignment="Center" Height="38" Width="250"/>
+                <Label x:Name="lblClassStandingJobTitle" Content="Class standing" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" Margin="20,10,10,20" Grid.Row="4"/>
+                <ComboBox x:Name="cmbClassStanding" VerticalAlignment="Center" FontSize="24" Grid.Row="4" Grid.Column="1" Margin="10,10,20,20" SelectedIndex="0" Width="250" Height="38">
+                    <ComboBoxItem x:Name="cmbitmSelectStanding" Content="- Select -" HorizontalAlignment="Left" Width="248" IsSelected="True"/>
+                    <ComboBoxItem x:Name="cmbitmFreshman" Content="Freshman" HorizontalAlignment="Left" Width="248"/>
+                    <ComboBoxItem x:Name="cmbitmSophomore" Content="Sophomore" HorizontalAlignment="Left" Width="248"/>
+                    <ComboBoxItem x:Name="cmbitmJunior" Content="Junior" HorizontalAlignment="Left" Width="248"/>
+                    <ComboBoxItem x:Name="cmbitmSenior" Content="Senior" HorizontalAlignment="Left" Width="248"/>
+                    <ComboBoxItem x:Name="cmbitmPostBac" Content="Post Baccalaureate" HorizontalAlignment="Left" Width="248"/>
+                    <ComboBoxItem x:Name="cmbitmGraduate" Content="Graduate Student" HorizontalAlignment="Left" Width="248"/>
+                    <ComboBoxItem x:Name="cmbitmAlumnus" Content="Alumnus" HorizontalAlignment="Left" Width="248"/>
+                </ComboBox>
+                <TextBox x:Name="txtbxJobTitle" VerticalAlignment="Center" FontSize="24" Grid.Row="4" Grid.Column="1" Margin="10,10,20,10" VerticalContentAlignment="Center" Height="38" Width="250" Visibility="Hidden"/>
+            </Grid>
+        </Grid>
+        <Label x:Name="lblAdminPrompt" Content="Press F1 to return to admin panel (username and password required)" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0" FontSize="18"/>
+
+    </Grid>
+
+    <!-- MAIN GRID -->
+</Window>

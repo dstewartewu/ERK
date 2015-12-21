@@ -21,15 +21,15 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
 namespace RegistrationKiosk {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class Window_Main : Window
+
+    public partial class Window_Kiosk : Window
     {
         #region VARIABLES
 
-        private enum KioskMode { RESET, STUDENT, EMPLOYER, GENERAL, REGISTER }
-        private enum ClassStanding { SELECT, FRESHMAN, SOPHOMORE, JUNIOR, SENIOR, POSTBAC, GRADUATE, ALUMNUS }
+        public enum KioskMode { RESET, STUDENT, EMPLOYER, GENERAL, REGISTER, ADMIN }
+        public enum ClassStanding { SELECT, FRESHMAN, SOPHOMORE, JUNIOR, SENIOR, POSTBAC, GRADUATE, ALUMNUS }
+
+        private Window_Admin admin;
 
         private KioskMode currentMode;
 
@@ -37,11 +37,20 @@ namespace RegistrationKiosk {
 
         #region INITIALIZATION
 
-        public Window_Main()
+        public Window_Kiosk()
         {
             InitializeComponent();
 
-            SetMode(KioskMode.RESET);
+            //SetMode(KioskMode.RESET);
+        }
+
+        public Window_Kiosk(Window_Admin _admin)
+        {
+            InitializeComponent();
+
+            //SetMode(KioskMode.RESET);
+
+            admin = _admin;
         }
 
         private void wdwMain_Loaded(object sender, RoutedEventArgs e)
@@ -388,10 +397,23 @@ namespace RegistrationKiosk {
             e.Handled = true;
         }
 
+        private void wdwMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.F1)
+            {
+                MessageBox.Show("I should ask you for a user name and password, but you seem trustworthy!");
+
+                admin.IsEnabled = true;
+                admin.Visibility = System.Windows.Visibility.Visible;
+                this.Visibility = System.Windows.Visibility.Hidden;
+                this.IsEnabled = false;
+            }
+        }
+
         #endregion //EVENT HANDLERS
 
-        //Phillip: Some of these are here to shush the compiler while I rework the kiosk interface
-        //Phillip: Some of these are testing/mock-up methods
+        /* Phillip: Some of these are here to shush the compiler while I rework the kiosk interface
+           Some of these are testing/mock-up methods */
         #region DUMMY/MOCK-UP VARIABLES AND METHOD STUBS
 
         public MySQLClient dbConnection = null;
@@ -412,7 +434,7 @@ namespace RegistrationKiosk {
                 txtbxFirstName.Text = "Hiro";
                 txtbxLastName.Text = "Hamada";
                 txtbxSchoolOrganization.Text = "SFIT";
-                cmbClassStanding.SelectedIndex = 4;
+                cmbClassStanding.SelectedIndex = (int)ClassStanding.SENIOR;
 
                 lblMessages.Content = String.Format("{1}{0}{2}",
                     Environment.NewLine,

@@ -77,6 +77,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="QuestionEntry.cs" />
+    <Compile Include="Registrant.cs" />
     <Compile Include="RegistrantEntry.cs" />
     <Compile Include="SecurityMeans.cs" />
     <Compile Include="Window_Admin.xaml.cs">
@@ -94,7 +95,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window_Main.xaml">
+    <Page Include="Window_Kiosk.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -111,8 +112,8 @@
     <Compile Include="Window_ForgotCode.xaml.cs">
       <DependentUpon>Window_ForgotCode.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Window_Main.xaml.cs">
-      <DependentUpon>Window_Main.xaml</DependentUpon>
+    <Compile Include="Window_Kiosk.xaml.cs">
+      <DependentUpon>Window_Kiosk.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Window_Admin.xaml">

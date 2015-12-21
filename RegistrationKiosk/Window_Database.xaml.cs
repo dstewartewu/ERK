@@ -19,12 +19,12 @@ namespace RegistrationKiosk {
     /// </summary>
     public partial class Window_Database : Window {
 
-        private Window_Main main = null;
+        private Window_Kiosk main = null;
 
         //===========================================================================
         #region Window Initialize
         //===========================================================================
-        public Window_Database(Window_Main main) {
+        public Window_Database(Window_Kiosk main) {
             InitializeComponent();
             this.main = main;
             GetFieldsFromOldSettings();
