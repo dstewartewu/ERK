@@ -24,7 +24,7 @@ namespace RegistrationKiosk {
 
     public partial class Window_Kiosk : Window
     {
-        #region VARIABLES
+        #region CLASS DATA MEMBERS
 
         public enum KioskMode { RESET, STUDENT, EMPLOYER, GENERAL, REGISTER, ADMIN }
         public enum ClassStanding { SELECT, FRESHMAN, SOPHOMORE, JUNIOR, SENIOR, POSTBAC, GRADUATE, ALUMNUS }
@@ -37,7 +37,7 @@ namespace RegistrationKiosk {
 
         #region INITIALIZATION
 
-        public Window_Kiosk()
+        private Window_Kiosk()
         {
             InitializeComponent();
 
@@ -58,9 +58,9 @@ namespace RegistrationKiosk {
             SetMode(KioskMode.RESET);
         }
 
-        #endregion //INITIALIZATION
+        #endregion
 
-        #region REGISTRATION MODES
+        #region SET REGISTRATION MODE
 
         private void SetMode(KioskMode mode)
         {
@@ -75,11 +75,12 @@ namespace RegistrationKiosk {
             if (mode == KioskMode.RESET)
             {
                 //Set welcome message and starting instructions
-                lblMessages.Content = String.Format("{1}{0}{2}{0}{3}",
+                lblMessages.Content = String.Format("{1}{0}{2}{0}{3}{0}{4}",
                                                 Environment.NewLine,
                                                 "Welcome!",
-                                                "Scan your barcode or enter your six-digit code to check in.",
-                                                "Didn't register? Forgot your code? Click 'Register' to begin.");
+                                                "Scan or enter your 6-digit code if you pre-registered online.",
+                                                "Don't have your code? Click 'No Code' to check in by email.",
+                                                "Otherwise, click 'Register' to begin.");
 
                 //Set RESET mode
                 currentMode = KioskMode.RESET;
@@ -95,7 +96,8 @@ namespace RegistrationKiosk {
                 txtbxEnterCode.Focus();
                 btnEnterCode.IsEnabled = false;
                 btnEnterCode.Visibility = System.Windows.Visibility.Visible;
-                lblLeftColumnOr.Visibility = System.Windows.Visibility.Visible;
+                btnNoCode.IsEnabled = true;
+                btnNoCode.Visibility = System.Windows.Visibility.Visible;
                 btnRegister.IsEnabled = true;
                 btnRegister.Visibility = System.Windows.Visibility.Visible;
 
@@ -143,7 +145,8 @@ namespace RegistrationKiosk {
                 txtbxEnterCode.IsEnabled = false;
                 btnEnterCode.Visibility = System.Windows.Visibility.Hidden;
                 btnEnterCode.IsEnabled = false;
-                lblLeftColumnOr.Visibility = System.Windows.Visibility.Hidden;
+                btnNoCode.Visibility = System.Windows.Visibility.Hidden;
+                btnNoCode.IsEnabled = false;
                 btnRegister.Visibility = System.Windows.Visibility.Hidden;
                 btnRegister.IsEnabled = false;
 
@@ -306,13 +309,71 @@ namespace RegistrationKiosk {
             #endregion //REGISTER
         }
 
-        #endregion //REGISTRATION MODES
+        #endregion
 
-        #region EVENT HANDLERS
+        #region EVENT HANDLERS FOR WINDOW ELEMENTS
+
+        private void btnEnterCode_Click(object sender, RoutedEventArgs e)
+        {
+            MockCheckIn();
+        }
+
+        private void btnNoCode_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("This button does nothing..." + Environment.NewLine + Environment.NewLine + "...yet.");
+        }
+
+        private void btnRegister_Click(object sender, RoutedEventArgs e)
+        {
+            SetMode(KioskMode.REGISTER);
+
+            //Display instructions for registration
+            lblMessages.Content = String.Format("{1}{0}{2}",
+                Environment.NewLine,
+                "Fill out the form below to continue.",
+                "Start by selecting a registrant type.");
+        }
+
+        private void btnStartOver_Click(object sender, RoutedEventArgs e)
+        {
+            SetMode(KioskMode.RESET);
+        }
+
+        private void cmbRegistrantType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (wdwMain.IsLoaded && cmbRegistrantType.SelectedIndex != (int)currentMode)
+            {
+                switch (cmbRegistrantType.SelectedIndex)
+                {
+                    case (int)KioskMode.STUDENT:
+                        SetMode(KioskMode.STUDENT);
+                        break;
+                    case (int)KioskMode.EMPLOYER:
+                        SetMode(KioskMode.EMPLOYER);
+                        break;
+                    case (int)KioskMode.GENERAL:
+                        SetMode(KioskMode.GENERAL);
+                        break;
+                    default:
+                        SetMode(KioskMode.REGISTER);
+                        break;
+                }
+            }
+
+            e.Handled = true;
+        }
+
+        private void txtbxEnterCode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                MockCheckIn();
+            }
+        }
 
         private void txtbxEnterCode_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if(wdwMain.IsLoaded)
+            if (wdwMain.IsLoaded)
             {
                 if (Regex.IsMatch(txtbxEnterCode.Text, "\\D"))
                 {
@@ -340,59 +401,6 @@ namespace RegistrationKiosk {
                     btnEnterCode.IsEnabled = false;
                 }
             }
-            
-            e.Handled = true;
-        }
-
-        private void btnRegister_Click(object sender, RoutedEventArgs e)
-        {
-            SetMode(KioskMode.REGISTER);
-
-            //Display instructions for registration
-            lblMessages.Content = String.Format("{1}{0}{2}",
-                Environment.NewLine,
-                "Fill out the form below to continue.",
-                "Start by selecting a registrant type.");
-        }
-
-        private void btnStartOver_Click(object sender, RoutedEventArgs e)
-        {
-            SetMode(KioskMode.RESET);
-        }
-
-        private void btnEnterCode_Click(object sender, RoutedEventArgs e)
-        {
-            MockCheckIn();
-        }
-
-        private void txtbxEnterCode_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.Key == Key.Enter)
-            {
-                MockCheckIn();
-            }
-        }
-
-        private void cmbRegistrantType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if(wdwMain.IsLoaded && cmbRegistrantType.SelectedIndex != (int)currentMode)
-            {
-                switch (cmbRegistrantType.SelectedIndex)
-                {
-                    case (int)KioskMode.STUDENT:
-                        SetMode(KioskMode.STUDENT);
-                        break;
-                    case (int)KioskMode.EMPLOYER:
-                        SetMode(KioskMode.EMPLOYER);
-                        break;
-                    case (int)KioskMode.GENERAL:
-                        SetMode(KioskMode.GENERAL);
-                        break;
-                    default:
-                        SetMode(KioskMode.REGISTER);
-                        break;
-                }
-            }
 
             e.Handled = true;
         }
@@ -405,12 +413,13 @@ namespace RegistrationKiosk {
 
                 admin.IsEnabled = true;
                 admin.Visibility = System.Windows.Visibility.Visible;
+
                 this.Visibility = System.Windows.Visibility.Hidden;
                 this.IsEnabled = false;
             }
         }
 
-        #endregion //EVENT HANDLERS
+        #endregion
 
         /* Phillip: Some of these are here to shush the compiler while I rework the kiosk interface
            Some of these are testing/mock-up methods */
@@ -480,7 +489,7 @@ namespace RegistrationKiosk {
 
         #endregion
         
-        //The previous group's source code, commented out for later reference
+        //The previous group's source code,  for reference
         #region OLD CODE
         /*
         #region Window Variables

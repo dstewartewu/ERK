@@ -17,7 +17,13 @@ namespace RegistrationKiosk {
 
     public partial class Window_Admin : Window
     {
-        private Window_Kiosk kiosk = null;
+        //Reference to kiosk window
+        private Window_Kiosk kiosk;
+
+        //Reference to login window
+        private Window_AdminLogin login;
+
+        //DEV: Database reference variable?
 
         #region INITIALIZATION
 
@@ -25,11 +31,20 @@ namespace RegistrationKiosk {
         {
             InitializeComponent();
 
-            //Promt for admin username + password
-
             ResetAdminPanel();
 
             kiosk = new Window_Kiosk(this);
+            login = new Window_AdminLogin(this, kiosk);
+
+            //Show login window
+            login.IsEnabled = true;
+            login.Visibility = System.Windows.Visibility.Visible;
+
+            //Hide admin and kiosk windows
+            kiosk.Visibility = System.Windows.Visibility.Hidden;
+            kiosk.IsEnabled = false;
+            this.Visibility = System.Windows.Visibility.Hidden;
+            this.IsEnabled = false;
         }
 
         private void ResetAdminPanel()
@@ -50,19 +65,24 @@ namespace RegistrationKiosk {
 
         #endregion
 
-        
-
-        #region BUTTON EVENT HANDLERS
+        #region EVENT HANDLERS FOR WINDOW ELEMENTS
 
         private void btnConnectDB_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Clicking this doesn't do anything yet, besides enable the kiosk button.");
+            //DEV: CONNECT TO EVENT DATABASE
+            MessageBox.Show("DEV: Database connection is not yet implemented." + Environment.NewLine + "'Open Kiosk' and 'Export to Excel' buttons are now enabled");
 
             btnOpenKiosk.IsEnabled = true;
             btnOpenKiosk.Visibility = System.Windows.Visibility.Visible;
+
+            btnExport.IsEnabled = true;
+            btnExport.Visibility = System.Windows.Visibility.Visible;
         }
 
-
+        private void btnExport_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("DEV: This button does nothing. NOTHING.");
+        }
 
         #endregion
 
@@ -77,6 +97,7 @@ namespace RegistrationKiosk {
 
         private void btnQuit_Click(object sender, RoutedEventArgs e)
         {
+            //DEV: ADD VERIFICATION DIALOGUE
             Application.Current.Shutdown();
         }
 
