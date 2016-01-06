@@ -17,13 +17,20 @@ namespace RegistrationKiosk {
 
     public partial class Window_Admin : Window
     {
+        #region DATA MEMBERS
+
         //Reference to kiosk window
         private Window_Kiosk kiosk;
 
         //Reference to login window
         private Window_AdminLogin login;
 
+        //Reference to database connection window
+        private Window_DBConnect dbConnect;
+
         //DEV: Database reference variable?
+
+        #endregion
 
         #region INITIALIZATION
 
@@ -34,7 +41,10 @@ namespace RegistrationKiosk {
             ResetAdminPanel();
 
             kiosk = new Window_Kiosk(this);
-            login = new Window_AdminLogin(this, kiosk);
+            login = new Window_AdminLogin(this);
+            kiosk.SetLogin(login);
+            login.SetKiosk(kiosk);
+            dbConnect = new Window_DBConnect(this);
 
             //Show login window
             login.IsEnabled = true;
@@ -65,12 +75,18 @@ namespace RegistrationKiosk {
 
         #endregion
 
-        #region EVENT HANDLERS FOR WINDOW ELEMENTS
+        #region EVENT HANDLERS
 
         private void btnConnectDB_Click(object sender, RoutedEventArgs e)
         {
             //DEV: CONNECT TO EVENT DATABASE
             MessageBox.Show("DEV: Database connection is not yet implemented." + Environment.NewLine + "'Open Kiosk' and 'Export to Excel' buttons are now enabled");
+
+            dbConnect.IsEnabled = true;
+            dbConnect.Visibility = System.Windows.Visibility.Visible;
+
+            this.Visibility = System.Windows.Visibility.Hidden;
+            this.IsEnabled = false;
 
             btnOpenKiosk.IsEnabled = true;
             btnOpenKiosk.Visibility = System.Windows.Visibility.Visible;
@@ -83,8 +99,6 @@ namespace RegistrationKiosk {
         {
             MessageBox.Show("DEV: This button does nothing. NOTHING.");
         }
-
-        #endregion
 
         private void btnOpenKiosk_Click(object sender, RoutedEventArgs e)
         {
@@ -100,6 +114,8 @@ namespace RegistrationKiosk {
             //DEV: ADD VERIFICATION DIALOGUE
             Application.Current.Shutdown();
         }
+
+        #endregion
 
         #region OLD CODE
         /*

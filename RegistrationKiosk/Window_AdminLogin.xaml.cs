@@ -42,15 +42,19 @@ namespace RegistrationKiosk
             initLogin = true;
         }
 
-        public Window_AdminLogin(Window_Admin _admin, Window_Kiosk _kiosk)
+        public Window_AdminLogin(Window_Admin _admin)
         {
             InitializeComponent();
 
             admin = _admin;
-            kiosk = _kiosk;
             initLogin = true;
 
             lblMessages.Content = "Welcome!" + Environment.NewLine + "Enter the password to begin."; 
+        }
+
+        public void SetKiosk(Window_Kiosk _kiosk)
+        {
+            kiosk = _kiosk;
         }
 
         #endregion
@@ -113,6 +117,7 @@ namespace RegistrationKiosk
                 //Switch function of btnQuitCancel to Cancel
                 initLogin = false;
                 btnQuitCancel.Content = "Cancel";
+                lblMessages.Content = "Enter password to" + Environment.NewLine + "return to admin panel.";
             }
             //PG: END PLACEHOLDER
         }

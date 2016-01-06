@@ -90,6 +90,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Window_DBConnect.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window_NoCode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Window_Password.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -109,6 +117,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Window_DBConnect.xaml.cs">
+      <DependentUpon>Window_DBConnect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Window_NoCode.xaml.cs">
+      <DependentUpon>Window_NoCode.xaml</DependentUpon>
     </Compile>
     <Compile Include="Window_Password.xaml.cs">
       <DependentUpon>Window_Password.xaml</DependentUpon>
