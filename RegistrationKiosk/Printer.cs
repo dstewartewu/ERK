@@ -9,6 +9,9 @@ using System.Management;
 
 namespace RegistrationKiosk{
 
+    /// <summary>
+    /// Class containing methods for using a DYMO label printer
+    /// </summary>
     public class Printer{
 
         /// <summary>
@@ -19,29 +22,19 @@ namespace RegistrationKiosk{
             
 
             var label = (DYMO.Label.Framework.ILabel)null;
-            string text = registrant.Fname + "\n" + registrant.Lname + "\n";
-
-            if (registrant.RegType.ToString() == "Student") {
-                text += registrant.Major + "\n";
-                text += registrant.College;
-            }
-            else if (registrant.RegType.ToString() == "Employee" ) {
-                text += registrant.Job + "\n";
-                text += registrant.Business;
-            }
-            else
-                text += "Community\nMember";
+            string labelName = registrant.Fname + ((registrant.Fname.Length + registrant.Lname.Length >= 16) ? "\n" : "") + registrant.Lname;
+            string labelDetails = FormatRegistrant(registrant);
 
             try {
-                label = DYMO.Label.Framework.Label.Open(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "/jobfair.label");
+                label = DYMO.Label.Framework.Label.Open(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "/ERK.label");
             }
             catch {
-                MessageBox.Show("File 'jobfair.label' not found in " + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+                MessageBox.Show("File 'ERK.label' not found in " + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
                 return;
             }
                         
-            label.SetObjectText("Text", text);
-
+            label.SetObjectText("Name", labelName);
+            label.SetObjectText("Details", labelDetails);
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Printer");
             string printerName = "";
 
@@ -68,6 +61,29 @@ namespace RegistrationKiosk{
                     }
             }
             
+        }
+        public static string FormatRegistrant(RegistrantEntry registrant)
+        {
+            // NAME FORMATTING: 16 Characters Each name; Total longer than 15? Split into two lines
+            //string regString = registrant.Fname + " " + registrant.Lname;
+            string regString = "";
+            if (registrant.RegType == RegistrantEntry.RegistrantType.Student)
+            {
+                if (registrant.ClassStanding != RegistrantEntry.ClassStandingType.None)
+                    regString += registrant.ClassStanding.ToString();
+                if (!String.IsNullOrWhiteSpace(registrant.Major))
+                    regString += (String.IsNullOrWhiteSpace(regString) ? "" : "\n") + registrant.Major;
+                if (!String.IsNullOrWhiteSpace(registrant.College))
+                    regString += (String.IsNullOrWhiteSpace(regString) ? "" : "\n") + registrant.College;
+            }
+            else if (registrant.RegType == RegistrantEntry.RegistrantType.Employee)
+            {
+                if(!String.IsNullOrWhiteSpace(registrant.Job))
+                    regString += registrant.Job;
+                if (!String.IsNullOrWhiteSpace(registrant.Business))
+                    regString += (String.IsNullOrWhiteSpace(regString) ? "" : "\n") + registrant.Business;
+            }
+            return regString;
         }
     }
 }
