@@ -14,11 +14,111 @@ using System.Windows.Shapes;
 using System.IO;
 
 namespace RegistrationKiosk {
-    /// <summary>
-    /// Interaction logic for Window_Admin.xaml
-    /// </summary>
-    public partial class Window_Admin : Window {
-        
+
+    public partial class Window_Admin : Window
+    {
+        #region DATA MEMBERS
+
+        //Reference to kiosk window
+        private Window_Kiosk kiosk;
+
+        //Reference to login window
+        private Window_AdminLogin login;
+
+        //Reference to database connection window
+        private Window_DBConnect dbConnect;
+
+        //DEV: Database reference variable?
+
+        #endregion
+
+        #region INITIALIZATION
+
+        public Window_Admin()
+        {
+            InitializeComponent();
+
+            ResetAdminPanel();
+
+            kiosk = new Window_Kiosk(this);
+            login = new Window_AdminLogin(this);
+            kiosk.SetLogin(login);
+            login.SetKiosk(kiosk);
+            dbConnect = new Window_DBConnect(this);
+
+            //Show login window
+            login.IsEnabled = true;
+            login.Visibility = System.Windows.Visibility.Visible;
+
+            //Hide admin and kiosk windows
+            kiosk.Visibility = System.Windows.Visibility.Hidden;
+            kiosk.IsEnabled = false;
+            this.Visibility = System.Windows.Visibility.Hidden;
+            this.IsEnabled = false;
+        }
+
+        private void ResetAdminPanel()
+        {
+            lblMessages.Content = String.Format("{1}{0}{2}",
+                Environment.NewLine,
+                "No database connected.",
+                "Click 'Connect to Database' to begin.");
+
+            btnConnectDB.IsEnabled = true;
+            btnConnectDB.Visibility = System.Windows.Visibility.Visible;
+
+            btnOpenKiosk.IsEnabled = false;
+            btnExport.IsEnabled = false;
+            btnSearch.IsEnabled = false;
+            datagrdSearchResults.IsEnabled = false;
+        }
+
+        #endregion
+
+        #region EVENT HANDLERS
+
+        private void btnConnectDB_Click(object sender, RoutedEventArgs e)
+        {
+            //DEV: CONNECT TO EVENT DATABASE
+            MessageBox.Show("DEV: Database connection is not yet implemented." + Environment.NewLine + "'Open Kiosk' and 'Export to Excel' buttons are now enabled");
+
+            dbConnect.IsEnabled = true;
+            dbConnect.Visibility = System.Windows.Visibility.Visible;
+
+            this.Visibility = System.Windows.Visibility.Hidden;
+            this.IsEnabled = false;
+
+            btnOpenKiosk.IsEnabled = true;
+            btnOpenKiosk.Visibility = System.Windows.Visibility.Visible;
+
+            btnExport.IsEnabled = true;
+            btnExport.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        private void btnExport_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("DEV: This button does nothing. NOTHING.");
+        }
+
+        private void btnOpenKiosk_Click(object sender, RoutedEventArgs e)
+        {
+            kiosk.IsEnabled = true;
+            kiosk.Visibility = System.Windows.Visibility.Visible;
+
+            this.Visibility = System.Windows.Visibility.Hidden;
+            this.IsEnabled = false;
+        }
+
+        private void btnQuit_Click(object sender, RoutedEventArgs e)
+        {
+            //DEV: ADD VERIFICATION DIALOGUE
+            Application.Current.Shutdown();
+        }
+
+        #endregion
+
+        #region OLD CODE
+        /*
         private Window_Main main = null;
 
         //===========================================================================
@@ -69,5 +169,7 @@ namespace RegistrationKiosk {
 
         #endregion
         //===========================================================================
+        */
+        #endregion
     }
 }
