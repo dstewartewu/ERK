@@ -1,0 +1,81 @@
+<div class="row">
+    <div class="col-lg-10">
+        <h1 class="page-header">Manage Events</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-4 col-lg-push-1">
+        <div class="form-group" ng-init="getEvents()">
+            <label for="events">Select Event:</label>
+            <select class="form-control" id="events"  ng-model="updateEventForm" ng-options="item as item.eventName for item in message track by item.eventNum">
+            </select>
+        </div>
+    </div>
+    <div class="col-lg-3 col-lg-push-3">
+        <label for="deleteEvent">DELETE EVENT CAN'T BE UNDONE</label>
+        <span class="col-lg-2"></span><input class="btn btn-danger" name="deleteEvent" id="deleteEvent" value="Delete Event">
+    </div>
+</div>
+<form ng-submit="updateEvent(item)">
+<div class="row">
+    <div class="col-lg-8 col-lg-push-1">
+        <fieldset>
+            <legend>Basic Event Information:</legend>
+            <span class="help-block">{{changed}}</span>
+            <div class="form-group">
+                Event Name:<input class="form-control" name="eventName" id="eventName" ng-model="updateEventForm.eventName" type="text" size="30">
+                Event Date:<input type="date" class="form-control" uib-datepicker-popup ng-model="updateEventForm.eventDate" ng-required="true" />
+                Event Start Time:<uib-timepicker ng-model="updateEventForm.startTime" show-meridian="ismeridian" hour-step="1" minute-step="15" show-spinners="false"></uib-timepicker>
+                Event End TIme:<uib-timepicker ng-model="updateEventForm.endTime" show-meridian="ismeridian" hour-step="1" minute-step="15" show-spinners="false"></uib-timepicker>
+            </div>
+        </fieldset>
+    </div>
+</div>
+    <div class="row">
+        <div class="col-lg-8 col-lg-push-1">
+
+            <fieldset>
+                <legend>Event Pre-Registration Options:</legend>
+                <div class="form-group">
+                    <label class="checkbox-inline"><input type="checkbox" value="" id="isPreReg" name="isPreReg" ng-model="updateEventForm.preReg">Event Pre-Registration?</label><br/><br/>
+                    Pre-Registration Site Header:<input class="form-control" name="siteTitle" id="siteTitle" type="text" size="30" ng-model="updateEventForm.siteHeader"><br/>
+                    <label class="checkbox-inline"><input type="checkbox" value="" id="hasQuestions" name="hasQuestions" ng-model="updateEventForm.cusQuest">Custom Pre-Registration Questions?</label><br/><br/>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+<div class="row">
+    <div class="col-lg-8 col-lg-push-1">
+        <div class="col-lg-4 col-lg-offset-8">
+            <button type="submit" class="btn btn-success btn-lg btn-block">Change Event
+            </button>
+        </div>
+    </div>
+</div>
+</form>
+</br>
+<div class="row">
+    <div class="col-lg-8 col-lg-push-1">
+    <fieldset>
+        <legend>Edit Event Questions: </legend>
+        <div class="col-lg-4 col-lg-offset-1">
+            <div class="form-group">
+                <label for="questions">Select Question:</label>
+                <select class="form-control" id="questions">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-2 col-lg-offset-4">
+            <label for="editQuestion"></label>
+            <input class="btn btn-success" name="editQuestion" id="editQuestion" value="Edit Question">
+        </div>
+    </fieldset>
+    </div>
+</div>
+<input type="text" value="QBGDmHa3SFq2Ykp6" hidden="hidden" name="key" id="key">

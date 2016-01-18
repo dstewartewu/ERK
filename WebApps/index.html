@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Eastern Washington University Pre-Registration</title>
+		<link href="jobfair.css" rel="stylesheet">
+
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<div class="col-lg-12">
+		<form name = "Information" id="Information" action="preRegistrationForm.php" method="post" onsubmit="return validate();">
+			
+			<img id="bannerImage" src="ewu_banner.jpg" width="40%" class="pull-left" alt=""/>
+			<div style="text-align: center;">
+
+			<br/>	
+				<h1 id="EventText"><b></b></h1>
+			</div>
+
+			<hr>
+		
+			<br/>
+			
+			<div class="col-md-4">
+				<fieldset>
+					<legend>General Information:</legend>
+
+					First Name: <div class="form-group"><input class="form-control" name="fName" id="fName" type="text" size="30"></div>
+					Last Name: <div class="form-group"><input class="form-control" name="lName" id="lName" type="text" size="30"></div>
+
+					<br/>
+					<br/>
+
+					Email: <div class="form-group"><input class="form-control" name="email" id="email" type="text" size="30"></div>
+
+				</fieldset>
+			</div>
+
+			<div class="col-md-4">
+				<fieldset>
+
+					<legend>Registrant Type:</legend>
+					
+					<div class="radio">
+						<label>
+						<input type="radio" onclick="javascript:IfStudent();" id="Student" name="registrantType" value="Student">Student/Alumnus
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+						<input type="radio" onclick="javascript:IfEmployer();" id="Employer" name="registrantType" value="Employer">Employer/Employee
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+						<input type="radio" onclick="javascript:IfGeneral();" id="General" name="registrantType" value="General">General
+						</label>
+					</div>
+
+				</fieldset>
+			</br>
+			
+			<fieldset name="employerInfo" id="employerInfo" style="display:none;">
+				<legend>Employer Information</legend>
+				Organization Name: <div class="form-group"><input class="form-control" name="business" id="business" type="text" size="30"></div></br>
+				Job Title: <div class="form-group"><input class="form-control" name="jobTitle" id="jobTitle" type="text" size="30"></div></br>
+			</fieldset>
+			
+			<fieldset name="studentInfo" id="studentInfo" style="display:none;">
+				<legend>Student Information</legend>
+				<div class="form-group">
+				Class Standing:
+
+				<div class="radio">
+					<label> 
+					<input type="radio" name="Class" value="Freshman">Freshman
+					</label>
+				</div>
+				
+				<div class="radio">
+					<label> 
+					<input type="radio" name="Class" value="Sophomore">Sophomore
+					</label>
+				</div>
+				
+				<div class="radio">
+					<label> 
+					<input type="radio" name="Class" value="Junior">Junior
+					</label>
+				</div>
+				
+				<div class="radio">
+					<label> 
+					<input type="radio" name="Class" value="Senior">Senior
+					</label>
+				</div>
+				
+				<div class="radio">
+					<label> 
+					<input type="radio" name="Class" value="PostBaccalaureate">Post Baccalaureate
+					</label>
+				</div>
+				
+				<div class="radio">
+					<label> 
+					<input type="radio" name="Class" value="Graduate">Graduate Student
+					</label>
+				</div>
+				
+				<div class="radio">
+					<label> 
+					<input type="radio" name="Class" id="Alumnus" value="Alumnus">Alumnus
+					</label>
+				</div>
+				</div>
+
+				<div class="form-group">
+					College: 
+					<select class="form-control" name="college" id="college" onchange="javascript:CheckUniversity()">
+						<option value="EWU">Eastern Washington University</option>
+						<option value="ZAG">Gonzaga University</option>
+						<option value="WSU">Washington State University</option>
+						<option value="WHIT">Whitworth University</option>
+						<option value="Other">Other</option>
+					</select>
+				</div>
+
+				<div id="otherUniversity" style="display:none">
+						Other University:
+					<div class="form-group" >
+						<input name="otherUniversity" placeholder="Please type in your college here"
+								class="form-control" type="text" size="30">
+					</div>
+				</div>
+				
+				Major:
+				<div class="form-group">
+					<input class="form-control" name="major" id="major" type="text" size="30">
+				</div>
+				
+			</fieldset>
+			
+			</br>
+			</div>
+
+			<div class="col-md-4">
+				
+				<fieldset name="questions" id="questions" style="display:none;">
+					<legend name="questionsLegend" id="questionsLegend" style="display:none;">Questions</legend>
+					<div id='divButton'>
+					</div>
+				</fieldset>
+				
+				</br></br>
+				
+				<input class="btn btn-success" type="submit" name="submit" id="submitButton" value="Submit" onclick="validate()">
+
+			</div>
+		</form>
+		</div>
+		<div class="col-md-12">
+		<br/><br/>
+		<p style="width:100%; text-align: center;">
+			Eastern Washington University Career Services</br>
+			(509)-359-6365</br>
+			Careers@ewu.edu
+		</p>
+		</div>
+
+<!-- Start the Javascript -->
+		<script>
+			window.onload = init;
+			function init(){
+				var eventText = new XMLHttpRequest();
+				eventText.open("GET", 'jobfairname.txt', false);
+				eventText.send(null);
+
+				document.getElementById("EventText").innerHTML = "Pre-Registration Form for ".bold() + eventText.response.bold();
+				getData();
+			}
+			<!-- Will hide the student and employer section when the page is first loaded -->
+
+			$(function() {
+					IfGeneral();
+					getData();
+			})
+			
+			<!-- Will show the student section and hide the employer section -->
+			function IfStudent(){
+					document.getElementById("studentInfo").style.display = 'block';
+					document.getElementById("employerInfo").style.display = 'none';
+					resetEmployer();
+			}
+			
+			<!-- Will show the employer section and hide the student section -->
+			function IfEmployer(){
+				document.getElementById("employerInfo").style.display = 'block';
+				document.getElementById("studentInfo").style.display = 'none';
+				resetStudent();
+			}
+			
+			<!-- Will hide the employer and student section. Usually called when page is first loaded -->
+			function IfGeneral(){
+				document.getElementById("employerInfo").style.display = 'none';
+				document.getElementById("studentInfo").style.display = 'none';
+				resetEmployer();
+				resetStudent();
+				ChangeText();
+			}
+			
+			<!-- Will check to see what university is selected. If other is selected, it will display the 'other' input box. If not, it will hide it -->
+			function CheckUniversity(){
+				list = document.getElementById("college");
+				var university = list.options[list.selectedIndex].value;
+				if(university == "Other"){
+					document.getElementById("otherUniversity").style.display = 'block';
+				}
+				else{
+					document.getElementById("otherUniversity").style.display = 'none';
+				}
+			}
+			
+			function getData(){
+	            $.getJSON("questions.php", "",
+	               function(data) {
+	                    $.each(data, function(key, val) {
+
+	                    	//If there is a question, show the legend and fieldset
+	                    	document.getElementById("questions").style.display = 'block';
+							document.getElementById("questionsLegend").style.display = 'block';
+				
+	                        var string = '<input type="hidden" name=Q'+ val.questionID + ' value="' + val.question + '"><div class="form-group">' + val.question;    		                        
+	                       	
+	                        getAnswers(val.questionID, string);
+	
+	                    });
+	               }
+	            );
+	        }
+
+
+
+			function getAnswers(questionID, string){
+	           $.getJSON("answers.php",{id:questionID},
+	               function(data){
+	                    string += "<select class='form-control' name=A" + questionID + ">";
+
+	                    $.each(data, function(key, val) {
+	                        string += "<option>" + val.choice + "</option>";
+	                    });
+	                    string += "</select></div>";
+
+	                    var question = $('#divButton').append(string);
+	               }
+	           );
+	        }
+			
+			<!-- Will check if the info entered is valid. If valid, it will submit the info. If not it will stay on page. -->
+			function validate()  
+			{
+				var isValid = true;
+				var hasAlerted = false;
+				
+				//Start general info validation
+				
+				//Check if user has entered a valid firstname
+				fName = document.getElementById("fName");
+				if(fName == null || fName.value == "" || !isNaN(fName.value)) //If true, info is invalid
+				{
+					fName.style.backgroundColor = "red";
+					alert("Please enter your first name using only letters");
+					hasAlerted = true;
+					isValid = false;
+				}
+				else
+				{	//info is valid, change color back to white and capitalize first character
+					fName.value = capitalizeFirstLetter(fName.value);
+					fName.style.backgroundColor = "white";
+				}
+				
+				//Check if user has entered a valid lastname
+				lName = document.getElementById("lName");
+				if(lName == null || lName.value == "" || !isNaN(lName.value)) //If true, info is invalid
+				{
+					lName.style.backgroundColor = "red";
+					isValid = false;
+					if(!hasAlerted) { 
+						alert("Please enter your last name using only letters");
+						hasAlerted = true; 
+					}
+				}
+				else
+				{   //info is valid, change color back to white and capitalize first character
+					lName.value = capitalizeFirstLetter(lName.value);
+					lName.style.backgroundColor = "white";
+				}
+				
+				var radios = document.getElementsByName("registrantType");
+				if(!checkRadios(radios)) //if user hasn't selected a registrant type (i.e. Student)
+				{
+					isValid = false;
+					if(!hasAlerted)
+					{
+						alert("Please select your registrant type");
+						hasAlerted = true;
+					}
+				}
+
+				//Check if user has entered a valid email
+				email = document.getElementById("email");
+				if(email == null || email.value == "" || !checkEmail(email)) //if true, info is invalid
+				{
+					email.style.backgroundColor = "red";
+					isValid = false;
+					if(!hasAlerted) { alert("Please enter a valid email");
+					hasAlerted = true; }
+				}
+				else
+				{   //info is valid, change color back to white and capitalize first character
+					email.value = capitalizeFirstLetter(email.value);
+					email.style.backgroundColor = "white";
+				}
+			
+				//End general info validation
+				
+				/*
+				Don't do this part of error checking if Employer is not selected
+				*/
+				
+				//Start employer info validation
+				
+				if(document.getElementById('Employer').checked){
+					//Check if user has entered a valid business
+					business = document.getElementById("business");
+					if(business == null || business.value == "") //If true, info is invalid
+					{
+						business.style.backgroundColor = "red";
+						isValid = false;
+						if(!hasAlerted)
+						{
+							alert("Please enter your business name");
+							hasAlerted = true;
+						}
+					}
+					else
+					{
+						//info is valid, change color back to white and capitalize first character
+						business.style.backgroundColor = "white";
+						business.value = capitalizeFirstLetter(business.value);
+					}
+				}
+					
+				//End employer info validation
+					
+				/*
+				Don't do this part of error checking if Student/Alumnus is not selected
+				*/
+
+				//Start Student/Alumnus info validation
+				
+				//Check if user has selected a class standing
+				if(document.getElementById('Student').checked){	
+					var classStanding = document.getElementsByName("Class");
+					if(!checkRadios(classStanding)) //If true, user hasn't selected a class standing (i.e. Freshman)
+					{
+						isValid = false;
+						if(!hasAlerted)
+						{
+							alert("Please select your class standing");
+							hasAlerted = true;
+						}
+					}
+					
+					//Check if user has entered a valid college
+					list = document.getElementById("college");
+					var university = list.options[list.selectedIndex].value;
+					if(university == "Other"){
+						var other = document.getElementById("otherUniversity");
+						if(other.value == "" || other.value == "Please type in your college here") //If true, users college isn't listed and the user hasn't entered in their college
+						{
+							isValid = false;
+							other.style.backgroundColor = "red";
+							if(!hasAlerted)
+							{
+								alert("Please type in your college");
+								hasAlerted = true;
+							}
+						}
+						else
+						{
+							other.value = toTitleCase(other.value);
+							other.style.backgroundColor = "white";
+						}
+					}
+					
+					//Check if user has entered a valid major
+					var major = document.getElementById("major");
+					if(major == null || major.value == "" || !isNaN(major.value)) //If true, users college isn't listed and the user hasn't entered in their college
+					{
+						isValid = false;
+						major.style.backgroundColor = "red";
+						if(!hasAlerted)
+						{
+							alert("Please enter your major");
+							hasAlerted = true;
+						}
+					}
+					else
+					{
+						major.value = toTitleCase(major.value);
+						major.style.backgroundColor = "white";
+					}
+
+					
+					//Check is user has entered a valid student ID
+					studentID = document.getElementById("id");
+					if(!studentID.value == "" && isNaN(studentID.value))
+					{
+						studentID.style.backgroundColor = "red";
+						isValid = false;
+						if(!hasAlerted)
+						{
+							alert("Please enter student ID using only numeric values");
+							hasAlerted = true;
+						}
+					}
+					else
+					{
+						//info is valid, change color back to white
+						studentID.style.backgroundColor = "white";
+					}
+					
+					//Check if user has entered a valid graduation year
+					graduation = document.getElementById("graduationYear");
+					if(graduation == null || graduation.value == "" || isNaN(graduation.value) || graduation.value.length != 4) //If true, info is invalid
+					{
+						graduation.style.backgroundColor = "red";
+						isValid = false;
+						if(!hasAlerted)
+						{
+							alert("Please enter your graduation year using only four numeric values");
+							hasAlerted = true;
+						}
+					}
+					else
+					{
+						//info is valid, change color back to white
+						graduation.style.backgroundColor = "white";
+					}
+				}
+				
+				//End Student/Alumnus info validation
+					
+				return isValid;
+			}
+
+			function resetEmployer(){
+				business = document.getElementById("business");
+				business.style.backgroundColor = "white";
+				jobTitle = document.getElementById("jobTitle");
+				jobTitle.style.backgroundColor = "white";
+			}
+
+			function resetStudent(){
+				studentID = document.getElementById("id");
+				studentID.style.backgroundColor = "white";
+				graduation = document.getElementById("graduationYear");
+				graduation.style.backgroundColor = "white";
+			}
+
+			function checkEmail(email)   
+			{  
+			 if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.value))  
+			  {  
+				return (true)  
+			  }   
+				return (false)  
+			}  
+
+
+			function checkRadios(radios){
+				for(var i = 0, len = radios.length; i < len; i++){
+					if(radios[i].checked){
+					return true;
+					}
+				}
+				return false;
+			}
+
+			
+			function toTitleCase(str)
+			{
+				return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+			}
+
+			function capitalizeFirstLetter(string) {
+				return string.charAt(0).toUpperCase() + string.substr(1).toLowerCase();
+				//return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+			}
+		</script>
+	</body>
+</html>

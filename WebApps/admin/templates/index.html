@@ -1,0 +1,30 @@
+
+    <div class="row">
+        <div class="col-lg-10">
+            <h1 class="page-header">{{welcome}}</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row" ng-controller="dashboardController">
+        <div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-header-subPanel">
+                    <h4><span style="color: #ffffff;">Scheduled Events</span></h4>
+                </div>
+                <div class="panel-body">
+                        <ul ng-init="getEvents()">
+                            <li ng-repeat="items in message" class="text-left list-unstyled"><h4><b>
+                                <span class="glyphicon glyphicon-calendar"></span>{{items.eventName}}<span style="float: right">{{items.eventDate}}</span>
+                            </b></h4>
+                            </li>
+                        </ul>
+                    <!-- /.row -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-8 -->
+    </div>
+    <!-- /.row -->

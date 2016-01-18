@@ -1,0 +1,44 @@
+ <div class="row">
+     <div class="col-lg-10">
+         <h1 class="page-header">Create New Event</h1>
+     </div>
+        <!-- /.col-lg-12 -->
+ </div>
+    <!-- /.row -->
+ <form ng-submit="createEvent()">
+ <div class="row">
+     <div class="col-lg-8 col-lg-offset-1">
+         <fieldset>
+             <legend>Basic Event Information:</legend>
+             <div class="form-group">
+                 Event Name:<input class="form-control" name="eventName" id="eventName" type="text" size="30" placeholder="EWU Career Service Event" ng-model="createEventForm.eventName">
+                 <span class="help-block">{{created}}</span>
+                 Event Date:<input type="date" class="form-control" uib-datepicker-popup ng-model="createEventForm.eventDate" ng-required="true" />
+                 Event Start Time:<uib-timepicker ng-model="createEventForm.startTime" show-meridian="ismeridian" hour-step="1" minute-step="15" show-spinners="false"></uib-timepicker>
+                 Event End TIme:<uib-timepicker ng-model="createEventForm.endTime" show-meridian="ismeridian" hour-step="1" minute-step="15" show-spinners="false"></uib-timepicker>
+             </div>
+         </fieldset>
+     </div>
+ </div>
+ <div class="row">
+     <div class="col-lg-8 col-lg-offset-1">
+         <fieldset>
+             <legend>Event Pre-Registration Options:</legend>
+             <div class="form-group">
+                 <label class="checkbox-inline"><input type="checkbox" value="" id="isPreReg" name="isPreReg" ng-model="createEventForm.preRegistration">Set-Up Event Pre-Registration?</label><br/><br/>
+                 Pre-Registration Site Header:<input class="form-control" name="siteTitle" id="siteTitle" type="text" ng-model="createEventForm.siteHeader" size="30" placeholder="Pre-Registration for EWU Career Service Event On Jan 1, 2016">
+                 <span class="help-block"></span><br/><br/>
+                 <label class="checkbox-inline"><input type="checkbox" value="" id="hasQuestions" name="hasQuestions" ng-model="createEventForm.customQuestions">Set-Up Custom Pre-Registration Questions?</label><br/><br/>
+             </div>
+         </fieldset>
+     </div>
+ </div>
+ <div class="row">
+     <div class="col-lg-3 col-lg-offset-6">
+         <button type="submit" class="btn btn-success btn-lg btn-block">Create Event
+         </button><br/><br/>
+     </div>
+ </div>
+</form>
+
+
