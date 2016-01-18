@@ -62,11 +62,13 @@ $app->get('/getQuestionCount/:eventNum', function($eventNum) use($app){
 
     try {
         $db = getDB();
-        $sql = $db->prepare("SELECT COUNT (questionID) FROM questions WHERE eventNum = :eventNum");
+        $sql = $db->prepare("SELECT * FROM questions WHERE eventNum = :eventNum");
         $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
         $sql->execute();
-        $count = $sql->fetchAll(PDO::FETCH_ASSOC);
-        $db = null;
+        $count = array();
+
+        $count['count'] = $sql->rowCount();
+        
         echo json_encode($count);
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
