@@ -142,8 +142,8 @@ $app->post('/updateEvent', function() use ($app) {
         $sql->bindParam(':startTime', $validate->startTime, PDO::PARAM_STR);
         $sql->bindParam(':endTime', $validate->endTime, PDO::PARAM_STR);
         $sql->bindParam(':siteHeader', $validate->siteHeader, PDO::PARAM_STR);
-        $sql->bindParam(':preReg', $validate->preRegistration, PDO::PARAM_STR);
-        $sql->bindParam(':cusQuest', $validate->customQuestions, PDO::PARAM_STR);
+        $sql->bindParam(':preReg', $validate->preReg, PDO::PARAM_STR);
+        $sql->bindParam(':cusQuest', $validate->cusQuest, PDO::PARAM_STR);
         $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
 
         $sql->execute();

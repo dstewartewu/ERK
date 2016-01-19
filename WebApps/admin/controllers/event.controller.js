@@ -5,20 +5,31 @@
 app.controller( 'createEventsController', ['$scope', '$http', function($scope, $http) {
 
     $scope.createEventForm = {eventName: "", eventDate: new Date(), startTime: null, endTime: null,
-                              preRegistration: 'false', siteHeader: "", customQuestions: 'false'};
+                              preRegistration: false, siteHeader: "", customQuestions: false};
 
     $scope.createEvent = function () {
 
-        $scope.createEventForm.eventDate = $scope.createEventForm.eventDate.toDateString();
-        $scope.createEventForm.startTime = $scope.createEventForm.startTime.toTimeString();
-        $scope.createEventForm.endTime = $scope.createEventForm.endTime.toTimeString();
-        $scope.createEventForm.preRegistration = $scope.createEventForm.preRegistration.toString();
-        $scope.createEventForm.customQuestions = $scope.createEventForm.customQuestions.toString();
+        $scope.submitEvent = jQuery.extend(true, {}, $scope.createEventForm);
 
+        $scope.submitEvent.eventDate = $scope.submitEvent.eventDate.toDateString();
+        $scope.submitEvent.startTime = $scope.submitEvent.startTime.toTimeString();
+        $scope.submitEvent.endTime = $scope.submitEvent.endTime.toTimeString();
+        if($scope.submitEvent.preRegistration){
+            $scope.submitEvent.preRegistration = 'true';
+        }
+        else{
+            $scope.submitEvent.preRegistration = 'false';
+        }
+        if($scope.submitEvent.customQuestions){
+            $scope.submitEvent.customQuestions = 'true';
+        }
+        else{
+            $scope.submitEvent.customQuestions = 'false';
+        }
         $http({
             method: 'POST',
             url: 'models/webModelAPI.php/createEvent',
-            data: JSON.stringify($scope.createEventForm),
+            data: JSON.stringify($scope.submitEvent),
             headers: {'Content-Type': 'application/json'}
         })
             .success(function(data) {
@@ -33,7 +44,7 @@ app.controller( 'createEventsController', ['$scope', '$http', function($scope, $
                     $scope.createEventForm = {
                         eventName: "", eventDate: new Date(),
                         startTime: null, endTime: null,
-                        preRegistration: 'false', siteHeader: "", customQuestions: 'false'
+                        preRegistration: false, siteHeader: "", customQuestions: false
                     };
 
                 }
