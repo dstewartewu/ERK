@@ -24,7 +24,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label x:Name="lblPassword" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" Content="Password" Margin="20,10,10,10"/>
+            <Label x:Name="lblPassword" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" Content="Event Key" Margin="20,10,10,10"/>
             <PasswordBox x:Name="passbxPassword" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" Width="250" Grid.Column="1" Margin="10,10,20,10"/>
             <Grid x:Name="grdButtons" Grid.Row="2" Margin="0" Grid.ColumnSpan="2">
                 <Grid.RowDefinitions>

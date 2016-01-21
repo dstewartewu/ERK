@@ -14,27 +14,32 @@ using System.Windows.Shapes;
 
 namespace RegistrationKiosk
 {
-    public partial class Window_DBConnect : Window
+    public partial class Window_EventLoader : Window
     {
         #region DATA MEMBERS
 
-        //Reference to admin window
-        private Window_Admin admin;
+        //Reference to main project controller
+        private Controller controller;
 
         #endregion
 
         #region INITIALIZATION
 
-        private Window_DBConnect()
+        private Window_EventLoader()
         {
             InitializeComponent();
         }
 
-        public Window_DBConnect(Window_Admin _admin)
+        public Window_EventLoader(Controller controller_in)
         {
             InitializeComponent();
 
-            admin = _admin;
+            controller = controller_in;
+
+            txtbxMessages.Text = String.Format("{1}{0}{0}{2}",
+                Environment.NewLine,
+                "No event loaded.",
+                "To load an event, enter the API URL and Event Key below, then click 'Load'.");
         }
 
         #endregion
@@ -43,16 +48,14 @@ namespace RegistrationKiosk
 
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("This button is just for show ATM.");
+            MessageBox.Show("This button is just for show ATM." + Environment.NewLine + "'Open Kiosk' and 'Export to Excel' buttons have been enabled.");
+
+            controller.SetView(Controller.WindowView.ADMIN);
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            admin.IsEnabled = true;
-            admin.Visibility = System.Windows.Visibility.Visible;
-
-            this.Visibility = System.Windows.Visibility.Hidden;
-            this.IsEnabled = false;
+            controller.SetView(Controller.WindowView.ADMIN);
         }
 
         #endregion

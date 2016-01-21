@@ -68,20 +68,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controller.cs" />
     <Compile Include="Window_AdminLogin.xaml.cs">
       <DependentUpon>Window_AdminLogin.xaml</DependentUpon>
     </Compile>
     <Compile Include="IOExcel.cs" />
-    <Compile Include="MySQLClient.cs" />
     <Compile Include="Printer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="QuestionEntry.cs" />
     <Compile Include="Registrant.cs" />
-    <Compile Include="RegistrantEntry.cs" />
     <Compile Include="SecurityMeans.cs" />
     <Compile Include="Window_Admin.xaml.cs">
       <DependentUpon>Window_Admin.xaml</DependentUpon>
@@ -90,23 +88,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Window_DBConnect.xaml">
+    <Page Include="Window_EventLoader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Window_NoCode.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Window_Password.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Window_Database.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Window_ForgotCode.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -118,20 +104,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Window_DBConnect.xaml.cs">
-      <DependentUpon>Window_DBConnect.xaml</DependentUpon>
+    <Compile Include="Window_EventLoader.xaml.cs">
+      <DependentUpon>Window_EventLoader.xaml</DependentUpon>
     </Compile>
     <Compile Include="Window_NoCode.xaml.cs">
       <DependentUpon>Window_NoCode.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Window_Password.xaml.cs">
-      <DependentUpon>Window_Password.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Window_Database.xaml.cs">
-      <DependentUpon>Window_Database.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Window_ForgotCode.xaml.cs">
-      <DependentUpon>Window_ForgotCode.xaml</DependentUpon>
     </Compile>
     <Compile Include="Window_Kiosk.xaml.cs">
       <DependentUpon>Window_Kiosk.xaml</DependentUpon>

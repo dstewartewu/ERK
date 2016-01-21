@@ -21,23 +21,23 @@ namespace RegistrationKiosk
     {
         #region DATA MEMBERS
 
-        //Reference to kiosk
-        Window_Kiosk kiosk;
+        //Reference to main project controller
+        private Controller controller;
 
         #endregion
 
         #region INITIALIZATION
 
-        public Window_NoCode()
+        private Window_NoCode()
         {
             InitializeComponent();
         }
 
-        public Window_NoCode(Window_Kiosk _kiosk)
+        public Window_NoCode(Controller controller_in)
         {
             InitializeComponent();
 
-            kiosk = _kiosk;
+            controller = controller_in;
 
             lblMessages.Content = "Enter your email below.";
         }
@@ -48,11 +48,7 @@ namespace RegistrationKiosk
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            kiosk.IsEnabled = true;
-            kiosk.Visibility = System.Windows.Visibility.Visible;
-
-            this.Visibility = System.Windows.Visibility.Hidden;
-            this.IsEnabled = false;
+            controller.SetView(Controller.WindowView.KIOSK);
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
