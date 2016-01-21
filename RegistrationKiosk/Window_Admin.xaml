@@ -26,7 +26,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button x:Name="btnConnectDB" Content="Connect to Database" VerticalAlignment="Center" FontSize="24" Padding="10" Margin="20,20,20,10" Click="btnConnectDB_Click"/>
+            <Button x:Name="btnLoadEvent" Content="Load Event" VerticalAlignment="Center" FontSize="24" Padding="10" Margin="20,20,20,10" Click="btnConnectDB_Click"/>
             <Button x:Name="btnExport" Content="Export to Excel" VerticalAlignment="Center" FontSize="24" Padding="10" Margin="20,10" Grid.Row="2" Click="btnExport_Click"/>
             <Button x:Name="btnQuit" Content="Quit" VerticalAlignment="Center" FontSize="24" Padding="10" Margin="20,10,20,20" Grid.Row="3" Click="btnQuit_Click"/>
             <Button x:Name="btnOpenKiosk" Content="Open Kiosk" VerticalAlignment="Center" FontSize="24" Padding="10" Margin="20,10" Grid.Row="1" Click="btnOpenKiosk_Click"/>

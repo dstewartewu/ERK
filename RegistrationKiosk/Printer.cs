@@ -13,7 +13,7 @@ namespace RegistrationKiosk{
     /// Class containing methods for using a DYMO label printer
     /// </summary>
     public class Printer{
-
+        /*PG: THIS CLASS HAS BEEN COMMENTED OUT FOR COMPILING: THIS CLASS CONTAINS NUMEROUS REFERENCES TO OLD PROJECT CLASSES THAT NO LONGER EXIST.
         /// <summary>
         /// Prints a jobfair nametag
         /// </summary>
@@ -85,5 +85,6 @@ namespace RegistrationKiosk{
             }
             return regString;
         }
+        */
     }
 }

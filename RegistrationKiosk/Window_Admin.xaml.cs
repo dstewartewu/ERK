@@ -19,16 +19,8 @@ namespace RegistrationKiosk {
     {
         #region DATA MEMBERS
 
-        //Reference to kiosk window
-        private Window_Kiosk kiosk;
-
-        //Reference to login window
-        private Window_AdminLogin login;
-
-        //Reference to database connection window
-        private Window_DBConnect dbConnect;
-
-        //DEV: Database reference variable?
+        //Reference to main project controller
+        private Controller controller;
 
         #endregion
 
@@ -38,35 +30,24 @@ namespace RegistrationKiosk {
         {
             InitializeComponent();
 
+            controller = new Controller(this);
+            controller.SetView(Controller.WindowView.ADMIN);
+
             ResetAdminPanel();
-
-            kiosk = new Window_Kiosk(this);
-            login = new Window_AdminLogin(this);
-            kiosk.SetLogin(login);
-            login.SetKiosk(kiosk);
-            dbConnect = new Window_DBConnect(this);
-
-            //Show login window
-            login.IsEnabled = true;
-            login.Visibility = System.Windows.Visibility.Visible;
-
-            //Hide admin and kiosk windows
-            kiosk.Visibility = System.Windows.Visibility.Hidden;
-            kiosk.IsEnabled = false;
-            this.Visibility = System.Windows.Visibility.Hidden;
-            this.IsEnabled = false;
         }
 
         private void ResetAdminPanel()
         {
             lblMessages.Content = String.Format("{1}{0}{2}",
                 Environment.NewLine,
-                "No database connected.",
-                "Click 'Connect to Database' to begin.");
+                "No event loaded.",
+                "Click 'Load Event' to begin.");
 
-            btnConnectDB.IsEnabled = true;
-            btnConnectDB.Visibility = System.Windows.Visibility.Visible;
+            //Enable 'Load Event' button.
+            btnLoadEvent.IsEnabled = true;
+            btnLoadEvent.Visibility = System.Windows.Visibility.Visible;
 
+            //Disable all other controls; loading an event will re-enable.
             btnOpenKiosk.IsEnabled = false;
             btnExport.IsEnabled = false;
             btnSearch.IsEnabled = false;
@@ -79,14 +60,7 @@ namespace RegistrationKiosk {
 
         private void btnConnectDB_Click(object sender, RoutedEventArgs e)
         {
-            //DEV: CONNECT TO EVENT DATABASE
-            MessageBox.Show("DEV: Database connection is not yet implemented." + Environment.NewLine + "'Open Kiosk' and 'Export to Excel' buttons are now enabled");
-
-            dbConnect.IsEnabled = true;
-            dbConnect.Visibility = System.Windows.Visibility.Visible;
-
-            this.Visibility = System.Windows.Visibility.Hidden;
-            this.IsEnabled = false;
+            controller.SetView(Controller.WindowView.LOAD_EVENT);
 
             btnOpenKiosk.IsEnabled = true;
             btnOpenKiosk.Visibility = System.Windows.Visibility.Visible;
@@ -102,17 +76,15 @@ namespace RegistrationKiosk {
 
         private void btnOpenKiosk_Click(object sender, RoutedEventArgs e)
         {
-            kiosk.IsEnabled = true;
-            kiosk.Visibility = System.Windows.Visibility.Visible;
-
-            this.Visibility = System.Windows.Visibility.Hidden;
-            this.IsEnabled = false;
+            controller.SetView(Controller.WindowView.KIOSK);
         }
 
         private void btnQuit_Click(object sender, RoutedEventArgs e)
         {
-            //DEV: ADD VERIFICATION DIALOGUE
-            Application.Current.Shutdown();
+            if (MessageBox.Show("Are you sure you want to quit?", "Quit", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
+            }
         }
 
         #endregion
