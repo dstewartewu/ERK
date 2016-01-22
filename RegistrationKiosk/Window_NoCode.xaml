@@ -1,22 +1,24 @@
 ﻿<Window x:Name="wdwNoCode" x:Class="RegistrationKiosk.Window_NoCode"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Window_NoCode" Height="600" Width="800" Background="#FF343434" WindowStartupLocation="CenterScreen" WindowState="Maximized" WindowStyle="None">
-    <Grid x:Name="grdNoCode" Background="#FFEE0000" HorizontalAlignment="Center" VerticalAlignment="Center">
+        Title="Window_NoCode" Height="600" Width="800" Background="{DynamicResource BackgroundDark}" WindowStartupLocation="CenterScreen" WindowState="Maximized" WindowStyle="None">
+    <Window.Resources>
+        <FontFamily x:Key="HeaderFont">Adobe Garamond Pro</FontFamily>
+    </Window.Resources>
+    <Grid x:Name="grdNoCode" Background="{DynamicResource BackgroundDark}" HorizontalAlignment="Center" VerticalAlignment="Center">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" MinHeight="125"/>
+            <RowDefinition Height="269"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Rectangle x:Name="rctHeader" Fill="#FFF8F4E2" RadiusY="10" RadiusX="10" Stroke="#00000000" StrokeThickness="0" Margin="20,20,20,10" Height="95"/>
-        <Label x:Name="lblHeader" Content="Find Registrant" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="72" Margin="10,0" HorizontalContentAlignment="Center"/>
-        <Rectangle x:Name="rctMessages" Fill="#FFF8F4E2" RadiusY="10" RadiusX="10" Stroke="#00000000" StrokeThickness="0" Margin="20,10" Grid.Row="1" Height="95"/>
-        <Label x:Name="lblMessages" Content="Messages" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Grid.Row="1" Margin="0"/>
-        <Rectangle x:Name="rctControls" Fill="#FFF8F4E2" RadiusY="10" RadiusX="10" Stroke="#00000000" StrokeThickness="0" Margin="20,10,20,20" Grid.Row="2"/>
-        <Grid x:Name="grdLoginElements" Grid.Row="2" Margin="20,10,20,20" HorizontalAlignment="Center">
+        <Rectangle x:Name="rctHeader" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="20,22,20,13" Effect="{DynamicResource DropShadow}"/>
+        <Label x:Name="lblHeader" Content="Find Registrant" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="64" Margin="49,27,49,2" HorizontalContentAlignment="Center" Foreground="White" FontFamily="{DynamicResource HeaderFont}" FontWeight="Bold" Height="96" Width="467"/>
+        <Rectangle x:Name="rctMessages" Fill="{DynamicResource MessagesBackground}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="20,1,20,178" Grid.Row="1" Effect="{DynamicResource DropShadow}"/>
+        <Label x:Name="lblMessages" Content="Messages" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Grid.Row="1" Margin="229,29,229,201" Foreground="White" FontFamily="{DynamicResource LabelFont}" Height="39" Width="107"/>
+        <Rectangle x:Name="rctControls" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="20,108,20,20" Grid.Row="1" Effect="{DynamicResource DropShadow}"/>
+        <Grid x:Name="grdLoginElements" Grid.Row="1" Margin="20,125,20,20" HorizontalAlignment="Center" Width="525">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -25,8 +27,8 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label x:Name="lblEmail" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" Content="Email" Margin="20,10,10,10"/>
-            <TextBox x:Name="txtbxEmail" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="400" FontSize="24" Grid.Column="1" Margin="10,10,20,10"/>
+            <Label x:Name="lblEmail" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFont}" Content="Email" Margin="20,10,10,10" FontFamily="{DynamicResource LabelFont}" Foreground="White"/>
+            <TextBox x:Name="txtbxEmail" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="400" FontSize="24" Grid.Column="1" Margin="10,10,20,10" SelectionBrush="{DynamicResource EWUGrey}" BorderBrush="Black" BorderThickness="2,2,1,1"/>
             <Grid x:Name="grdButtons" Grid.Row="2" Margin="0" Grid.ColumnSpan="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -35,8 +37,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnSearch" Content="Search" FontSize="24" Margin="20,10,10,20" VerticalAlignment="Center" Width="180" Click="btnSearch_Click"/>
-                <Button x:Name="btnCancel" Content="Cancel" VerticalAlignment="Center" FontSize="24" Grid.Column="1" Margin="10,10,20,20" Width="180" Click="btnCancel_Click"/>
+                <Button x:Name="btnSearch" Content="Search" FontSize="{DynamicResource ButtonFont}" Margin="20,10,10,20" VerticalAlignment="Center" Width="150" Click="btnSearch_Click" Background="{DynamicResource Button}" BorderBrush="Black" Foreground="White" FontFamily="Myriad Pro"/>
+                <Button x:Name="btnCancel" Content="Cancel" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFont}" Grid.Column="1" Margin="10,10,20,20" Width="150" Click="btnCancel_Click" Background="{DynamicResource Button}" BorderBrush="Black" FontFamily="Myriad Pro" Foreground="White"/>
             </Grid>
         </Grid>
 
