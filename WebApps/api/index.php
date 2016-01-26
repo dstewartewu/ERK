@@ -68,7 +68,7 @@ $app->get('/getQuestionCount/:eventNum', function($eventNum) use($app){
         $count = array();
 
         $count['count'] = $sql->rowCount();
-        
+
         echo json_encode($count);
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
@@ -359,8 +359,8 @@ $app->post("/addStudent",
                 $code = generateCode(); //Get random code that will be primary key in database
                 $invalidCode = CheckCode($code); //Get if code already exists. If it does, find a new one
             }
-            $sql = $db->prepare("INSERT INTO registrant (fName, lName, regType, checkedIn, checkInTime, codeNum)
-                                 VALUES (:fName, :lName, :regType, YES, :chkInTime, :codeNumber)");
+            $sql = $db->prepare("INSERT INTO registrant (fName, lName, regType, checkedIn, checkInTime, codeNum, eventNum)
+                                 VALUES (:fName, :lName, :regType, YES, :chkInTime, :codeNumber, :eventNum)");
             $sql->bindParam(':fName', $student->fName, PDO::PARAM_STR);
             $sql->bindParam(':lName', $student->lName, PDO::PARAM_STR);
             $sql->bindParam(':regType', $student->regType, PDO::PARAM_STR);
@@ -369,8 +369,8 @@ $app->post("/addStudent",
             $sql->bindParam(':eventNum', $student->eventNum, PDO::PARAM_INT);
             $sql->execute();
 
-            $sql = $db->prepare("INSERT INTO student (major, college, classStanding, codeNum)
-                                 VALUES (:major, :college, :classStanding, :codeNumber)");
+            $sql = $db->prepare("INSERT INTO student (major, college, classStanding, codeNum, eventNum)
+                                 VALUES (:major, :college, :classStanding, :codeNumber, :eventNum)");
             $sql->bindParam(':major', $student->major, PDO::PARAM_STR);
             $sql->bindParam(':college', $student->college, PDO::PARAM_STR);
             $sql->bindParam(':classStanding', $student->classStanding, PDO::PARAM_STR);
@@ -401,8 +401,8 @@ $app->post("/addEmployee",
                 $code = generateCode(); //Get random code that will be primary key in database
                 $invalidCode = CheckCode($code, $employee->eventNum); //Get if code already exists. If it does, find a new one
             }
-            $sql = $db->prepare("INSERT INTO registrant (fName, lName, regType, checkedIn, checkInTime, code)
-                                 VALUES (:fName, :lName, :regType, YES, :chkInTime, :codeNumber)");
+            $sql = $db->prepare("INSERT INTO registrant (fName, lName, regType, checkedIn, checkInTime, codeNum, eventNum)
+                                 VALUES (:fName, :lName, :regType, YES, :chkInTime, :codeNumber, :eventNum)");
             $sql->bindParam(':fName', $employee->fName, PDO::PARAM_STR);
             $sql->bindParam(':lName', $employee->lName, PDO::PARAM_STR);
             $sql->bindParam(':regType', $employee->regType, PDO::PARAM_STR);
@@ -411,7 +411,7 @@ $app->post("/addEmployee",
             $sql->bindParam(':eventNum', $employee->eventNum, PDO::PARAM_INT);
             $sql->execute();
 
-            $sql = $db->prepare("INSERT INTO employee (company, codeNum) VALUES (:company, :codeNumber)");
+            $sql = $db->prepare("INSERT INTO employee (company, codeNum, eventNum) VALUES (:company, :codeNumber, :eventNum)");
             $sql->bindParam(':company', $employee->company, PDO::PARAM_STR);
             $sql->bindParam(':codeNumber', $code, PDO::PARAM_INT);
             $sql->bindParam(':eventNum', $employee->eventNum, PDO::PARAM_INT);
@@ -419,7 +419,7 @@ $app->post("/addEmployee",
 
             if($employee->jobTitle != "")
             {
-                $sql = $db->prepare("UPDATE employee SET jobTitle = :jobTitle WHERE codeNum = :codeNumber");
+                $sql = $db->prepare("UPDATE employee SET jobTitle = :jobTitle WHERE codeNum = :codeNumber AND eventNum = :eventNum");
                 $sql->bindParam(':jobTitle', $employee->jobTitle, PDO::PARAM_STR);
                 $sql->bindParam(':codeNumber', $code, PDO::PARAM_INT);
                 $sql->bindParam(':eventNum', $employee->eventNum, PDO::PARAM_INT);
@@ -444,8 +444,8 @@ $app->post("/addRegistrant",
                 $code = generateCode(); //Get random code that will be primary key in database
                 $invalidCode = CheckCode($code, $student->eventNum); //Get if code already exists. If it does, find a new one
             }
-            $sql = $db->prepare("INSERT INTO registrant (fName, lName, regType, checkedIn, checkInTime, codeNum)
-                                 VALUES (:fName, :lName, :regType, YES, :chkInTime, :codeNumber)");
+            $sql = $db->prepare("INSERT INTO registrant (fName, lName, regType, checkedIn, checkInTime, codeNum, eventNum)
+                                 VALUES (:fName, :lName, :regType, YES, :chkInTime, :codeNumber, :eventNum)");
             $sql->bindParam(':fName', $student->fName, PDO::PARAM_STR);
             $sql->bindParam(':lName', $student->lName, PDO::PARAM_STR);
             $sql->bindParam(':regType', $student->regType, PDO::PARAM_STR);
