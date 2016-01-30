@@ -34,20 +34,32 @@ app.controller( 'manageController', ['$scope', '$http', function($scope, $http) 
     };
 
     $scope.updateEventForm = {eventNum: 0, eventName: "", eventDate: null, startTime: null, endTime: null,
-        preRegistration: false, siteHeader: "", customQuestions: false};
+        preReg: false, siteHeader: "", cusQuest: false};
 
     $scope.updateEvent = function () {
+
+        $scope.submitUpdate = jQuery.extend(true, {}, $scope.updateEventForm);
         //Convert Data to Strings that are human read-able before storing.
-        $scope.updateEventForm.eventDate = $scope.updateEventForm.eventDate.toDateString();
-        $scope.updateEventForm.startTime = $scope.updateEventForm.startTime.toTimeString();
-        $scope.updateEventForm.endTime = $scope.updateEventForm.endTime.toTimeString();
-        $scope.createEventForm.preRegistration = $scope.createEventForm.preRegistration.toString();
-        $scope.createEventForm.customQuestions = $scope.createEventForm.customQuestions.toString();
+        $scope.submitUpdate.eventDate = $scope.submitUpdate.eventDate.toDateString();
+        $scope.submitUpdate.startTime = $scope.submitUpdate.startTime.toTimeString();
+        $scope.submitUpdate.endTime = $scope.submitUpdate.endTime.toTimeString();
+        if($scope.submitUpdate.preReg){
+            $scope.submitUpdate.preReg = 'true';
+        }
+        else{
+            $scope.submitUpdate.preReg = 'false';
+        }
+        if($scope.submitUpdate.cusQuest){
+            $scope.submitUpdate.cusQuest = 'true';
+        }
+        else{
+            $scope.submitUpdate.cusQuest = 'false';
+        }
 
         $http({
             method: 'POST',
             url: 'models/webModelAPI.php/updateEvent',
-            data: JSON.stringify($scope.updateEventForm),
+            data: JSON.stringify($scope.submitUpdate),
             headers: {'Content-Type': 'application/json'}
         })
             .success(function(data) {
@@ -66,3 +78,4 @@ app.controller( 'manageController', ['$scope', '$http', function($scope, $http) 
         $scope.ismeridian = ! $scope.ismeridian;
     };
 }]);
+

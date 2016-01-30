@@ -1,8 +1,8 @@
 ﻿<Window x:Name="wdwAdminLogin" x:Class="RegistrationKiosk.Window_AdminLogin"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Admin Login" Background="#FF343434" WindowState="Maximized" ResizeMode="NoResize" Height="600" Width="600" WindowStartupLocation="CenterScreen" WindowStyle="None" KeyDown="wdwAdminLogin_KeyDown">
-    <Grid x:Name="grdAdminLogin" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#FFEE0000" Margin="0">
+        Title="Admin Login" Background="{DynamicResource BackgroundDark}" WindowState="Maximized" ResizeMode="NoResize" Height="600" Width="600" WindowStartupLocation="CenterScreen" WindowStyle="None" KeyDown="wdwAdminLogin_KeyDown">
+    <Grid x:Name="grdAdminLogin" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource BackgroundDark}" Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -10,11 +10,11 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Rectangle x:Name="rctHeader" Fill="#FFF8F4E2" RadiusY="10" RadiusX="10" Stroke="#00000000" StrokeThickness="0" VerticalAlignment="Center" Height="95" Margin="20,20,20,10"/>
-        <Label x:Name="lblHeader" Content="Login" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="72" Margin="10,0"/>
-        <Rectangle x:Name="rctMessages" Fill="#FFF8F4E2" Height="95" RadiusY="10" RadiusX="10" Stroke="#00000000" StrokeThickness="0" VerticalAlignment="Center" Grid.Row="1" Margin="20,10"/>
-        <Label x:Name="lblMessages" Content="Messages" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Grid.Row="1"/>
-        <Rectangle x:Name="rctLogin" Fill="#FFF8F4E2" RadiusY="10" RadiusX="10" Stroke="#00000000" StrokeThickness="0" Margin="20,10,20,20" Grid.Row="2"/>
+        <Rectangle x:Name="rctHeader" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" VerticalAlignment="Center" Height="95" Margin="20,20,20,10" Effect="{DynamicResource DropShadow}"/>
+        <Label x:Name="lblHeader" Content="Login" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="72" Margin="140,21,139,8" Foreground="White" FontFamily="{DynamicResource HeaderFont}" FontWeight="Bold"/>
+        <Rectangle x:Name="rctMessages" Fill="{DynamicResource MessagesBackground}" Height="95" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" VerticalAlignment="Center" Margin="20,124,20,21" Effect="{DynamicResource DropShadow}" Grid.RowSpan="2"/>
+        <Label x:Name="lblMessages" Content="Messages" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" Grid.Row="1" Foreground="White" FontFamily="{DynamicResource LabelFont}" Margin="178,28,178,48"/>
+        <Rectangle x:Name="rctLogin" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="20,105,20,21" Grid.Row="1" Effect="{DynamicResource DropShadow}" Grid.RowSpan="2"/>
         <Grid x:Name="grdLoginElements" Grid.Row="2" Margin="20,10,20,20" HorizontalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -24,8 +24,8 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label x:Name="lblPassword" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" Content="Password" Margin="20,10,10,10"/>
-            <PasswordBox x:Name="passbxPassword" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" Width="250" Grid.Column="1" Margin="10,10,20,10"/>
+            <Label x:Name="lblPassword" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" Content="Event Key:" Margin="20,10,10,10" Foreground="White" FontFamily="{DynamicResource LabelFont}"/>
+            <PasswordBox x:Name="passbxPassword" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" Width="250" Grid.Column="1" Margin="10,10,20,10" SelectionBrush="{DynamicResource Background}" BorderThickness="2,2,1,1" BorderBrush="{DynamicResource BackgroundDark}"/>
             <Grid x:Name="grdButtons" Grid.Row="2" Margin="0" Grid.ColumnSpan="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -34,8 +34,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnLogin" Content="Login" FontSize="24" Margin="20,10,10,20" VerticalAlignment="Center" Click="btnLogin_Click"/>
-                <Button x:Name="btnQuitCancel" Content="Quit" VerticalAlignment="Center" FontSize="24" Grid.Column="1" Margin="10,10,20,20" Click="btnQuitCancel_Click"/>
+                <Button x:Name="btnLogin" Content="Login" FontSize="24" Margin="20,10,10,20" VerticalAlignment="Center" Click="btnLogin_Click" BorderBrush="Black" Background="{DynamicResource Button}" FontFamily="{DynamicResource LabelFont}" Foreground="White" Padding="1,3,1,1"/>
+                <Button x:Name="btnQuitCancel" Content="Quit" VerticalAlignment="Center" FontSize="24" Grid.Column="1" Margin="10,10,20,20" Click="btnQuitCancel_Click" Background="{DynamicResource Button}" BorderBrush="Black" FontFamily="{DynamicResource LabelFont}" Foreground="White" Padding="1,3,1,1"/>
             </Grid>
         </Grid>
 

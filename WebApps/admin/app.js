@@ -20,7 +20,7 @@ app.config(['$routeProvider', function($routeProvider) {
         })
 
         .when('/PreRegistrationSetup', {
-            templateUrl : 'templates/preRegistrationSetup.html',
+            templateUrl : 'templates/preRegistrationSetup.html/:eventNum',
             controller : 'questionAddController'
         })
 
@@ -37,8 +37,8 @@ app.config(['$routeProvider', function($routeProvider) {
         })
 
         .when('/EditQuestion', {
-            templateUrl : 'templates/editQuestion.html',
-            controller : 'questionsController'
+            templateUrl : 'templates/editQuestion.html/:eventNum',
+            controller : 'questionEditController'
         })
 
         // route for the CreateEvent page

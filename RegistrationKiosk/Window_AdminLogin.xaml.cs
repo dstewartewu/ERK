@@ -21,13 +21,10 @@ namespace RegistrationKiosk
     {
         #region DATA MEMBERS
 
-        //Reference to main admin window
-        Window_Admin admin;
+        //Reference to main project controller
+        private Controller controller;
 
-        //Reference to kiosk window
-        Window_Kiosk kiosk;
-
-        /* True if this is the initial login (quit/cancel button quit application)
+        /* True if this is the initial login (quit/cancel button quits application)
          * False otherwise (quit/cancel button returns to kiosk screen) */
         Boolean initLogin;
 
@@ -38,23 +35,19 @@ namespace RegistrationKiosk
         private Window_AdminLogin()
         {
             InitializeComponent();
-
+            controller = null;
             initLogin = true;
         }
 
-        public Window_AdminLogin(Window_Admin _admin)
+        public Window_AdminLogin(Controller controller_in)
         {
             InitializeComponent();
 
-            admin = _admin;
+            controller = controller_in;
+
             initLogin = true;
 
             lblMessages.Content = "Welcome!" + Environment.NewLine + "Enter the password to begin."; 
-        }
-
-        public void SetKiosk(Window_Kiosk _kiosk)
-        {
-            kiosk = _kiosk;
         }
 
         #endregion
@@ -70,17 +63,14 @@ namespace RegistrationKiosk
         {
             if(initLogin)
             {
-                Application.Current.Shutdown();
-
-                //PG: DEV: ADD EXIT VERIFICATION WINDOW
+                if (MessageBox.Show("Are you sure you want to quit?", "Quit", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    Application.Current.Shutdown();
+                }
             }
             else
             {
-                kiosk.IsEnabled = true;
-                kiosk.Visibility = System.Windows.Visibility.Visible;
-
-                this.Visibility = System.Windows.Visibility.Hidden;
-                this.IsEnabled = false;
+                controller.SetView(Controller.WindowView.KIOSK);
             }
         }
 
@@ -96,7 +86,9 @@ namespace RegistrationKiosk
 
         private void AttemptLogin()
         {
-            //PG: DEV: AUTHENTICATE USERNAME & LOGIN
+            //PG: DEV: AUTHENTICATE PASSWORD
+            /* PG: DEV: if(controller.AttemptLogin()) //If login is successful (AttemptLogin() must return Boolean)
+            */
 
             //PG: PLACEHOLDER FOR AUTHENTICATION
             if (passbxPassword.Password.Length == 0)
@@ -108,16 +100,13 @@ namespace RegistrationKiosk
             }
             else
             {
-                admin.IsEnabled = true;
-                admin.Visibility = System.Windows.Visibility.Visible;
-
-                this.Visibility = System.Windows.Visibility.Hidden;
-                this.IsEnabled = false;
+                controller.SetView(Controller.WindowView.ADMIN);
 
                 //Switch function of btnQuitCancel to Cancel
                 initLogin = false;
                 btnQuitCancel.Content = "Cancel";
                 lblMessages.Content = "Enter password to" + Environment.NewLine + "return to admin panel.";
+                passbxPassword.Clear();
             }
             //PG: END PLACEHOLDER
         }

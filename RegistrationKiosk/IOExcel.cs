@@ -11,12 +11,12 @@ using Microsoft.Office.Interop.Excel;
 namespace RegistrationKiosk {
     
     public class IOExcel {
-
+        /*PG: THIS CLASS HAS BEEN COMMENTED OUT FOR COMPILING: THIS CLASS CONTAINS NUMEROUS REFERENCES TO OLD PROJECT CLASSES THAT NO LONGER EXIST.
         //===========================================================================
         #region Class Variables
         //===========================================================================
 
-        MySQLClient sqlClient;
+        //MySQLClient sqlClient;
 
         #endregion
         //===========================================================================
@@ -196,5 +196,6 @@ namespace RegistrationKiosk {
 
         #endregion
         //===========================================================================
+        */
     }
 }
