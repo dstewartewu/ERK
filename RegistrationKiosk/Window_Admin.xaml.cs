@@ -38,7 +38,7 @@ namespace RegistrationKiosk {
 
         private void ResetAdminPanel()
         {
-            lblMessages.Content = String.Format("{1}{0}{2}",
+            txtbxMessages.Text = String.Format("{1}{0}{2}",
                 Environment.NewLine,
                 "No event loaded.",
                 "Click 'Load Event' to begin.");
@@ -49,9 +49,6 @@ namespace RegistrationKiosk {
 
             //Disable all other controls; loading an event will re-enable.
             btnOpenKiosk.IsEnabled = false;
-            btnExport.IsEnabled = false;
-            btnSearch.IsEnabled = false;
-            datagrdSearchResults.IsEnabled = false;
         }
 
         #endregion
@@ -64,9 +61,6 @@ namespace RegistrationKiosk {
 
             btnOpenKiosk.IsEnabled = true;
             btnOpenKiosk.Visibility = System.Windows.Visibility.Visible;
-
-            btnExport.IsEnabled = true;
-            btnExport.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void btnExport_Click(object sender, RoutedEventArgs e)

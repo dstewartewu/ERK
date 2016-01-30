@@ -1,42 +1,35 @@
-﻿<Window x:Name="wdwDBConnect" x:Class="RegistrationKiosk.Window_EventLoader"
+﻿<Window x:Name="wdwLoadEvent" x:Class="RegistrationKiosk.Window_EventLoader"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Window_DBConnect" Height="800" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized" WindowStyle="None" Background="{DynamicResource BackgroundDark}">
-    <Grid x:Name="grdDBConnect" Background="{DynamicResource BackgroundDark}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="140,181" Height="430">
+        Title="Window_DBConnect" Height="700" Width="700" WindowStartupLocation="CenterScreen" WindowState="Maximized" WindowStyle="None" Background="{DynamicResource BackgroundDark}">
+    <Grid x:Name="grdLoadEvent" Background="{DynamicResource BackgroundDark}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MinHeight="125"/>
-            <RowDefinition Height="358"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="385"/>
         </Grid.ColumnDefinitions>
-        <Rectangle x:Name="rctHeader" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="20,30,20,5" Effect="{DynamicResource DropShadow}"/>
-        <Label x:Name="lblHeader" Content="Load Event" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="72" Margin="86,31,86,356" HorizontalContentAlignment="Center" Foreground="White" FontFamily="{DynamicResource HeaderFont}" FontWeight="Bold" Height="96" Width="341" Grid.RowSpan="2"/>
-        <Rectangle x:Name="rctMessages" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="20,10,20,258" Grid.Row="1" Effect="{DynamicResource DropShadow}" Fill="{DynamicResource MessagesBackground}"/>
-        <TextBox x:Name="txtbxMessages" TextWrapping="Wrap" Text="Messages" Background="{x:Null}" BorderThickness="0" Grid.Row="1" Margin="197,30,196,275" VerticalContentAlignment="Center" MinLines="4" MaxLines="4" FontSize="24" Padding="5" VerticalAlignment="Center" Width="120" HorizontalAlignment="Center" Height="53" SelectionBrush="{DynamicResource EWUGrey}" FontFamily="{DynamicResource LabelFont}" Foreground="White" BorderBrush="White"/>
-        <Rectangle x:Name="rctControls" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="20,114,20,74" Grid.Row="1" Effect="{DynamicResource DropShadow}"/>
-        <Grid x:Name="grdLoginElements" Grid.Row="1" Margin="20,143,20,45" HorizontalAlignment="Center" Width="473">
+        <Rectangle x:Name="rctHeader" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="0,10" Effect="{DynamicResource DropShadow}" Grid.ColumnSpan="2"/>
+        <Label x:Name="lblHeader" Content="Load Event" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="72" Margin="15" HorizontalContentAlignment="Center" Foreground="White" FontFamily="{DynamicResource HeaderFont}" FontWeight="Bold" Grid.ColumnSpan="2"/>
+        <Rectangle x:Name="rctMessages" RadiusY="2" RadiusX="2" StrokeThickness="0" Margin="0,10" Grid.Row="1" Effect="{DynamicResource DropShadow}" Fill="{DynamicResource EWURed}" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="txtbxMessages" TextWrapping="Wrap" Text="Messages" FontSize="24" Grid.Row="1" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Margin="10,15" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Focusable="False" IsTabStop="False" SelectionBrush="{x:Null}" IsHitTestVisible="False" AllowDrop="False" IsUndoEnabled="False" MinLines="3" Grid.ColumnSpan="2"/>
+        <Rectangle x:Name="rctControls" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="0,10,0,0" Effect="{DynamicResource DropShadow}" Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+        <Label x:Name="lblEventKey" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" Content="Event Key" Margin="10,20,5,20" FontFamily="{DynamicResource LabelFont}" Foreground="White" Grid.Row="2"/>
+        <TextBox x:Name="txtbxEventKey" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="24" Margin="5,25,20,25" SelectionBrush="{DynamicResource EWUGrey}" BorderBrush="{DynamicResource BackgroundDark}" BorderThickness="2,2,1,1" Grid.Row="2" Grid.Column="1"/>
+        <Grid x:Name="grdButtons" Margin="0" Grid.ColumnSpan="2" Grid.Row="3">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label x:Name="lblEventKey" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="24" Content="Event Key:" Margin="20,10,10,10" FontFamily="{DynamicResource LabelFont}" Foreground="White"/>
-            <TextBox x:Name="txtbxEventKey" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="300" FontSize="24" Grid.Column="1" Margin="10,10,20,10" SelectionBrush="{DynamicResource EWUGrey}" BorderBrush="{DynamicResource BackgroundDark}" BorderThickness="2,2,1,1"/>
-            <Grid x:Name="grdButtons" Grid.Row="4" Margin="0" Grid.ColumnSpan="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Button x:Name="btnLoad" Content="Load" FontSize="24" Margin="20,10,10,20" VerticalAlignment="Center" Width="180" Click="btnConnect_Click" Foreground="White" Background="{DynamicResource Button}" FontFamily="{DynamicResource LabelFont}" BorderBrush="Black"/>
-                <Button x:Name="btnCancel" Content="Cancel" VerticalAlignment="Center" FontSize="24" Grid.Column="1" Margin="10,10,20,20" Width="180" Click="btnCancel_Click" FontFamily="{DynamicResource LabelFont}" Background="{DynamicResource Button}" Foreground="White" BorderBrush="Black"/>
-            </Grid>
+            <Button x:Name="btnLoad" Content="Load" FontSize="24" Margin="20,0,10,20" VerticalAlignment="Center" Width="180" Click="btnConnect_Click" Foreground="White" Background="{DynamicResource Button}" FontFamily="{DynamicResource LabelFont}" BorderBrush="Black"/>
+            <Button x:Name="btnCancel" Content="Cancel" VerticalAlignment="Center" FontSize="24" Grid.Column="1" Margin="10,0,20,20" Width="180" Click="btnCancel_Click" FontFamily="{DynamicResource LabelFont}" Background="{DynamicResource Button}" Foreground="White" BorderBrush="Black"/>
         </Grid>
 
     </Grid>

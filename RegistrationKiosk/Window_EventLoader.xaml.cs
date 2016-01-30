@@ -36,10 +36,11 @@ namespace RegistrationKiosk
 
             controller = controller_in;
 
-            txtbxMessages.Text = String.Format("{1}{0}{0}{2}",
+            txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
                 Environment.NewLine,
                 "No event loaded.",
-                "To load an event, enter the API URL and Event Key below, then click 'Load'.");
+                "To load an event, enter the API URL and",
+                "Event Key below, then click 'Load'.");
         }
 
         #endregion

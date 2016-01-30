@@ -69,8 +69,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controller.cs" />
-    <Compile Include="Window_AdminLogin.xaml.cs">
-      <DependentUpon>Window_AdminLogin.xaml</DependentUpon>
+    <Compile Include="Window_AdminAccess.xaml.cs">
+      <DependentUpon>Window_AdminAccess.xaml</DependentUpon>
     </Compile>
     <Compile Include="IOExcel.cs" />
     <Compile Include="Printer.cs" />
@@ -84,7 +84,7 @@
     <Compile Include="Window_Admin.xaml.cs">
       <DependentUpon>Window_Admin.xaml</DependentUpon>
     </Compile>
-    <Page Include="Window_AdminLogin.xaml">
+    <Page Include="Window_AdminAccess.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -29,7 +29,12 @@ namespace RegistrationKiosk {
         //Reference to main project controller
         private Controller controller;
 
-        private Controller.RegistrantMode currentMode;
+        /* The cmbRegistrantType_SelectionChanged() event calls SetMode().
+         * SetMode() can trigger the cmbRegistrantType_SelectionChanged event, causing
+         * both methods to call each other in an infinite loop.
+         * The boolean variable selectionLocked is used to prevent cmbRegistrantType_SelectionChanged() from
+         * firing when SetMode() changes the selected index in cmbRegistrantType. */
+        private Boolean selectionLocked;
 
         #endregion
 
@@ -78,7 +83,7 @@ namespace RegistrationKiosk {
             SetMode(Controller.RegistrantMode.REGISTER);
 
             //Display instructions for registration
-            lblMessages.Content = String.Format("{1}{0}{2}",
+            txtbxMessages.Text  = String.Format("{1}{0}{2}",
                 Environment.NewLine,
                 "Fill out the form below to continue.",
                 "Start by selecting a registrant type.");
@@ -91,7 +96,7 @@ namespace RegistrationKiosk {
 
         private void cmbRegistrantType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (wdwMain.IsLoaded && cmbRegistrantType.SelectedIndex != (int)currentMode)
+            if (wdwMain.IsLoaded && !selectionLocked)
             {
                 switch (cmbRegistrantType.SelectedIndex)
                 {
@@ -129,19 +134,20 @@ namespace RegistrationKiosk {
                 {
                     btnEnterCode.IsEnabled = false;
 
-                    lblMessages.Content = "Registration codes contain numbers only.";
+                    txtbxMessages.Text = 
+                    txtbxMessages.Text  = "Registration codes contain numbers only.";
                 }
                 else if (txtbxEnterCode.Text.Length == 6)
                 {
                     btnEnterCode.IsEnabled = true;
 
-                    lblMessages.Content = "Click 'Enter Code' to continue.";
+                    txtbxMessages.Text  = "Click 'Enter Code' to continue.";
                 }
                 else if (txtbxEnterCode.Text.Length > 6)
                 {
                     btnEnterCode.IsEnabled = false;
 
-                    lblMessages.Content = String.Format("{1}{0}{2}",
+                    txtbxMessages.Text  = String.Format("{1}{0}{2}",
                         Environment.NewLine,
                         "Registration codes are only six digits long.",
                         "Please check your code and try again.");
@@ -170,7 +176,7 @@ namespace RegistrationKiosk {
 
         #endregion
 
-        private void SetMode(Controller.RegistrantMode mode)
+        public void SetMode(Controller.RegistrantMode mode)
         {
             if (mode < Controller.RegistrantMode.RESET || mode > Controller.RegistrantMode.REGISTER)
             {
@@ -183,21 +189,15 @@ namespace RegistrationKiosk {
             if (mode == Controller.RegistrantMode.RESET)
             {
                 //Set welcome message and starting instructions
-                lblMessages.Content = String.Format("{1}{0}{2}{0}{3}{0}{4}",
+                txtbxMessages.Text  = String.Format("{1}{0}{2}{0}{3}{0}{4}",
                                                 Environment.NewLine,
                                                 "Welcome!",
-                                                "Scan or enter your 6-digit code if you pre-registered online.",
+                                                "Enter your 6-digit code if you pre-registered online.",
                                                 "Don't have your code? Click 'No Code' to check in by email.",
                                                 "Otherwise, click 'Register' to check in and receive a name tag.");
 
-                //Set RESET mode
-                currentMode = Controller.RegistrantMode.RESET;
-
-                //Hide 'start over' button
-                btnStartOver.Visibility = System.Windows.Visibility.Hidden;
-                btnStartOver.IsEnabled = false;
-
-                //Show left column elements
+                //Show grdCheckInStart elements
+                rctCheckInStart.Visibility = System.Windows.Visibility.Visible;
                 txtbxEnterCode.IsEnabled = true;
                 txtbxEnterCode.Clear();
                 txtbxEnterCode.Visibility = System.Windows.Visibility.Visible;
@@ -209,59 +209,89 @@ namespace RegistrationKiosk {
                 btnRegister.IsEnabled = true;
                 btnRegister.Visibility = System.Windows.Visibility.Visible;
 
-                //Hide and reset right column elements
+                //Hide 'start over' button
+                rctStartOver.Visibility = System.Windows.Visibility.Hidden;
+                btnStartOver.Visibility = System.Windows.Visibility.Hidden;
+                btnStartOver.IsEnabled = false;
+
+                //Hide and reset grdInputFields elements
+                rctRegistrantType.Visibility = System.Windows.Visibility.Hidden;
                 lblRegistrantType.Visibility = System.Windows.Visibility.Hidden;
                 cmbRegistrantType.Visibility = System.Windows.Visibility.Hidden;
+
+                selectionLocked = true;
                 cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.RESET;
+                selectionLocked = false;
+
                 cmbRegistrantType.IsEnabled = false;
+                rctFirstName.Visibility = System.Windows.Visibility.Hidden;
                 lblFirstName.Visibility = System.Windows.Visibility.Hidden;
                 txtbxFirstName.Visibility = System.Windows.Visibility.Hidden;
                 txtbxFirstName.Clear();
                 txtbxFirstName.IsEnabled = false;
+                rctLastName.Visibility = System.Windows.Visibility.Hidden;
                 lblLastName.Visibility = System.Windows.Visibility.Hidden;
                 txtbxLastName.Visibility = System.Windows.Visibility.Hidden;
                 txtbxLastName.Clear();
                 txtbxLastName.IsEnabled = false;
+                rctSchoolOrganization.Visibility = System.Windows.Visibility.Hidden;
                 lblSchoolOrganization.Visibility = System.Windows.Visibility.Hidden;
                 lblSchoolOrganization.Content = "School";
                 txtbxSchoolOrganization.Visibility = System.Windows.Visibility.Hidden;
                 txtbxSchoolOrganization.Clear();
                 txtbxSchoolOrganization.IsEnabled = false;
-                lblClassStandingJobTitle.Visibility = System.Windows.Visibility.Hidden;
-                lblClassStandingJobTitle.Content = "Class standing";
+                rctMajorTitle.Visibility = System.Windows.Visibility.Hidden;
+                lblMajorTitle.Visibility = System.Windows.Visibility.Hidden;
+                lblMajorTitle.Content = "Major";
+                txtbxMajorTitle.Visibility = System.Windows.Visibility.Hidden;
+                txtbxMajorTitle.Clear();
+                txtbxMajorTitle.IsEnabled = false;
+                rctClassStanding.Visibility = System.Windows.Visibility.Hidden;
+                lblClassStanding.Visibility = System.Windows.Visibility.Hidden;
                 cmbClassStanding.Visibility = System.Windows.Visibility.Hidden;
                 cmbClassStanding.SelectedIndex = (int)Controller.RegistrantMode.RESET;
                 cmbClassStanding.IsEnabled = false;
-                txtbxJobTitle.Visibility = System.Windows.Visibility.Hidden;
-                txtbxJobTitle.Clear();
-                txtbxJobTitle.IsEnabled = false;
 
+                //Hide 'Check In' button
+                rctCheckInFinish.Visibility = System.Windows.Visibility.Hidden;
+                btnCheckIn.Visibility = System.Windows.Visibility.Hidden;
                 btnCheckIn.IsEnabled = false;
 
                 return;
             }
             #endregion
 
-            //Else prepare kiosk for check-in
+            //If not RESET, prepare kiosk for check-in
             #region PREPARE FOR CHECK-IN
 
-            else if (currentMode == (int)Controller.RegistrantMode.RESET)
-            {
-                //Hide left column elements
-                txtbxEnterCode.Visibility = System.Windows.Visibility.Hidden;
-                txtbxEnterCode.Clear();
-                txtbxEnterCode.IsEnabled = false;
-                btnEnterCode.Visibility = System.Windows.Visibility.Hidden;
-                btnEnterCode.IsEnabled = false;
-                btnNoCode.Visibility = System.Windows.Visibility.Hidden;
-                btnNoCode.IsEnabled = false;
-                btnRegister.Visibility = System.Windows.Visibility.Hidden;
-                btnRegister.IsEnabled = false;
+            //Show 'Start Over' button
+            rctStartOver.Visibility = System.Windows.Visibility.Visible;
+            btnStartOver.IsEnabled = true;
+            btnStartOver.Visibility = System.Windows.Visibility.Visible;
 
-                //Show 'Start Over' button
-                btnStartOver.IsEnabled = true;
-                btnStartOver.Visibility = System.Windows.Visibility.Visible;
-            }
+            //Show 'Check In' button
+            rctCheckInFinish.Visibility = System.Windows.Visibility.Visible;
+            btnCheckIn.IsEnabled = true;
+            btnCheckIn.Visibility = System.Windows.Visibility.Visible;
+            btnCheckIn.IsEnabled = false;
+
+            //Hide grdCheckInStart elements
+            txtbxEnterCode.Visibility = System.Windows.Visibility.Collapsed;
+            txtbxEnterCode.Clear();
+            txtbxEnterCode.IsEnabled = false;
+            btnEnterCode.Visibility = System.Windows.Visibility.Collapsed;
+            btnEnterCode.IsEnabled = false;
+            btnNoCode.Visibility = System.Windows.Visibility.Collapsed;
+            btnNoCode.IsEnabled = false;
+            btnRegister.Visibility = System.Windows.Visibility.Collapsed;
+            btnRegister.IsEnabled = false;
+
+            //Show registration type selector
+            rctRegistrantType.Visibility = System.Windows.Visibility.Visible;
+            lblRegistrantType.Visibility = System.Windows.Visibility.Visible;
+            cmbRegistrantType.IsEnabled = true;
+            cmbRegistrantType.Visibility = System.Windows.Visibility.Visible;
+
             #endregion
 
             //Registrant is a student
@@ -269,34 +299,35 @@ namespace RegistrationKiosk {
 
             if (mode == Controller.RegistrantMode.STUDENT)
             {
-                //Set STUDENT mode
-                currentMode = Controller.RegistrantMode.STUDENT;
+                //Set grdInputFields for STUDENT parameters
+                //Watch for bugs! See declaration of selectionLocked for cautionary info
+                selectionLocked = true;
+                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.STUDENT;
+                selectionLocked = false;
 
-                //Show registrat type selector
-                lblRegistrantType.Visibility = System.Windows.Visibility.Visible;
-                cmbRegistrantType.IsEnabled = true;
-                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.STUDENT; //WATCH THIS LINE FOR BUGS!
-                cmbRegistrantType.Visibility = System.Windows.Visibility.Visible;
-
-                //Show right column elements related to student registration; hide others
+                rctFirstName.Visibility = System.Windows.Visibility.Visible;
                 lblFirstName.Visibility = System.Windows.Visibility.Visible;
-                txtbxFirstName.IsEnabled = true;
                 txtbxFirstName.Visibility = System.Windows.Visibility.Visible;
+                rctLastName.Visibility = System.Windows.Visibility.Visible;
                 lblLastName.Visibility = System.Windows.Visibility.Visible;
-                txtbxLastName.IsEnabled = true;
                 txtbxLastName.Visibility = System.Windows.Visibility.Visible;
+
+                rctSchoolOrganization.Visibility = System.Windows.Visibility.Visible;
                 lblSchoolOrganization.Content = "School";
                 lblSchoolOrganization.Visibility = System.Windows.Visibility.Visible;
                 txtbxSchoolOrganization.IsEnabled = true;
                 txtbxSchoolOrganization.Visibility = System.Windows.Visibility.Visible;
-                lblClassStandingJobTitle.Content = "Class standing";
-                lblClassStandingJobTitle.Visibility = System.Windows.Visibility.Visible;
-                txtbxJobTitle.Visibility = System.Windows.Visibility.Hidden;
-                txtbxJobTitle.IsEnabled = false;
+
+                rctMajorTitle.Visibility = System.Windows.Visibility.Visible;
+                lblMajorTitle.Content = "Major";
+                lblMajorTitle.Visibility = System.Windows.Visibility.Visible;
+                txtbxMajorTitle.IsEnabled = true;
+                txtbxMajorTitle.Visibility = System.Windows.Visibility.Visible;
+
+                rctClassStanding.Visibility = System.Windows.Visibility.Visible;
+                lblClassStanding.Visibility = System.Windows.Visibility.Visible;
                 cmbClassStanding.IsEnabled = true;
                 cmbClassStanding.Visibility = System.Windows.Visibility.Visible;
-
-                btnCheckIn.IsEnabled = true;
 
                 return;
             }
@@ -308,34 +339,35 @@ namespace RegistrationKiosk {
 
             if (mode == Controller.RegistrantMode.EMPLOYER)
             {
-                //Set EMPLOYER mode
-                currentMode = Controller.RegistrantMode.EMPLOYER;
+                //Set grdInputFields for EMPLOYER parameters
+                //Watch for bugs! See declaration of selectionLocked for cautionary info
+                selectionLocked = true;
+                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.EMPLOYER;
+                selectionLocked = false;
 
-                //Show registrat type selector
-                lblRegistrantType.Visibility = System.Windows.Visibility.Visible;
-                cmbRegistrantType.IsEnabled = true;
-                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.EMPLOYER; //WATCH THIS LINE FOR BUGS!
-                cmbRegistrantType.Visibility = System.Windows.Visibility.Visible;
-
-                //Show right column elements related to employer/employee registration; hide others
+                rctFirstName.Visibility = System.Windows.Visibility.Visible;
                 lblFirstName.Visibility = System.Windows.Visibility.Visible;
-                txtbxFirstName.IsEnabled = true;
                 txtbxFirstName.Visibility = System.Windows.Visibility.Visible;
+                rctLastName.Visibility = System.Windows.Visibility.Visible;
                 lblLastName.Visibility = System.Windows.Visibility.Visible;
-                txtbxLastName.IsEnabled = true;
                 txtbxLastName.Visibility = System.Windows.Visibility.Visible;
+
+                rctSchoolOrganization.Visibility = System.Windows.Visibility.Visible;
                 lblSchoolOrganization.Content = "Organization";
                 lblSchoolOrganization.Visibility = System.Windows.Visibility.Visible;
                 txtbxSchoolOrganization.IsEnabled = true;
                 txtbxSchoolOrganization.Visibility = System.Windows.Visibility.Visible;
-                lblClassStandingJobTitle.Content = "Job title";
-                lblClassStandingJobTitle.Visibility = System.Windows.Visibility.Visible;
-                txtbxJobTitle.Visibility = System.Windows.Visibility.Visible;
-                txtbxJobTitle.IsEnabled = true;
+
+                rctMajorTitle.Visibility = System.Windows.Visibility.Visible;
+                lblMajorTitle.Content = "Title";
+                lblMajorTitle.Visibility = System.Windows.Visibility.Visible;
+                txtbxMajorTitle.IsEnabled = true;
+                txtbxMajorTitle.Visibility = System.Windows.Visibility.Visible;
+
+                rctClassStanding.Visibility = System.Windows.Visibility.Hidden;
+                lblClassStanding.Visibility = System.Windows.Visibility.Hidden;
                 cmbClassStanding.Visibility = System.Windows.Visibility.Hidden;
                 cmbClassStanding.IsEnabled = false;
-
-                btnCheckIn.IsEnabled = true;
 
                 return;
             }
@@ -347,32 +379,33 @@ namespace RegistrationKiosk {
 
             if (mode == Controller.RegistrantMode.GENERAL)
             {
-                //Set GENERAL mode
-                currentMode = Controller.RegistrantMode.GENERAL;
+                //Set grdInputFields for GENERAL parameters
+                //Watch for bugs! See declaration of selectionLocked for cautionary info
+                selectionLocked = true;
+                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.GENERAL;
+                selectionLocked = false;
 
-                //Show registrat type selector
-                lblRegistrantType.Visibility = System.Windows.Visibility.Visible;
-                cmbRegistrantType.IsEnabled = true;
-                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.GENERAL; //WATCH THIS LINE FOR BUGS!
-                cmbRegistrantType.Visibility = System.Windows.Visibility.Visible;
-
-                //Show right column elements related to general registration
+                rctFirstName.Visibility = System.Windows.Visibility.Visible;
                 lblFirstName.Visibility = System.Windows.Visibility.Visible;
-                txtbxFirstName.IsEnabled = true;
                 txtbxFirstName.Visibility = System.Windows.Visibility.Visible;
+                rctLastName.Visibility = System.Windows.Visibility.Visible;
                 lblLastName.Visibility = System.Windows.Visibility.Visible;
-                txtbxLastName.IsEnabled = true;
                 txtbxLastName.Visibility = System.Windows.Visibility.Visible;
+
+                rctSchoolOrganization.Visibility = System.Windows.Visibility.Hidden;
                 lblSchoolOrganization.Visibility = System.Windows.Visibility.Hidden;
                 txtbxSchoolOrganization.Visibility = System.Windows.Visibility.Hidden;
                 txtbxSchoolOrganization.IsEnabled = false;
-                lblClassStandingJobTitle.Visibility = System.Windows.Visibility.Hidden;
-                txtbxJobTitle.Visibility = System.Windows.Visibility.Hidden;
-                txtbxJobTitle.IsEnabled = false;
+
+                rctMajorTitle.Visibility = System.Windows.Visibility.Hidden;
+                lblMajorTitle.Visibility = System.Windows.Visibility.Hidden;
+                txtbxMajorTitle.Visibility = System.Windows.Visibility.Hidden;
+                txtbxMajorTitle.IsEnabled = false;
+
+                rctClassStanding.Visibility = System.Windows.Visibility.Hidden;
+                lblClassStanding.Visibility = System.Windows.Visibility.Hidden;
                 cmbClassStanding.Visibility = System.Windows.Visibility.Hidden;
                 cmbClassStanding.IsEnabled = false;
-
-                btnCheckIn.IsEnabled = true;
 
                 return;
             }
@@ -385,31 +418,36 @@ namespace RegistrationKiosk {
             if (mode == Controller.RegistrantMode.REGISTER)
             {
                 //Set REGISTER mode
-                currentMode = Controller.RegistrantMode.REGISTER;
+                //Watch for bugs! See declaration of selectionLocked for cautionary info
+                selectionLocked = true;
+                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.REGISTER;
+                selectionLocked = false;
 
-                //Show registrat type selector
-                lblRegistrantType.Visibility = System.Windows.Visibility.Visible;
-                cmbRegistrantType.IsEnabled = true;
-                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.RESET; //WATCH THIS LINE FOR BUGS!
-                cmbRegistrantType.Visibility = System.Windows.Visibility.Visible;
-
-                //Hide all other right column elements until registrant type is selected
+                //Hide all other grdInputFields elements until registrant type is selected
+                rctFirstName.Visibility = System.Windows.Visibility.Hidden;
                 lblFirstName.Visibility = System.Windows.Visibility.Hidden;
                 txtbxFirstName.IsEnabled = false;
                 txtbxFirstName.Visibility = System.Windows.Visibility.Hidden;
+
+                rctLastName.Visibility = System.Windows.Visibility.Hidden;
                 lblLastName.Visibility = System.Windows.Visibility.Hidden;
                 txtbxLastName.IsEnabled = false;
                 txtbxLastName.Visibility = System.Windows.Visibility.Hidden;
+
+                rctSchoolOrganization.Visibility = System.Windows.Visibility.Hidden;
                 lblSchoolOrganization.Visibility = System.Windows.Visibility.Hidden;
                 txtbxSchoolOrganization.Visibility = System.Windows.Visibility.Hidden;
                 txtbxSchoolOrganization.IsEnabled = false;
-                lblClassStandingJobTitle.Visibility = System.Windows.Visibility.Hidden;
-                txtbxJobTitle.Visibility = System.Windows.Visibility.Hidden;
-                txtbxJobTitle.IsEnabled = false;
+
+                rctMajorTitle.Visibility = System.Windows.Visibility.Hidden;
+                lblMajorTitle.Visibility = System.Windows.Visibility.Hidden;
+                txtbxMajorTitle.Visibility = System.Windows.Visibility.Hidden;
+                txtbxMajorTitle.IsEnabled = false;
+
+                rctClassStanding.Visibility = System.Windows.Visibility.Hidden;
+                lblClassStanding.Visibility = System.Windows.Visibility.Hidden;
                 cmbClassStanding.IsEnabled = false;
                 cmbClassStanding.Visibility = System.Windows.Visibility.Hidden;
-
-                btnCheckIn.IsEnabled = false;
 
                 return;
             }
@@ -434,7 +472,7 @@ namespace RegistrationKiosk {
                 txtbxSchoolOrganization.Text = "SFIT";
                 cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.SENIOR;
 
-                lblMessages.Content = String.Format("{1}{0}{2}",
+                txtbxMessages.Text  = String.Format("{1}{0}{2}",
                     Environment.NewLine,
                     "Please verify your registration info.",
                     "When you are ready, click 'Check In' to finish.");
@@ -447,9 +485,9 @@ namespace RegistrationKiosk {
                 txtbxFirstName.Text = "Jean-Baptiste";
                 txtbxLastName.Text = "Zorg";
                 txtbxSchoolOrganization.Text = "Zorg Co.";
-                txtbxJobTitle.Text = "CEO";
+                txtbxMajorTitle.Text = "CEO";
 
-                lblMessages.Content = String.Format("{1}{0}{2}",
+                txtbxMessages.Text  = String.Format("{1}{0}{2}",
                     Environment.NewLine,
                     "Please verify your registration info.",
                     "When you are ready, click 'Check In' to finish.");
@@ -461,14 +499,14 @@ namespace RegistrationKiosk {
                 txtbxFirstName.Text = "Guy";
                 txtbxLastName.Text = "Personson";
 
-                lblMessages.Content = String.Format("{1}{0}{2}",
+                txtbxMessages.Text  = String.Format("{1}{0}{2}",
                     Environment.NewLine,
                     "Please verify your registration info.",
                     "When you are ready, click 'Check In' to finish.");
             }
             else
             {
-                lblMessages.Content = String.Format("{1}{0}{2}{0}{3}",
+                txtbxMessages.Text  = String.Format("{1}{0}{2}{0}{3}",
                     Environment.NewLine,
                     "Registrant not found!",
                     "Please check your registration number and try again.",

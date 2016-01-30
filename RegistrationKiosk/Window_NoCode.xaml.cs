@@ -39,7 +39,7 @@ namespace RegistrationKiosk
 
             controller = controller_in;
 
-            lblMessages.Content = "Enter your email below.";
+            txtbxMessages.Text = "Enter your email below.";
         }
 
         #endregion
