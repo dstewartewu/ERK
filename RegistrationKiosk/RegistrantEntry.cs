@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Runtime.Serialization;
 
 namespace RegistrationKiosk {
-
+    [DataContract]
     public class RegistrantEntry {
 
         //===========================================================================
         #region Enums
         //===========================================================================
-
         public enum RegistrantType { General, Student, Employee }
         public enum ClassStandingType { None, Freshman, Junior, Sophomore, Senior, PostBac, Graduate, Alumnus }
         public enum SexType { Male, Female }
@@ -31,20 +31,43 @@ namespace RegistrationKiosk {
             get;
             set;
         }
+        [DataMember(Name = "codeNumber")]
+        public int CodeNum
+        {
+            get;
+            set;
+        }
 
+        // Event Number
+        [DataMember(Name = "eventNum")]
+        public int EventNum
+        {
+            get;
+            set;
+        }
         //Registrant Type
+        //[DataMember(Name = "regType")] // Enums are handled purely as Ints during serilization.
         public RegistrantType RegType {
             get;
             set;
         }
 
+        [DataMember(Name = "regType")]
+        public string RegTypeString
+        {
+            get;
+            set;
+        }
+
         // Name
+        [DataMember(Name = "fName")]
         public string Fname {
             get;
             set;
         }
 
         // last name
+        [DataMember(Name = "lName")]
         public string Lname {
             get;
             set;
@@ -67,23 +90,32 @@ namespace RegistrationKiosk {
             get { return FormatPhone(phoneNormal); }
             set { phoneNormal = NormalizePhone(value); }
         }
-        
+
         #endregion
         // -------------------------
         #region Student Properties
         // -------------------------
 
         //Class standing
+        
         public ClassStandingType ClassStanding {
             get;
             set;
         }
+        [DataMember(Name = "classStanding")]
+        public string ClassStandingString   // DataContract
+        {
+            get;
+            set;
+        }
         //College
+        [DataMember(Name = "college")]
         public string College {
             get;
             set;
         }
         //Major
+        [DataMember(Name = "major")]
         public string Major {
             get;
             set;
