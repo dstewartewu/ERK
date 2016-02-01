@@ -27,26 +27,19 @@ if(!__DEBUG) {
         phpCAS::setCasServerCACert(__CERT);        
     }
 
-    echo 'test';
 
-    phpCAS::setDebug('\\\\NETSTORAGE.EASTERN.EWU.EDU\SHOME2\tunger\website\vendor\jasig\phpcas\phpCAS.log');
 
-	echo "I AM AT 1";
+    phpCAS::setDebug(false);
+
+	//echo "I AM AT 1";
     phpCAS::forceAuthentication();
-	echo "I AM AT 2";
+	//echo "I AM AT 2";
 
     $user = phpCAS::getUser();
 
     echo $user;
 
-    $valid = $user == 'tunger';
-    
-    if ($valid != true)
-    {
-        echo "UNAUTHORIZED";
-        die();
-    }
-}
+ }
 else { 
     //DO NO AUTHORIZATION
     $user = "DEBUG_ONLY";

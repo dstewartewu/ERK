@@ -8,7 +8,7 @@
 
 require '../vendor/autoload.php';
 
-
+date_default_timezone_set('America/Los_Angeles');
 /**
  * Tim Unger
  * 11/13/15
@@ -28,6 +28,7 @@ function getDB()
     $dbuser = __DBUSER;//user
     $dbpass = __DBPWD;//pass
     $dbname = __DBNAME;//db
+
 
 
     $mysql_conn_string = "mysql:host=$dbhost;port=$dbport;dbname=$dbname";
@@ -264,7 +265,7 @@ $app->put("/updateStudent",
             $sql->bindParam(':fName', $registrant->fName, PDO::PARAM_STR);
             $sql->bindParam(':lName', $registrant->lName, PDO::PARAM_STR);
             $sql->bindParam(':cknInTime', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_INT);
+            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
             $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
             $sql->execute();
 
@@ -273,7 +274,7 @@ $app->put("/updateStudent",
             $sql->bindParam(':major', $registrant->major, PDO::PARAM_STR);
             $sql->bindParam(':college', $registrant->college, PDO::PARAM_STR);
             $sql->bindParam(':classStanding', $registrant->classStanding, PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_INT);
+            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
             $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
             $sql->execute();
 
@@ -296,14 +297,14 @@ $app->put("/updateEmployee",
             $sql->bindParam(':fName', $registrant->fName, PDO::PARAM_STR);
             $sql->bindParam(':lName', $registrant->lName, PDO::PARAM_STR);
             $sql->bindParam(':cknInTime', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_INT);
+            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
             $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
             $sql->execute();
 
             $sql = $db->prepare("UPDATE employee SET company = :company WHERE codeNum = :codeNumber
                                  AND eventNum = :eventNum");
             $sql->bindParam(':company', $registrant->company, PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_INT);
+            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
             $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
             $sql->execute();
 
@@ -312,7 +313,7 @@ $app->put("/updateEmployee",
                 $sql = $db->prepare("UPDATE employee SET jobTitle = :jobTitle WHERE codeNum = :codeNumber
                                      AND eventNum = :eventNum");
                 $sql->bindParam(':jobTitle', $registrant->jobTitle, PDO::PARAM_STR);
-                $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_INT);
+                $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
                 $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
                 $sql->execute();
             }
@@ -336,7 +337,7 @@ $app->put("/updateRegistrant",
             $sql->bindParam(':fName', $registrant->fName, PDO::PARAM_STR);
             $sql->bindParam(':lName', $registrant->lName, PDO::PARAM_STR);
             $sql->bindParam(':cknInTime', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_INT);
+            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
             $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
             $sql->execute();
 
@@ -348,40 +349,46 @@ $app->put("/updateRegistrant",
     });
 
 
-$app->post("/addStudent",
-    function() use ($app){
-        $request = $app->request();
-        $student = json_decode($request->getBody());
-        try {
-            $db = getDB();
-            $invalidCode = false;
-            while($invalidCode){
-                $code = generateCode(); //Get random code that will be primary key in database
-                $invalidCode = CheckCode($code); //Get if code already exists. If it does, find a new one
-            }
-            $sql = $db->prepare("INSERT INTO registrant (fName, lName, regType, checkedIn, checkInTime, codeNum, eventNum)
-                                 VALUES (:fName, :lName, :regType, YES, :chkInTime, :codeNumber, :eventNum)");
-            $sql->bindParam(':fName', $student->fName, PDO::PARAM_STR);
-            $sql->bindParam(':lName', $student->lName, PDO::PARAM_STR);
-            $sql->bindParam(':regType', $student->regType, PDO::PARAM_STR);
-            $sql->bindParam(':cknInTime', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $code, PDO::PARAM_INT);
-            $sql->bindParam(':eventNum', $student->eventNum, PDO::PARAM_INT);
-            $sql->execute();
+$app->post("/addStudent", function() use ($app) {
+    $request = $app->request();
+    $student = json_decode($request->getBody());
+
+    try {
+        $db = getDB();
+        $invalidCode = true;
+        while($invalidCode){
+            $code = generateCode(); //Get random code that will be primary key in database
+            $event = $student->eventNum;
+            $invalidCode = CheckCode($code, $event); //Get if code already exists. If it does, find a new one
+        }
+        $time = date("Y-m-d H:i:s");
+        $checkedIn = 'yes';
+
+        $sql = $db->prepare("INSERT INTO registrant (fName, lName, checkedIn, checkInTime, regType, codeNum, eventNum)
+                                 VALUES (:fName, :lName, :checkedIn, :checkInTime, :regType, :codeNum, :eventNum)");
+        $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
+        $sql->bindValue(':checkInTime', $time, PDO::PARAM_STR);
+        $sql->bindValue(':checkedIn', $checkedIn, PDO::PARAM_STR);
+        $sql->bindParam(':fName', $student->fName, PDO::PARAM_STR);
+        $sql->bindParam(':lName', $student->lName, PDO::PARAM_STR);
+        $sql->bindParam(':regType', $student->regType, PDO::PARAM_STR);
+        $sql->bindParam(':eventNum', $student->eventNum, PDO::PARAM_INT);
+        $sql->execute();
 
             $sql = $db->prepare("INSERT INTO student (major, college, classStanding, codeNum, eventNum)
-                                 VALUES (:major, :college, :classStanding, :codeNumber, :eventNum)");
+                                 VALUES (:major, :college, :classStanding, :codeNum, :eventNum)");
+
+            $sql->bindParam(':codeNum', $code, PDO::PARAM_STR);
             $sql->bindParam(':major', $student->major, PDO::PARAM_STR);
             $sql->bindParam(':college', $student->college, PDO::PARAM_STR);
             $sql->bindParam(':classStanding', $student->classStanding, PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $code, PDO::PARAM_INT);
             $sql->bindParam(':eventNum', $student->eventNum, PDO::PARAM_INT);
             $sql->execute();
 
             $db = null;
 
         }catch(PDOException $e) {
-            echo '{"error":{"text":'. $e->getMessage() .'}}';
+            echo '{"error":{"text":'. $e->getMessage() .'}}'.$app->request()->getBody();
         }
     });
 /**
@@ -396,32 +403,37 @@ $app->post("/addEmployee",
         $employee = json_decode($request->getBody());
         try {
             $db = getDB();
-            $invalidCode = false;
-            while($invalidCode){
+            $invalidCode = true;
+            while($invalidCode) {
                 $code = generateCode(); //Get random code that will be primary key in database
-                $invalidCode = CheckCode($code, $employee->eventNum); //Get if code already exists. If it does, find a new one
+                $event = $employee->eventNum;
+                $invalidCode = CheckCode($code, $event); //Get if code already exists. If it does, find a new one
             }
-            $sql = $db->prepare("INSERT INTO registrant (fName, lName, regType, checkedIn, checkInTime, codeNum, eventNum)
-                                 VALUES (:fName, :lName, :regType, YES, :chkInTime, :codeNumber, :eventNum)");
+            $time = date("Y-m-d H:i:s");
+            $checkedIn = 'yes';
+
+            $sql = $db->prepare("INSERT INTO registrant (fName, lName, checkedIn, checkInTime, regType, codeNum, eventNum)
+                                 VALUES (:fName, :lName, :checkedIn, :checkInTime, :regType, :codeNum, :eventNum)");
+            $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
+            $sql->bindValue(':checkInTime', $time, PDO::PARAM_STR);
+            $sql->bindValue(':checkedIn', $checkedIn, PDO::PARAM_STR);
             $sql->bindParam(':fName', $employee->fName, PDO::PARAM_STR);
             $sql->bindParam(':lName', $employee->lName, PDO::PARAM_STR);
             $sql->bindParam(':regType', $employee->regType, PDO::PARAM_STR);
-            $sql->bindParam(':cknInTime', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $code, PDO::PARAM_INT);
             $sql->bindParam(':eventNum', $employee->eventNum, PDO::PARAM_INT);
             $sql->execute();
 
-            $sql = $db->prepare("INSERT INTO employee (company, codeNum, eventNum) VALUES (:company, :codeNumber, :eventNum)");
+            $sql = $db->prepare("INSERT INTO employees (company, codeNum, eventNum) VALUES (:company, :codeNum, :eventNum)");
+            $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
             $sql->bindParam(':company', $employee->company, PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $code, PDO::PARAM_INT);
             $sql->bindParam(':eventNum', $employee->eventNum, PDO::PARAM_INT);
             $sql->execute();
 
             if($employee->jobTitle != "")
             {
-                $sql = $db->prepare("UPDATE employee SET jobTitle = :jobTitle WHERE codeNum = :codeNumber AND eventNum = :eventNum");
+                $sql = $db->prepare("UPDATE employees SET jobTitle = :jobTitle WHERE codeNum = :codeNum AND eventNum = :eventNum");
+                $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
                 $sql->bindParam(':jobTitle', $employee->jobTitle, PDO::PARAM_STR);
-                $sql->bindParam(':codeNumber', $code, PDO::PARAM_INT);
                 $sql->bindParam(':eventNum', $employee->eventNum, PDO::PARAM_INT);
                 $sql->execute();
             }
@@ -433,24 +445,28 @@ $app->post("/addEmployee",
         }
     });
 
-$app->post("/addRegistrant",
-    function() use ($app){
+$app->post("/addRegistrant", function() use ($app) {
         $request = $app->request();
         $student = json_decode($request->getBody());
+
         try {
             $db = getDB();
-            $invalidCode = false;
+            $invalidCode = true;
             while($invalidCode){
                 $code = generateCode(); //Get random code that will be primary key in database
                 $invalidCode = CheckCode($code, $student->eventNum); //Get if code already exists. If it does, find a new one
             }
-            $sql = $db->prepare("INSERT INTO registrant (fName, lName, regType, checkedIn, checkInTime, codeNum, eventNum)
-                                 VALUES (:fName, :lName, :regType, YES, :chkInTime, :codeNumber, :eventNum)");
+            $time = date("Y-m-d H:i:s");
+            $checkedIn = 'yes';
+
+            $sql = $db->prepare("INSERT INTO registrant (fName, lName, checkedIn, checkInTime, regType, codeNum, eventNum)
+                                 VALUES (:fName, :lName, :checkedIn, :checkInTime, :regType, :codeNum, :eventNum)");
+            $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
+            $sql->bindValue(':checkInTime', $time, PDO::PARAM_STR);
+            $sql->bindValue(':checkedIn', $checkedIn, PDO::PARAM_STR);
             $sql->bindParam(':fName', $student->fName, PDO::PARAM_STR);
             $sql->bindParam(':lName', $student->lName, PDO::PARAM_STR);
             $sql->bindParam(':regType', $student->regType, PDO::PARAM_STR);
-            $sql->bindParam(':cknInTime', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $code, PDO::PARAM_INT);
             $sql->bindParam(':eventNum', $student->eventNum, PDO::PARAM_INT);
             $sql->execute();
 
@@ -461,7 +477,7 @@ $app->post("/addRegistrant",
         }
     });
 
-$app->run();
+
 //Generate a random 6 digit number
 function generateCode(){
     $number = rand(1,999999);
@@ -469,16 +485,18 @@ function generateCode(){
         $number = '0'.$number;
     }
     return $number;
-}
+};
 
 //Checks if code already exists
 function CheckCode($code,$eventNum){
+
     try {
         $db = getDB();
-        $sql = $db->prepare("SELECT * FROM registrant WHERE codeNumber = :codeNum AND eventNum = :eventNum");
-        $sql->bindParam(':codeNumber', $code, PDO::PARAM_INT);
+        $sql = $db->prepare("SELECT * FROM registrant WHERE codeNum = :codeNum AND eventNum = :eventNum");
+        $sql->bindParam(':codeNum', $code, PDO::PARAM_STR);
         $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
         $sql->execute();
+        $db = null;
     if($sql->rowCount() > 0){
         return true;
     }
@@ -489,4 +507,6 @@ function CheckCode($code,$eventNum){
     }catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
-}
+};
+
+$app->run();

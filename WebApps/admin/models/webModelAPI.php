@@ -8,18 +8,22 @@ require '../../vendor/autoload.php';
  * Date: 1/10/2016
  */
 
+date_default_timezone_set('America/Los_Angeles');
+
 $app = new Slim\Slim();
 
 $app->get('/', function() use($app) {
     echo "Welcome to EWU Career Services Events Administrative API. This is a test function. ";
 });
 
-$app->get('/getEventsList', function() use ($app) {
+$app->get('/getEventsWithPreRegList', function() use ($app) {
 
         try {
 
             $db = getDB();
-            $sql = $db->prepare("SELECT * FROM eventInfo");
+            $sql = $db->prepare("SELECT * FROM eventInfo WHERE cusQuest = :cusQuest");
+            $cusQuest = 'true';
+            $sql->bindParam(':cusQuest', $cusQuest, PDO::PARAM_STR);
             $sql->execute();
             $events = $sql->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
@@ -28,6 +32,22 @@ $app->get('/getEventsList', function() use ($app) {
         catch(PDOException $e) {
             echo '{"error":{"text":'. $e->getMessage() .'}}';
         }
+});
+
+$app->get('/getEventsList', function() use ($app) {
+
+    try {
+
+        $db = getDB();
+        $sql = $db->prepare("SELECT * FROM eventInfo");
+        $sql->execute();
+        $events = $sql->fetchAll(PDO::FETCH_ASSOC);
+        $db = null;
+        echo json_encode($events);
+    }
+    catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
 });
 
 $app->get('/getEvent/:eventNum', function($eventNum) use ($app) {
@@ -66,10 +86,10 @@ $app->post('/createEvent', function() use ($app) {
         $sql->bindParam(':cusQuest', $validate->customQuestions, PDO::PARAM_STR);
 
         $sql->execute();
-
+        $eventNum = $db->lastInsertId();
         $db = null;
         $data['success'] = true;
-
+        $data['eventNum'] = $eventNum;
         }
         catch (PDOException $e) {
             $data['success'] = false;
@@ -159,10 +179,164 @@ $app->post('/updateEvent', function() use ($app) {
     echo json_encode($data);
 });
 
-    function updateQuestion(){
+$app->get('/getQuestions/:eventNum', function($eventNum) use ($app) {
+    try {
+        $db = getDB();
+        $sql = $db->prepare("SELECT * FROM questions WHERE eventNum = :eventNum");
+        $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
+        $sql->execute();
+        $events = $sql->fetchAll(PDO::FETCH_ASSOC);
+        $db = null;
 
+        echo json_encode($events);
     }
+    catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+});
 
+$app->get('/getChoices/:eventNum/:questionNum', function($eventNum, $questionNum) use ($app) {
+    try {
+        $db = getDB();
+        $sql = $db->prepare("SELECT * FROM choices WHERE eventNum = :eventNum && questionID = :questionNum");
+        $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
+        $sql->bindParam(':questionNum', $questionNum, PDO::PARAM_INT);
+        $sql->execute();
+        $events = $sql->fetchAll(PDO::FETCH_ASSOC);
+        $db = null;
+
+        echo json_encode($events);
+    }
+    catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+});
+
+$app->post('/addQuestion', function() use ($app) {
+
+    $request = $app->request();
+    $validate = json_decode($request->getBody());
+    $data = array();
+    try {
+        $db = getDB();
+        $sql = $db->prepare("INSERT INTO questions (questionID, question, eventNum)
+                                 VALUES (:questionID, :question, :eventNum)");
+        $sql->bindParam(':questionID', $validate->questionID, PDO::PARAM_INT);
+        $sql->bindParam(':question', $validate->question, PDO::PARAM_STR);
+        $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+
+        $sql->execute();
+        $db = null;
+        $data['success'] = true;
+    }
+    catch (PDOException $e) {
+        $data['success'] = false;
+        $data['error']= 'text'.$e->getMessage();
+    }
+    echo json_encode($data);
+});
+
+$app->post('/addChoice', function() use ($app) {
+
+    $request = $app->request();
+    $validate = json_decode($request->getBody());
+    $data = array();
+    try {
+        $db = getDB();
+        $sql = $db->prepare("INSERT INTO choices (questionID, choice, eventNum)
+                                 VALUES (:questionID, :choice, :eventNum)");
+        $sql->bindParam(':questionID', $validate->questionID, PDO::PARAM_INT);
+        $sql->bindParam(':choice', $validate->choice, PDO::PARAM_STR);
+        $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+
+        $sql->execute();
+        $db = null;
+        $data['success'] = true;
+    }
+    catch (PDOException $e) {
+        $data['success'] = false;
+        $data['error']= 'text'.$e->getMessage();
+    }
+    echo json_encode($data);
+});
+
+$app->post('/updateQuestion', function() use ($app) {
+
+    $request = $app->request();
+    $validate = json_decode($request->getBody());
+    $data = array();
+    try {
+        $db = getDB();
+        $sql = $db->prepare("UPDATE questions SET question = :question WHERE questionID = :questionID AND eventNum = :eventNum");
+        $sql->bindParam(':question', $validate->question, PDO::PARAM_STR);
+        $sql->bindParam(':questionID', $validate->questionID, PDO::PARAM_INT);
+        $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+
+        $sql->execute();
+        $db = null;
+        $data['success'] = true;
+    }
+    catch (PDOException $e) {
+        $data['success'] = false;
+        $data['error']= 'text'.$e->getMessage();
+    }
+    echo json_encode($data);
+});
+
+$app->post('/updateChoice', function() use ($app) {
+
+    $request = $app->request();
+    $validate = json_decode($request->getBody());
+    $data = array();
+    try {
+        $db = getDB();
+        $sql = $db->prepare("UPDATE choices SET choice = :choice WHERE questionID = :questionID AND eventNum = :eventNum");
+        $sql->bindParam(':choice', $validate->choice, PDO::PARAM_STR);
+        $sql->bindParam(':questionID', $validate->questionID, PDO::PARAM_INT);
+        $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+
+        $sql->execute();
+        $db = null;
+        $data['success'] = true;
+    }
+    catch (PDOException $e) {
+        $data['success'] = false;
+        $data['error']= 'text'.$e->getMessage();
+    }
+    echo json_encode($data);
+});
+
+$app->post('/RegisterKiosk', function() use ($app){
+
+    $key = openssl_random_pseudo_bytes(24);
+    $key = base64_encode($key);
+    $date = new DateTime();
+    $date->add(new DateInterval('P2D'));
+
+    $expire = $date->format('M-d-Y h:i:s');
+    $request = $app->request();
+    $validate = json_decode($request->getBody());
+    $data = array();
+    try {
+        $db = getDB();
+        $sql = $db->prepare("INSERT INTO kiosks (kioskReg, eventNum, expire) VALUES (:kioskReg, :eventNum, :expire)");
+        $sql->bindValue(':kioskReg', $key, PDO::PARAM_STR);
+        $sql->bindValue(':expire', $expire, PDO::PARAM_STR);
+        $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+
+        $sql->execute();
+        $db = null;
+        $data['success'] = true;
+        $data['key'] = $key;
+        $data['expire'] = $expire;
+    }
+    catch (PDOException $e) {
+        $data['success'] = false;
+        $data['error']= 'text'.$e->getMessage();
+    }
+    echo json_encode($data);
+
+});
 
 
 $app->run();

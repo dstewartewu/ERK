@@ -1,39 +1,5 @@
 <?php
-	echo '
-	<html>
-		<head>
-			<title>Eastern Washington University Pre-Registration</title>
-			<link href="jobfair.css" rel="stylesheet">
-			<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-			<link rel="icon" type="image/x-icon" href="favicon.ico">
-			<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-
-		</head>
-		<body>
-
-			<img id="bannerImage" src="ewu_banner.jpg" width="40%" class="pull-left" alt=""/>
-
-			<div style="text-align: center;">
-
-			<br/>
-				<h1 id="EventText"><b></b></h1>
-			</div>
-
-			<hr>
-
-			<br/>
-
-			<div class="col-md-12">
-				<div style="text-align: center;">
-					<h2 id="SuccessText"></h2>
-				</div>
-			</div>
-			<!-- Start the Javascript -->
-			<script>
-				window.onload = init;
-				function init(){
-					var eventText = new XMLHttpRequest();
-					eventText.open("GET", \'jobfairname.txt\', false);
+	echo ', false);
 					eventText.send(null);
 
 					document.getElementById("EventText").innerHTML = "Pre-Registration Form for ".bold() + eventText.response.bold();
@@ -41,7 +7,7 @@
 				}
 			</script>
 		</body>
-	</html>';
+	</html>\'';
 
 	//Check if submit button was pressed
 	if(isset($_POST['submit']))
