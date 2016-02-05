@@ -37,7 +37,7 @@ namespace RegistrationKiosk
         }
 
         // Add registrant
-        public async Task<Boolean> AddStudent(RegistrantEntry registrant)
+        public async Task<Boolean> AddStudent(Registrant registrant)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -45,7 +45,7 @@ namespace RegistrationKiosk
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(RegistrantEntry));
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Registrant));
                 /*MemoryStream ms = new MemoryStream();
                 serializer.WriteObject(ms, registrant);
                 ms.Position = 0;
@@ -58,7 +58,7 @@ namespace RegistrationKiosk
         }
 
         // Update student
-        public async Task<Boolean> UpdateStudent(RegistrantEntry registrant)
+        public async Task<Boolean> UpdateStudent(Registrant registrant)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -71,15 +71,15 @@ namespace RegistrationKiosk
             }
         }
 
-        // Get RegistrantEntry object from Code.
-        public async Task<RegistrantEntry> GetRegistrantByCode(int code)
+        // Get Registrant object from Code.
+        public async Task<Registrant> GetRegistrantByCode(int code)
         {
             string request = ("api/index.php/getRegistrantByCode/" + code + "/" + EventNum);
             return await GetAsync(request);
         }
 
-        // Get RegistrantEntry object from Email.
-        public async Task<RegistrantEntry> GetRegistrantByEmail(string email)
+        // Get Registrant object from Email.
+        public async Task<Registrant> GetRegistrantByEmail(string email)
         {
             string request = ("api/index.php/getRegistrantByEmail/" + email + "/" + EventNum);
             return await GetAsync(request);
@@ -106,7 +106,7 @@ namespace RegistrationKiosk
         }
 
         // Used by other functions to make REST GET calls
-        public async Task<RegistrantEntry> GetAsync(string request)
+        public async Task<Registrant> GetAsync(string request)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -114,11 +114,11 @@ namespace RegistrationKiosk
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(RegistrantEntry[]));
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Registrant));
 
                 Stream response = await client.GetStreamAsync(request);
 
-                RegistrantEntry registrant = ((RegistrantEntry[])serializer.ReadObject(response))[0];
+                Registrant registrant = ((Registrant[])serializer.ReadObject(response))[0];
                 return registrant;
             }
         }

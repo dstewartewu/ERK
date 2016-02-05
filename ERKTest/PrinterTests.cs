@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RegistrationKiosk;
 
 namespace ERKTest
@@ -11,38 +10,22 @@ namespace ERKTest
         public void FormatTest()
         {
             //Full Student Info
-            RegistrantEntry testRegistrant = new RegistrantEntry("Doe", "John", RegistrantEntry.SexType.Male, "name@email.web", "5551234567");
-            testRegistrant.SetTypeStudent(RegistrantEntry.ClassStandingType.Senior, "Eastern Washington University", "Computer Science", "0", 2016);
+            Registrant testRegistrant = CreateRegistrant("John", "Doe", "Student", "Eastern Washington University", "Computer Science", "Senior");
             string testString = Printer.FormatRegistrant(testRegistrant);
             Assert.AreEqual("Senior\nComputer Science\nEastern Washington University", testString);
 
             //Minimal Student Info
-            testRegistrant = new RegistrantEntry("Doe", "John", RegistrantEntry.SexType.Male, "name@email.web", "5551234567");
-            testRegistrant.SetTypeStudent(RegistrantEntry.ClassStandingType.None, "", "", "0", 0000);
+            testRegistrant = CreateRegistrant("John", "Doe", "Student", "", "", "");
             testString = Printer.FormatRegistrant(testRegistrant);
             Assert.AreEqual("", testString);
 
-            //Mixed Student Info
-            testRegistrant = new RegistrantEntry("Doe", "John", RegistrantEntry.SexType.Male, "name@email.web", "5551234567");
-            testRegistrant.SetTypeStudent(RegistrantEntry.ClassStandingType.Junior, "Eastern Washington University", "", "0", 0000);
+            //Mixed Student Info - University, Class Standing
+            testRegistrant = CreateRegistrant("John", "Doe", "Student", "Eastern Washington University", "", "Junior");
             testString = Printer.FormatRegistrant(testRegistrant);
             Assert.AreEqual("Junior\nEastern Washington University", testString);
 
-            //Full Employee Info
-            testRegistrant = new RegistrantEntry("Anderson", "Montgomery", RegistrantEntry.SexType.Male, "name@email.web", "5551234567");
-            testRegistrant.SetTypeEmployee("Dynamic Synergy Co. Inc.", "Team Energistics Supervisor");
-            testString = Printer.FormatRegistrant(testRegistrant);
-            Assert.AreEqual("Team Energistics Supervisor\nDynamic Synergy Co. Inc.", testString);
-
-            //Mixed Employee Info
-            testRegistrant = new RegistrantEntry("Anderson", "Montgomery", RegistrantEntry.SexType.Male, "name@email.web", "5551234567");
-            testRegistrant.SetTypeEmployee("Dynamic Synergy Co. Inc.", "");
-            testString = Printer.FormatRegistrant(testRegistrant);
-            Assert.AreEqual("Dynamic Synergy Co. Inc.", testString);
-
             //General
-            testRegistrant = new RegistrantEntry("Everyman", "William", RegistrantEntry.SexType.Male, "name@email.web", "5551234567");
-            testRegistrant.SetTypeGeneral();
+            testRegistrant = CreateRegistrant("Everyman", "William", "General", "", "", "");
             testString = Printer.FormatRegistrant(testRegistrant);
             Assert.AreEqual("", testString);
 
@@ -53,12 +36,23 @@ namespace ERKTest
         public void PrintTest()
         {
             Printer printer = new Printer();
-            RegistrantEntry testRegistrant = new RegistrantEntry("Anderson", "Montgomery", RegistrantEntry.SexType.Male, "name@email.web", "5551234567");
-            //testRegistrant.SetTypeStudent(RegistrantEntry.ClassStandingType.Senior, "Eastern Washington University", "Mechanical Engineering / Computer Systems", "0", 2016);
-            testRegistrant.SetTypeEmployee("Dynamic Synergy Co. Inc.", "Team Energistics Supervisor");
+            Registrant testRegistrant = CreateRegistrant("John", "Doe", "Student", "Eastern Washington University", "Computer Science", "Senior");
             string testString = Printer.FormatRegistrant(testRegistrant);
             printer.Print(testRegistrant);
 
+        }
+
+        public static Registrant CreateRegistrant(string _FirstName, string _LastName, string _RegistrantType, string _College, string _Major, string _ClassStanding)
+        {
+            Registrant testRegistrant = new Registrant();
+            testRegistrant.FirstName = _FirstName;
+            testRegistrant.LastName = _LastName;
+            testRegistrant.RegistrantType = _RegistrantType;
+            testRegistrant.Major = _Major;
+            testRegistrant.College = _College;
+            testRegistrant.ClassStanding = _ClassStanding;
+
+            return testRegistrant;
         }
     }
 }

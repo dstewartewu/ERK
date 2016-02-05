@@ -18,11 +18,11 @@ namespace RegistrationKiosk{
         /// Prints a jobfair nametag
         /// </summary>
         /// <param name="registrant">The registrant to print</param>
-        public void Print(RegistrantEntry registrant){
+        public void Print(Registrant registrant){
             
 
             var label = (DYMO.Label.Framework.ILabel)null;
-            string labelName = registrant.Fname + ((registrant.Fname.Length + registrant.Lname.Length >= 16) ? "\n" : "") + registrant.Lname;
+            string labelName = registrant.FirstName + ((registrant.FirstName.Length + registrant.LastName.Length >= 16) ? "\n" : "") + registrant.LastName;
             string labelDetails = FormatRegistrant(registrant);
 
             try {
@@ -62,26 +62,19 @@ namespace RegistrationKiosk{
             }
             
         }
-        public static string FormatRegistrant(RegistrantEntry registrant)
+        public static string FormatRegistrant(Registrant registrant)
         {
             // NAME FORMATTING: 16 Characters Each name; Total longer than 15? Split into two lines
             //string regString = registrant.Fname + " " + registrant.Lname;
             string regString = "";
-            if (registrant.RegType == RegistrantEntry.RegistrantType.Student)
+            if (registrant.RegistrantType.Equals("Student"))
             {
-                if (registrant.ClassStanding != RegistrantEntry.ClassStandingType.None)
+                if (!String.IsNullOrWhiteSpace(registrant.ClassStanding))
                     regString += registrant.ClassStanding.ToString();
                 if (!String.IsNullOrWhiteSpace(registrant.Major))
                     regString += (String.IsNullOrWhiteSpace(regString) ? "" : "\n") + registrant.Major;
                 if (!String.IsNullOrWhiteSpace(registrant.College))
                     regString += (String.IsNullOrWhiteSpace(regString) ? "" : "\n") + registrant.College;
-            }
-            else if (registrant.RegType == RegistrantEntry.RegistrantType.Employee)
-            {
-                if(!String.IsNullOrWhiteSpace(registrant.Job))
-                    regString += registrant.Job;
-                if (!String.IsNullOrWhiteSpace(registrant.Business))
-                    regString += (String.IsNullOrWhiteSpace(regString) ? "" : "\n") + registrant.Business;
             }
             return regString;
         }
