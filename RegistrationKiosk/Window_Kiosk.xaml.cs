@@ -70,7 +70,7 @@ namespace RegistrationKiosk {
 
         private void btnEnterCode_Click(object sender, RoutedEventArgs e)
         {
-            MockCheckIn();
+            LookupRegistrant();
         }
 
         private void btnNoCode_Click(object sender, RoutedEventArgs e)
@@ -122,7 +122,7 @@ namespace RegistrationKiosk {
         {
             if(e.Key == Key.Enter)
             {
-                MockCheckIn();
+                LookupRegistrant();
             }
         }
 
@@ -175,6 +175,55 @@ namespace RegistrationKiosk {
         }
 
         #endregion
+
+        private void DisplayRegistrant()
+        {
+            txtbxFirstName.Text = controller.ActiveRegistrant.FirstName;
+            txtbxLastName.Text = controller.ActiveRegistrant.LastName;
+
+            switch(controller.ActiveRegistrant.RegistrantType)
+            {
+                case "Student":
+                    SetMode(Controller.RegistrantMode.STUDENT);
+                    txtbxSchoolOrganization.Text = controller.ActiveRegistrant.College;
+                    txtbxMajorTitle.Text = controller.ActiveRegistrant.Major;
+
+                        switch(controller.ActiveRegistrant.ClassStanding)
+                        {
+                            case "Freshman":
+                                cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.FRESHMAN;
+                                break;
+                            case "Junior":
+                                cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.JUNIOR;
+                                break;
+                            case "Senior":
+                                cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.SENIOR;
+                                break;
+                            default:
+                                cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.SELECT;
+                                break;
+                        }
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private async void LookupRegistrant()
+        {
+            try
+            {
+                controller.ActiveRegistrant = RegAdapter.GetRegistrant(await controller.WebAPI.GetRegistrantByCode(Int32.Parse(txtbxEnterCode.Text)));
+
+                DisplayRegistrant();
+            }
+            catch (Exception ex)
+            {
+                txtbxMessages.Text = ex.InnerException.ToString();
+            }
+        }
 
         public void SetMode(Controller.RegistrantMode mode)
         {
@@ -359,7 +408,7 @@ namespace RegistrationKiosk {
                 txtbxSchoolOrganization.Visibility = System.Windows.Visibility.Visible;
 
                 rctMajorTitle.Visibility = System.Windows.Visibility.Visible;
-                lblMajorTitle.Content = "Title";
+                lblMajorTitle.Content = "Job Title";
                 lblMajorTitle.Visibility = System.Windows.Visibility.Visible;
                 txtbxMajorTitle.IsEnabled = true;
                 txtbxMajorTitle.Visibility = System.Windows.Visibility.Visible;
@@ -454,6 +503,7 @@ namespace RegistrationKiosk {
 
             #endregion //REGISTER
         }
+
 
         /* Phillip: Some of these are here to shush the compiler while I rework the kiosk interface
            Some of these are testing/mock-up methods */

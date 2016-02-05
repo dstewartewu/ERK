@@ -3,19 +3,51 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace RegistrationKiosk
 {
-    class Registrant
+    public class Registrant
     {
-        private String firstName;
-        private String lastName;
-        private Controller.ClassStanding classStanding;
-        private Controller.RegistrantMode registrantType; //PG: Make sure this matches the database registrant.regType enums!
-        private String schoolOrCompany;
-        private String jobTitle;
-        private String eventCode;
+        #region DATA MEMBERS
 
+        [DataMember(Name = "codeNum")]
+        public String RegistrationCode { get; set; }
+        
+        [DataMember(Name = "fName")]
+        public String FirstName { get; set; }
+        
+        [DataMember(Name = "lName")]
+        public String LastName{ get; set; }
+        
+        [DataMember(Name = "email")]
+        public String Email{ get; set; }
+        
+        [DataMember(Name = "regType")]
+        public String RegistrantType{ get; set; }
 
+        [DataMember(Name = "checkInTime")]
+        public String CheckInTime{ get; set; }
+        
+        [DataMember(Name = "major")]
+        public String Major{ get; set; }
+
+        [DataMember(Name = "college")]
+        public String College{ get; set; }
+        
+        [DataMember(Name = "classStanding")]
+        public String ClassStanding{ get; set; }
+
+        public String Company{ get; set; }
+    
+        public String JobTitle{ get; set; } //Corresponds to event database table column employees.employeePosition
+
+        #endregion
+
+        #region INITIALIZATION
+
+        public Registrant() { }
+
+        #endregion
     }
 }

@@ -22,10 +22,23 @@ namespace RegistrationKiosk
         private Window_Kiosk kiosk;
         private Window_EventLoader loadEvent;
         private Window_NoCode noCode;
+        private WebAPI webAPI;
+        private Registrant activeRegistrant;
+        
+        #endregion
 
-        private Registrant currentRegistrant;
-        private String api_url;
-        private String eventKey;
+        #region PROPERTIES
+
+        public WebAPI WebAPI
+        {
+            get { return webAPI; }
+        }
+
+        public Registrant ActiveRegistrant
+        {
+            get { return activeRegistrant; }
+            set { activeRegistrant = value; }
+        }
 
         #endregion
 
@@ -33,13 +46,7 @@ namespace RegistrationKiosk
 
         private Controller()
         {
-            admin = null;
-            login = null;
-            kiosk = null;
-            loadEvent = null;
-            noCode = null;
-
-            currentView = WindowView.ADMIN;
+            
         }
 
         public Controller(Window_Admin admin_in)
@@ -49,6 +56,8 @@ namespace RegistrationKiosk
             kiosk = new Window_Kiosk(this);
             loadEvent = new Window_EventLoader(this);
             noCode = new Window_NoCode(this);
+            activeRegistrant = null;
+            webAPI = new WebAPI("http://www.timjunger.com/", 1);
 
             currentView = WindowView.ADMIN_LOGIN;
 
@@ -130,15 +139,5 @@ namespace RegistrationKiosk
         }
 
         #endregion
-
-        /* Use this method to verify that api_url targets the correct API, and
-         * verify valid eventKey.
-         */
-        private Boolean VerifyAccessCredentials()
-        {
-            //PG: DEV
-
-            return false;
-        }
     }
 }
