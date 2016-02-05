@@ -12,7 +12,7 @@ app.controller( 'dashboardController', ['$scope', '$http', function($scope, $htt
             .success(function (data) {
 
                 $scope.message = data;
-                if(message.length == 0){
+                if($scope.message.length == 0){
                     $scope.message = [{ eventName: 'No Events are Currently Scheduled!' , eventDate: ''}];
                 }
             })

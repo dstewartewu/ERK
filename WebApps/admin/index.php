@@ -1,13 +1,8 @@
 <?php
     //require_once 'scripts/authorize.php';
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
-
-
-
 <head>
 
     <meta charset="utf-8">
@@ -59,7 +54,7 @@
                 <!-- /.dropdown -->
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                        <i class="fa fa-user fa-fw"></i><i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <li><a><i class="fa fa-user fa-fw"></i> User Profile</a>
@@ -90,6 +85,9 @@
                         </li>
                         <li>
                             <a href="#ManageEvents">Manage Events</a>
+                        </li>
+                        <li>
+                            <a href="#EditQuestions">Edit Questions</a>
                         </li>
                         <li>
                             <a href="#RegisterKiosk">Register Kiosk</a>
@@ -147,10 +145,13 @@
 
     <!-- Controllers Are All Loaded here for Dynamic Page Switching -->
     <script src="controllers/users.controller.js"></script>
-    <script src="controllers/event.controller.js"></script>
+    <script src="controllers/createEvent.controller.js"></script>
     <script src="controllers/dashboard.controller.js"></script>
     <script src="controllers/questionAdd.controller.js"></script>
-    <script src="controllers/manage.controller.js"></script>
+    <script src="controllers/manageEvent.controller.js"></script>
+    <script src="controllers/questionEdit.controller.js"></script>
+    <script src="controllers/kiosks.controller.js"></script>
+    <script src="controllers/stats.controller.js"></script>
 
 </body>
 

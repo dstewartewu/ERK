@@ -5,35 +5,66 @@
     <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
+<form ng-submit="getQuestions(eventsList.eventNum)">
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-1">
+            <div class="form-group" ng-init="getEvents()">
+                <label for="events">Select Event:</label>
+                <select class="form-control" id="events" ng-model="eventsList" ng-options="item as item.eventName for item in message track by item.eventNum">
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-lg-offset-1">
+            <label> </label><br/>
+            <button type="submit" class="btn btn-success">Get Questions</button>
+        </div>
+    </div>
+</form>
+<form ng-submit="loadChoices(questionsList.eventNum, questionsList.questionID)">
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-1">
+            <div class="form-group" >
+                <label for="events">Select Question:</label>
+                <select class="form-control" ng-model="questionsList" ng-options="item as item.question for item in questions track by item.questionID">
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-lg-offset-1">
+            <label> </label><br/>
+            <button type="submit" class="btn btn-success">Get Choices</button>
+        </div>
+    </div>
+</form>
 <div class="row">
-    <div class="col-lg-8 col-lg-offset-1">
+    <div class="col-lg-10">
         <fieldset>
             <legend>Edit Event Pre-Registration Site:</legend>
         </fieldset>
     </div>
 </div>
+<form ng-submit="updateQuestion()">
 <div class="row">
-    <div class="col-lg-5 col-lg-push-1">
-        <div class="list-group">
-            <label>Question:</label>
-            <input class="list-group-item" type="text" size="45">
-        </div>
-    </div>
+
     <div class="col-lg-5">
-        <div class="list-group">
-            <label>Choices:</label>
-            <input class="list-group-item" type="text" size="45">
-            <input class="list-group-item" type="text" size="45">
-            <input class="list-group-item" type="text" size="45">
-            <input class="list-group-item" type="text" size="45">
-            <input class="list-group-item" type="text" size="45">
-            <input class="list-group-item" type="text" size="45">
+        <div class="input-group">
+            <label for="questionEdit">Question:</label><br/>
+            <input type="text" ng-model= "questionsList.question" class="list-group-item" size="45" id="questionEdit">
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-lg-3 col-lg-offset-8">
+        <div class="col-lg-4">
+            <div class="input-group">
+                <label>Choices:</label>
+                <ul>
+                    <li ng-repeat="choice in choices" class="input-lg list-unstyled"><input class="list-group-item" size="35" type="text" ng-model="choice.choice"/></li>
+                    <li class="input-lg list-unstyled"><input class="list-group-item" size="35" type="text" ng-model="newChoice.choice"/></li>
+                </ul>
+            </div>
+            <br/><br/>
+        </div>
+    <div class="row">
+        <div class="col-lg-2 col-lg-offset-7">
         <input class="btn btn-success" type="submit" name="submit" id="submitQuestionButton" value="Update Question">
     </div>
 </div>
+</form>
 <br/><br/>

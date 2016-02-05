@@ -19,8 +19,8 @@ app.config(['$routeProvider', function($routeProvider) {
             controller : 'createEventsController'
         })
 
-        .when('/PreRegistrationSetup', {
-            templateUrl : 'templates/preRegistrationSetup.html/:eventNum',
+        .when('/PreRegistrationSetup/:eventNum', {
+            templateUrl : 'templates/preRegistrationSetup.html',
             controller : 'questionAddController'
         })
 
@@ -36,18 +36,15 @@ app.config(['$routeProvider', function($routeProvider) {
             controller : 'manageController'
         })
 
-        .when('/EditQuestion', {
-            templateUrl : 'templates/editQuestion.html/:eventNum',
+        .when('/EditQuestions', {
+            templateUrl : 'templates/editQuestion.html',
             controller : 'questionEditController'
         })
 
         // route for the CreateEvent page
         .when('/EventReports', {
             templateUrl : 'templates/statsGraphs.html',
-            controller : 'reportsController'
+            controller : 'statsController'
         })
 
-        .otherwise({
-            redirectTo: '/'
-        });
 }]);

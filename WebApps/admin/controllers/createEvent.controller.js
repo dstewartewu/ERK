@@ -4,12 +4,14 @@
 
 app.controller( 'createEventsController', ['$scope', '$http', function($scope, $http) {
 
-    $scope.createEventForm = {eventName: "", eventDate: new Date(), startTime: null, endTime: null,
-                              preRegistration: false, siteHeader: "", customQuestions: false};
+    $scope.createEventForm = {eventName: null, eventDate: new Date(), startTime: null, endTime: null,
+                              preRegistration: false, siteHeader: null, customQuestions: false};
 
     $scope.createEvent = function () {
 
         $scope.submitEvent = jQuery.extend(true, {}, $scope.createEventForm);
+
+        //Below, form values are converted to human readable input for db.
 
         $scope.submitEvent.eventDate = $scope.submitEvent.eventDate.toDateString();
         $scope.submitEvent.startTime = $scope.submitEvent.startTime.toTimeString();
@@ -38,8 +40,8 @@ app.controller( 'createEventsController', ['$scope', '$http', function($scope, $
                     $scope.created = data.error;
                 } else {
                     $scope.created = 'Event Created';
-                    if($scope.createEventForm.preRegistration == "true" && $scope.createEventForm.customQuestions == "true") {
-                        window.location = "#/PreRegistrationSetup";
+                    if($scope.createEventForm.preRegistration && $scope.createEventForm.customQuestions) {
+                        window.location = "#/PreRegistrationSetup/" + data.eventNum;
                     }
                     $scope.createEventForm = {
                         eventName: "", eventDate: new Date(),
