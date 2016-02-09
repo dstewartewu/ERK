@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RegistrationKiosk;
+using System.Threading.Tasks;
 
 namespace ERKTest
 {
@@ -27,7 +28,7 @@ namespace ERKTest
 
         // Checks against the basic test return of the API
         [TestMethod]
-        public async void TestFunctionTest()
+        public async Task TestFunctionTest()
         {
             string response = await webAPI.RunAsync();
             Assert.IsTrue(response.Contains("Welcome to EWU Career Services Pre-Registration API. This is a test function."));
@@ -35,7 +36,7 @@ namespace ERKTest
 
         // Adds a student, not a very comprehensive check that it worked.
         [TestMethod]
-        public async void AddStudentTest()
+        public async Task AddStudentTest()
         {    
             Assert.IsTrue(await webAPI.AddStudent(testRegistrant));
         }
@@ -43,7 +44,7 @@ namespace ERKTest
         // Update test registrant entry
         [Ignore] // Currently non-functional. Ignoring until implemented properly.
         [TestMethod]
-        public async void UpdateStudent()
+        public async Task UpdateStudent()
         {
             testRegistrant.FirstName = "Jane";
             Assert.IsTrue(await webAPI.UpdateStudent(testRegistrant));
@@ -51,14 +52,14 @@ namespace ERKTest
             //Assert.IsTrue(await webAPI.UpdateStudent(testRegistrant));
         }
         [TestMethod]
-        public async void GetRegistrantByCodeTest()
+        public async Task GetRegistrantByCodeTest()
         {
             Registrant testRegistrant = new Registrant();
             testRegistrant = await webAPI.GetRegistrantByCode(TEST_CODE);
             Assert.AreEqual("Test", testRegistrant.FirstName);
         }
         [TestMethod]
-        public async void GetRegistrantByEmailTest()
+        public async Task GetRegistrantByEmailTest()
         {
             Registrant testRegistrant = new Registrant();
             testRegistrant = await webAPI.GetRegistrantByEmail(TEST_EMAIL);
@@ -67,7 +68,7 @@ namespace ERKTest
 
         [Ignore]    // Ignored until it works at all.
         [TestMethod]
-        public async void GetQuestionCountTest()
+        public async Task GetQuestionCountTest()
         {
             Assert.AreEqual(1, await webAPI.GetQuestionCount());
         }
