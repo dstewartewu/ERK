@@ -75,27 +75,7 @@ $app->get('/getQuestionCount/:eventNum', function($eventNum) use($app){
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
 });
-/**
- * Tim Unger
- *
- * Description:
- * Gets student by registration code. Returns JSON.
- */
-$app->get('/getStudentByCode/:codeNumber/:eventNum', function($codeNumber, $eventNum) use($app) {
-    try {
-        $db = getDB();
-        $sql = $db->prepare("SELECT * FROM student WHERE (codeNum = :codeNumber) AND (eventNum = :eventNum) ");
-        $sql->bindParam(':codeNumber', $codeNumber, PDO::PARAM_INT);
-        $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
-        $sql->execute();
-        $student = $sql->fetchAll(PDO::FETCH_ASSOC);
-        $db = null;
-        echo json_encode($student);
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
 
-});
 /**
  * Tim Unger
  *
@@ -113,27 +93,6 @@ $app->get('/getRegistrantByCode/:codeNumber/:eventNum', function($codeNumber, $e
         $reg = $sql->fetchAll(PDO::FETCH_ASSOC);
         $db = null;
         echo json_encode($reg);
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
-
-});
-
-/**
- * Tim Unger
- *
- * Gets Employee by registration code. Returns JSON.
- */
-$app->get('/getEmployeeByCode/:codeNumber/:eventNum', function($codeNumber, $eventNum) use($app) {
-    try {
-        $db = getDB();
-        $sql = $db->prepare("SELECT * FROM employee WHERE codeNum = :codeNumber AND eventNum = :eventNum");
-        $sql->bindParam(':codeNumber', $codeNumber, PDO::PARAM_INT);
-        $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
-        $sql->execute();
-        $emp = $sql->fetchAll(PDO::FETCH_ASSOC);
-        $db = null;
-        echo json_encode($emp);
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
@@ -183,28 +142,6 @@ $app->get('/getRegistrantForExcel/', function() use($app) {
 });
 
 
-
-/**
- * Tim Unger
- *
- * Gets student by email. For students who forget/lose registration code. Returns JSON.
- */
-$app->get('/getStudentByEmail/:email/:eventNum', function($email, $eventNum) use($app) {
-
-    try {
-        $db = getDB();
-        $sql = $db->prepare("SELECT * FROM student WHERE email = :email AND eventNum = :eventNum");
-        $sql->bindParam(':email', $email, PDO::PARAM_STR);
-        $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
-        $sql->execute();
-        $student = $sql->fetchAll(PDO::FETCH_ASSOC);
-        $db = null;
-        echo json_encode($student);
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
-
-});
 /**
  * Tim Unger
  *
@@ -226,105 +163,14 @@ $app->get('/getRegistrantByEmail/:email/:eventNum', function($email, $eventNum) 
     }
 
 });
-/**
- * Tim Unger
- *
- * Gets employee by email. For employee who forget/lose registration code. Returns JSON. (May not be needed)
- */
-$app->get('/getEmployeeByEmail/:email/:eventNum', function($email, $eventNum) use($app) {
 
-    try {
-        $db = getDB();
-        $sql = $db->prepare("SELECT * FROM employee WHERE email = :email AND eventNum = :eventNum");
-        $sql->bindParam(':email', $email, PDO::PARAM_STR);
-        $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
-        $sql->execute();
-        $emp = $sql->fetchAll(PDO::FETCH_ASSOC);
-        $db = null;
-        echo json_encode($emp);
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
 
-});
 /**
  * Tim Unger
  *
  * Updates student by registration code. Updates both registrant and student tables. Must pass all information
  * that is stored other than email.
  */
-$app->put("/updateStudent",
-    function() use ($app){
-        $request = $app->request();
-        $registrant = json_decode($request->getBody());
-        try {
-            $db = getDB();
-            $sql = $db->prepare("UPDATE registrant SET fName = :fName, lName = :lName,
-                                 checkedIn = YES, checkInTime = :chkInTime
-                                 WHERE codeNum = :codeNumber AND eventNum = :eventNum");
-            $sql->bindParam(':fName', $registrant->fName, PDO::PARAM_STR);
-            $sql->bindParam(':lName', $registrant->lName, PDO::PARAM_STR);
-            $sql->bindParam(':cknInTime', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
-            $sql->execute();
-
-            $sql = $db->prepare("UPDATE student SET major = :major, college = :college,
-                                 classStanding = :classStanding WHERE codeNum = :codeNumber AND eventNum = :eventNum");
-            $sql->bindParam(':major', $registrant->major, PDO::PARAM_STR);
-            $sql->bindParam(':college', $registrant->college, PDO::PARAM_STR);
-            $sql->bindParam(':classStanding', $registrant->classStanding, PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
-            $sql->execute();
-
-            $db = null;
-
-        }catch(PDOException $e) {
-            echo '{"error":{"text":'. $e->getMessage() .'}}';
-        }
-});
-
-$app->put("/updateEmployee",
-    function() use ($app){
-        $request = $app->request();
-        $registrant = json_decode($request->getBody());
-        try {
-            $db = getDB();
-            $sql = $db->prepare("UPDATE registrant SET fName = :fName, lName = :lName,
-                                 checkedIn = YES, checkInTime = :chkInTime
-                                 WHERE codeNum = :codeNumber AND eventNum = :eventNum");
-            $sql->bindParam(':fName', $registrant->fName, PDO::PARAM_STR);
-            $sql->bindParam(':lName', $registrant->lName, PDO::PARAM_STR);
-            $sql->bindParam(':cknInTime', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
-            $sql->execute();
-
-            $sql = $db->prepare("UPDATE employee SET company = :company WHERE codeNum = :codeNumber
-                                 AND eventNum = :eventNum");
-            $sql->bindParam(':company', $registrant->company, PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
-            $sql->execute();
-
-            if($registrant->jobTitle != "")
-            {
-                $sql = $db->prepare("UPDATE employee SET jobTitle = :jobTitle WHERE codeNum = :codeNumber
-                                     AND eventNum = :eventNum");
-                $sql->bindParam(':jobTitle', $registrant->jobTitle, PDO::PARAM_STR);
-                $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
-                $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
-                $sql->execute();
-            }
-
-            $db = null;
-
-        }catch(PDOException $e) {
-            echo '{"error":{"text":'. $e->getMessage() .'}}';
-        }
-    });
-
 $app->put("/updateRegistrant",
     function() use ($app){
         $request = $app->request();
@@ -332,13 +178,18 @@ $app->put("/updateRegistrant",
         try {
             $db = getDB();
             $sql = $db->prepare("UPDATE registrant SET fName = :fName, lName = :lName,
-                                 checkedIn = YES, checkInTime = :chkInTime
+                                 checkedIn = YES, checkInTime = :chkInTime, regType = :regType,
+								 major = :major, college = :college, classStanding = :classStanding
                                  WHERE codeNum = :codeNumber AND eventNum = :eventNum");
             $sql->bindParam(':fName', $registrant->fName, PDO::PARAM_STR);
             $sql->bindParam(':lName', $registrant->lName, PDO::PARAM_STR);
+			$sql->bindParam(':regType', $registrant->regType, PDO::PARAM_STR);
             $sql->bindParam(':cknInTime', date("Y-m-d H:i:s"), PDO::PARAM_STR);
             $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
             $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
+            $sql->bindParam(':major', $registrant->major, PDO::PARAM_STR);
+            $sql->bindParam(':college', $registrant->college, PDO::PARAM_STR);
+            $sql->bindParam(':classStanding', $registrant->classStanding, PDO::PARAM_STR);
             $sql->execute();
 
             $db = null;
@@ -346,10 +197,10 @@ $app->put("/updateRegistrant",
         }catch(PDOException $e) {
             echo '{"error":{"text":'. $e->getMessage() .'}}';
         }
-    });
+});
 
 
-$app->post("/addStudent", function() use ($app) {
+$app->post("/addRegistrant", function() use ($app) {
     $request = $app->request();
     $student = json_decode($request->getBody());
 
@@ -364,8 +215,8 @@ $app->post("/addStudent", function() use ($app) {
         $time = date("Y-m-d H:i:s");
         $checkedIn = 'yes';
 
-        $sql = $db->prepare("INSERT INTO registrant (fName, lName, checkedIn, checkInTime, regType, codeNum, eventNum)
-                                 VALUES (:fName, :lName, :checkedIn, :checkInTime, :regType, :codeNum, :eventNum)");
+        $sql = $db->prepare("INSERT INTO registrant (fName, lName, checkedIn, checkInTime, regType, codeNum, eventNum, major, college, classStanding)
+                                 VALUES (:fName, :lName, :checkedIn, :checkInTime, :regType, :codeNum, :eventNum, :major, :college, :classStanding)");
         $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
         $sql->bindValue(':checkInTime', $time, PDO::PARAM_STR);
         $sql->bindValue(':checkedIn', $checkedIn, PDO::PARAM_STR);
@@ -373,107 +224,15 @@ $app->post("/addStudent", function() use ($app) {
         $sql->bindParam(':lName', $student->lName, PDO::PARAM_STR);
         $sql->bindParam(':regType', $student->regType, PDO::PARAM_STR);
         $sql->bindParam(':eventNum', $student->eventNum, PDO::PARAM_INT);
+		$sql->bindParam(':major', $student->major, PDO::PARAM_STR);
+		$sql->bindParam(':college', $student->college, PDO::PARAM_STR);
+		$sql->bindParam(':classStanding', $student->classStanding, PDO::PARAM_STR);
         $sql->execute();
 
-            $sql = $db->prepare("INSERT INTO student (major, college, classStanding, codeNum, eventNum)
-                                 VALUES (:major, :college, :classStanding, :codeNum, :eventNum)");
-
-            $sql->bindParam(':codeNum', $code, PDO::PARAM_STR);
-            $sql->bindParam(':major', $student->major, PDO::PARAM_STR);
-            $sql->bindParam(':college', $student->college, PDO::PARAM_STR);
-            $sql->bindParam(':classStanding', $student->classStanding, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $student->eventNum, PDO::PARAM_INT);
-            $sql->execute();
-
-            $db = null;
+		$db = null;
 
         }catch(PDOException $e) {
             echo '{"error":{"text":'. $e->getMessage() .'}}'.$app->request()->getBody();
-        }
-    });
-/**
- * Tim Unger
- *
- * Post- Adds Employee. Takes JSON encoded input. Note: Must pass Job Title as empty string
- * if no added in optional field. Could cause issues otherwise.
- */
-$app->post("/addEmployee",
-    function() use ($app){
-        $request = $app->request();
-        $employee = json_decode($request->getBody());
-        try {
-            $db = getDB();
-            $invalidCode = true;
-            while($invalidCode) {
-                $code = generateCode(); //Get random code that will be primary key in database
-                $event = $employee->eventNum;
-                $invalidCode = CheckCode($code, $event); //Get if code already exists. If it does, find a new one
-            }
-            $time = date("Y-m-d H:i:s");
-            $checkedIn = 'yes';
-
-            $sql = $db->prepare("INSERT INTO registrant (fName, lName, checkedIn, checkInTime, regType, codeNum, eventNum)
-                                 VALUES (:fName, :lName, :checkedIn, :checkInTime, :regType, :codeNum, :eventNum)");
-            $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
-            $sql->bindValue(':checkInTime', $time, PDO::PARAM_STR);
-            $sql->bindValue(':checkedIn', $checkedIn, PDO::PARAM_STR);
-            $sql->bindParam(':fName', $employee->fName, PDO::PARAM_STR);
-            $sql->bindParam(':lName', $employee->lName, PDO::PARAM_STR);
-            $sql->bindParam(':regType', $employee->regType, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $employee->eventNum, PDO::PARAM_INT);
-            $sql->execute();
-
-            $sql = $db->prepare("INSERT INTO employees (company, codeNum, eventNum) VALUES (:company, :codeNum, :eventNum)");
-            $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
-            $sql->bindParam(':company', $employee->company, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $employee->eventNum, PDO::PARAM_INT);
-            $sql->execute();
-
-            if($employee->jobTitle != "")
-            {
-                $sql = $db->prepare("UPDATE employees SET jobTitle = :jobTitle WHERE codeNum = :codeNum AND eventNum = :eventNum");
-                $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
-                $sql->bindParam(':jobTitle', $employee->jobTitle, PDO::PARAM_STR);
-                $sql->bindParam(':eventNum', $employee->eventNum, PDO::PARAM_INT);
-                $sql->execute();
-            }
-
-            $db = null;
-
-        }catch(PDOException $e) {
-            echo '{"error":{"text":'. $e->getMessage() .'}}';
-        }
-    });
-
-$app->post("/addRegistrant", function() use ($app) {
-        $request = $app->request();
-        $student = json_decode($request->getBody());
-
-        try {
-            $db = getDB();
-            $invalidCode = true;
-            while($invalidCode){
-                $code = generateCode(); //Get random code that will be primary key in database
-                $invalidCode = CheckCode($code, $student->eventNum); //Get if code already exists. If it does, find a new one
-            }
-            $time = date("Y-m-d H:i:s");
-            $checkedIn = 'yes';
-
-            $sql = $db->prepare("INSERT INTO registrant (fName, lName, checkedIn, checkInTime, regType, codeNum, eventNum)
-                                 VALUES (:fName, :lName, :checkedIn, :checkInTime, :regType, :codeNum, :eventNum)");
-            $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
-            $sql->bindValue(':checkInTime', $time, PDO::PARAM_STR);
-            $sql->bindValue(':checkedIn', $checkedIn, PDO::PARAM_STR);
-            $sql->bindParam(':fName', $student->fName, PDO::PARAM_STR);
-            $sql->bindParam(':lName', $student->lName, PDO::PARAM_STR);
-            $sql->bindParam(':regType', $student->regType, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $student->eventNum, PDO::PARAM_INT);
-            $sql->execute();
-
-            $db = null;
-
-        }catch(PDOException $e) {
-            echo '{"error":{"text":'. $e->getMessage() .'}}';
         }
     });
 
