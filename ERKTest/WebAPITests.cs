@@ -21,9 +21,11 @@ namespace ERKTest
             testRegistrant.FirstName = "AUTO-JOHN";
             testRegistrant.LastName = "TEST-HUMAN";
             testRegistrant.Major = "Unit Testing";
+            testRegistrant.College = "Eastern Washington University";
             testRegistrant.RegistrantType = "Student";
             testRegistrant.ClassStanding = "Sophmore";
             testRegistrant.Email = TEST_EMAIL;
+            testRegistrant.EventNumber = TEST_EVENTNUM.ToString();
         }
 
         // Checks against the basic test return of the API
@@ -44,10 +46,10 @@ namespace ERKTest
         // Update test registrant entry
         [Ignore] // Currently non-functional. Ignoring until implemented properly.
         [TestMethod]
-        public async Task UpdateStudent()
+        public async Task UpdateRegistrantTest()
         {
             testRegistrant.FirstName = "Jane";
-            Assert.IsTrue(await webAPI.UpdateStudent(testRegistrant));
+            Assert.IsTrue(await webAPI.UpdateRegistrant(testRegistrant));
             //testRegistrant.Fname = "John";
             //Assert.IsTrue(await webAPI.UpdateStudent(testRegistrant));
         }

@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 
 namespace RegistrationKiosk
 {
+    [DataContract]
     public class Registrant
     {
         #region DATA MEMBERS
@@ -14,6 +15,9 @@ namespace RegistrationKiosk
         [DataMember(Name = "codeNum")]
         public String RegistrationCode { get; set; }
         
+        [DataMember(Name = "eventNum")]
+        public String EventNumber { get; set; }
+
         [DataMember(Name = "fName")]
         public String FirstName { get; set; }
         

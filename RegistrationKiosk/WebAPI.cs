@@ -51,14 +51,14 @@ namespace RegistrationKiosk
                 ms.Position = 0;
                 StreamReader sr = new StreamReader(ms);
                 string json = (sr.ReadToEnd());*/
-
-                HttpResponseMessage response = await client.PostAsJsonAsync("api/index.php/addStudent", registrant);
+                
+                HttpResponseMessage response = await client.PostAsJsonAsync("api/index.php/addRegistrant", registrant);
                 return response.IsSuccessStatusCode;
             }
         }
 
         // Update student
-        public async Task<Boolean> UpdateStudent(Registrant registrant)
+        public async Task<Boolean> UpdateRegistrant(Registrant registrant)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -66,7 +66,7 @@ namespace RegistrationKiosk
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage response = await client.PutAsJsonAsync("api/index.php/updateStudent", registrant);
+                HttpResponseMessage response = await client.PutAsJsonAsync("api/index.php/updateRegistrant", registrant);
                 return response.IsSuccessStatusCode;
             }
         }
@@ -114,7 +114,7 @@ namespace RegistrationKiosk
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Registrant));
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Registrant[]));
 
                 Stream response = await client.GetStreamAsync(request);
 
