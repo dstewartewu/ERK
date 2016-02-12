@@ -72,7 +72,7 @@ namespace RegistrationKiosk
         }
 
         // Get Registrant object from Code.
-        public async Task<Registrant> GetRegistrantByCode(int code)
+        public async Task<Registrant> GetRegistrantByCode(string code)
         {
             string request = ("api/index.php/getRegistrantByCode/" + code + "/" + EventNum);
             return await GetAsync(request);

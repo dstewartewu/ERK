@@ -215,7 +215,7 @@ namespace RegistrationKiosk {
         {
             try
             {
-                controller.ActiveRegistrant = RegAdapter.GetRegistrant(await controller.WebAPI.GetRegistrantByCode(Int32.Parse(txtbxEnterCode.Text)));
+                controller.ActiveRegistrant = RegAdapter.GetRegistrant(await controller.WebAPI.GetRegistrantByCode(txtbxEnterCode.Text));
 
                 DisplayRegistrant();
             }
