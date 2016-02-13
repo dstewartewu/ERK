@@ -74,7 +74,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="RegAdapter.cs" />
     <Compile Include="WebAPI.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Window_AdminAccess.xaml.cs">
@@ -88,15 +87,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Registrant.cs" />
-    <Compile Include="SecurityMeans.cs" />
     <Compile Include="Window_Admin.xaml.cs">
       <DependentUpon>Window_Admin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Window_RegisterKiosk.xaml.cs">
+      <DependentUpon>Window_RegisterKiosk.xaml</DependentUpon>
+    </Compile>
     <Page Include="Window_AdminAccess.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Window_EventLoader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -112,9 +109,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Window_EventLoader.xaml.cs">
-      <DependentUpon>Window_EventLoader.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Window_NoCode.xaml.cs">
       <DependentUpon>Window_NoCode.xaml</DependentUpon>
     </Compile>
@@ -125,6 +119,10 @@
     <Page Include="Window_Admin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window_RegisterKiosk.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -150,9 +148,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="image_barcode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

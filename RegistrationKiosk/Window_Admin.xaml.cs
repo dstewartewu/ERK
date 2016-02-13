@@ -40,14 +40,13 @@ namespace RegistrationKiosk {
         {
             txtbxMessages.Text = String.Format("{1}{0}{2}",
                 Environment.NewLine,
-                "No event loaded.",
-                "Click 'Load Event' to begin.");
+                "This kiosk is not yet registered.",
+                "Click 'Register Kiosk' to begin.");
 
-            //Enable 'Load Event' button.
-            btnLoadEvent.IsEnabled = true;
-            btnLoadEvent.Visibility = System.Windows.Visibility.Visible;
+            btnRegisterKiosk.IsEnabled = true;
+            btnRegisterKiosk.Visibility = System.Windows.Visibility.Visible;
 
-            //Disable all other controls; loading an event will re-enable.
+            //Disable all other controls; registering the kiosk will re-enable.
             btnOpenKiosk.IsEnabled = false;
         }
 
@@ -55,17 +54,12 @@ namespace RegistrationKiosk {
 
         #region EVENT HANDLERS
 
-        private void btnConnectDB_Click(object sender, RoutedEventArgs e)
+        private void btnRegisterKiosk_Click(object sender, RoutedEventArgs e)
         {
             controller.SetView(Controller.WindowView.LOAD_EVENT);
 
             btnOpenKiosk.IsEnabled = true;
             btnOpenKiosk.Visibility = System.Windows.Visibility.Visible;
-        }
-
-        private void btnExport_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("DEV: This button does nothing. NOTHING.");
         }
 
         private void btnOpenKiosk_Click(object sender, RoutedEventArgs e)

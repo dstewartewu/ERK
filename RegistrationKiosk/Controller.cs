@@ -10,18 +10,18 @@ namespace RegistrationKiosk
     {
         #region DATA MEMBERS
 
-        //private enum ConnectionStatus { DISCONNECTED, CONNECTED, LOST }
         public enum WindowView { ADMIN, ADMIN_LOGIN, KIOSK, LOAD_EVENT, NO_CODE }
         public enum RegistrantMode { RESET, STUDENT, EMPLOYER, GENERAL, REGISTER }
         public enum ClassStanding { SELECT, FRESHMAN, SOPHOMORE, JUNIOR, SENIOR, POSTBAC, GRADUATE, ALUMNUS }
         private WindowView currentView;
 
-        //These windows references are used to set which window the user can see at any given time
+        //These windows' references are used to set which window the user can see at any given time
         private Window_Admin admin;
         private Window_AdminLogin login;
         private Window_Kiosk kiosk;
-        private Window_EventLoader loadEvent;
+        private Window_RegisterKiosk loadEvent;
         private Window_NoCode noCode;
+
         private WebAPI webAPI;
         private Registrant activeRegistrant;
         
@@ -44,17 +44,14 @@ namespace RegistrationKiosk
 
         #region INITIALIZATION
 
-        private Controller()
-        {
-            
-        }
+        private Controller() { }
 
         public Controller(Window_Admin admin_in)
         {
             admin = admin_in;
             login = new Window_AdminLogin(this);
             kiosk = new Window_Kiosk(this);
-            loadEvent = new Window_EventLoader(this);
+            loadEvent = new Window_RegisterKiosk(this);
             noCode = new Window_NoCode(this);
             activeRegistrant = null;
             webAPI = new WebAPI("http://www.timjunger.com/", 1);
@@ -96,7 +93,6 @@ namespace RegistrationKiosk
                     kiosk.Visibility = System.Windows.Visibility.Visible;
                     break;
                 case (WindowView.LOAD_EVENT):
-
                     loadEvent.IsEnabled = true;
                     loadEvent.Visibility = System.Windows.Visibility.Visible;
                     break;

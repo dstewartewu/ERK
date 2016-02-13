@@ -83,7 +83,7 @@ namespace RegistrationKiosk {
             SetMode(Controller.RegistrantMode.REGISTER);
 
             //Display instructions for registration
-            txtbxMessages.Text  = String.Format("{1}{0}{2}",
+            txtbxMessages.Text = String.Format("{1}{0}{2}",
                 Environment.NewLine,
                 "Fill out the form below to continue.",
                 "Start by selecting a registrant type.");
@@ -118,91 +118,118 @@ namespace RegistrationKiosk {
             e.Handled = true;
         }
 
-        private void txtbxEnterCode_KeyDown(object sender, KeyEventArgs e)
+        private void txtbxEnterCode_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if(e.Key == Key.Enter)
+            if(Regex.IsMatch(e.Text, "\\D"))
             {
-                LookupRegistrant();
+                e.Handled = true;
+
+                txtbxMessages.Text = "Numbers only, please.";
+            }
+
+            if(txtbxEnterCode.Text.Length == 6)
+            {
+                e.Handled = true;
+
+                txtbxMessages.Text = "Registration codes are 6 digits.";
             }
         }
 
         private void txtbxEnterCode_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (wdwMain.IsLoaded)
+            if(IsValidRegistrationCode())
             {
-                if (Regex.IsMatch(txtbxEnterCode.Text, "\\D"))
-                {
-                    btnEnterCode.IsEnabled = false;
-
-                    txtbxMessages.Text = 
-                    txtbxMessages.Text  = "Registration codes contain numbers only.";
-                }
-                else if (txtbxEnterCode.Text.Length == 6)
-                {
-                    btnEnterCode.IsEnabled = true;
-
-                    txtbxMessages.Text  = "Click 'Enter Code' to continue.";
-                }
-                else if (txtbxEnterCode.Text.Length > 6)
-                {
-                    btnEnterCode.IsEnabled = false;
-
-                    txtbxMessages.Text  = String.Format("{1}{0}{2}",
-                        Environment.NewLine,
-                        "Registration codes are only six digits long.",
-                        "Please check your code and try again.");
-                }
-                else
-                {
-                    btnEnterCode.IsEnabled = false;
-                }
+                btnEnterCode.IsEnabled = true;
             }
-
-            e.Handled = true;
-        }
-
-        private void txtbxFirstName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //PG: DEV: Verify user input; restrict certain character sets
+            else
+            {
+                btnEnterCode.IsEnabled = false;
+            }
         }
 
         private void wdwMain_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.F1)
+            if (e.Key == Key.F1)
             {
+                SetMode(Controller.RegistrantMode.RESET);
                 controller.SetView(Controller.WindowView.ADMIN_LOGIN);
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Key == Key.Enter)
+            {
+                if (txtbxEnterCode.IsFocused)
+                {
+                    e.Handled = true;
+
+                    LookupRegistrant();
+                }
+                else
+                {
+                    TraversalRequest tRequest = new TraversalRequest(FocusNavigationDirection.Next);
+                    UIElement keyboardFocus = Keyboard.FocusedElement as UIElement;
+
+                    if (keyboardFocus != null)
+                    {
+                        keyboardFocus.MoveFocus(tRequest);
+                    }
+
+                    e.Handled = true;
+                }
             }
         }
 
         #endregion
+
+        private Boolean IsValidRegistrationCode()
+        {
+            if (Regex.IsMatch(txtbxEnterCode.Text, "\\D"))
+            {
+                txtbxMessages.Text = "Registration codes contain numbers only.";
+
+                return false;
+            }
+
+            if (txtbxEnterCode.Text.Length == 6)
+            {
+                txtbxMessages.Text = "Press Enter or click 'Enter Code' to continue.";
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         private void DisplayRegistrant()
         {
             txtbxFirstName.Text = controller.ActiveRegistrant.FirstName;
             txtbxLastName.Text = controller.ActiveRegistrant.LastName;
 
-            switch(controller.ActiveRegistrant.RegistrantType)
+            switch (controller.ActiveRegistrant.RegistrantType)
             {
                 case "Student":
                     SetMode(Controller.RegistrantMode.STUDENT);
                     txtbxSchoolOrganization.Text = controller.ActiveRegistrant.College;
                     txtbxMajorTitle.Text = controller.ActiveRegistrant.Major;
 
-                        switch(controller.ActiveRegistrant.ClassStanding)
-                        {
-                            case "Freshman":
-                                cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.FRESHMAN;
-                                break;
-                            case "Junior":
-                                cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.JUNIOR;
-                                break;
-                            case "Senior":
-                                cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.SENIOR;
-                                break;
-                            default:
-                                cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.SELECT;
-                                break;
-                        }
+                    switch (controller.ActiveRegistrant.ClassStanding)
+                    {
+                        case "Freshman":
+                            cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.FRESHMAN;
+                            break;
+                        case "Junior":
+                            cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.JUNIOR;
+                            break;
+                        case "Senior":
+                            cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.SENIOR;
+                            break;
+                        default:
+                            cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.SELECT;
+                            break;
+                    }
 
                     break;
 
@@ -213,15 +240,31 @@ namespace RegistrationKiosk {
 
         private async void LookupRegistrant()
         {
-            try
+            if (IsValidRegistrationCode())
             {
-                controller.ActiveRegistrant = RegAdapter.GetRegistrant(await controller.WebAPI.GetRegistrantByCode(Int32.Parse(txtbxEnterCode.Text)));
+                txtbxMessages.Text = "Looking up your registration info...";
 
-                DisplayRegistrant();
+                try
+                {
+                    controller.ActiveRegistrant = await controller.WebAPI.GetRegistrantByCode(Int32.Parse(txtbxEnterCode.Text));
+
+                    DisplayRegistrant();
+                }
+                catch (Exception ex)
+                {
+                    txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                        Environment.NewLine,
+                        "An error occurred while looking up your registration info.",
+                        "Please check your registration code and try again",
+                        "If the problem persists, start over and click 'Register' to continue checking in.");
+                }
             }
-            catch (Exception ex)
+            else
             {
-                txtbxMessages.Text = ex.InnerException.ToString();
+                txtbxMessages.Text += String.Format("{0}{1}{0}{2}",
+                        Environment.NewLine,
+                        "Please check your registration code and try again.",
+                        "If the problem persists, start over and click 'Register' to continue checking in.");
             }
         }
 
@@ -238,12 +281,12 @@ namespace RegistrationKiosk {
             if (mode == Controller.RegistrantMode.RESET)
             {
                 //Set welcome message and starting instructions
-                txtbxMessages.Text  = String.Format("{1}{0}{2}{0}{3}{0}{4}",
+                txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}{0}{4}",
                                                 Environment.NewLine,
-                                                "Welcome!",
                                                 "Enter your 6-digit code if you pre-registered online.",
                                                 "Don't have your code? Click 'No Code' to check in by email.",
-                                                "Otherwise, click 'Register' to check in and receive a name tag.");
+                                                "Otherwise, click 'Register' to check in.",
+                                                "Employers, click 'Register' to receive a name tag.");
 
                 //Show grdCheckInStart elements
                 rctCheckInStart.Visibility = System.Windows.Visibility.Visible;
@@ -357,9 +400,11 @@ namespace RegistrationKiosk {
                 rctFirstName.Visibility = System.Windows.Visibility.Visible;
                 lblFirstName.Visibility = System.Windows.Visibility.Visible;
                 txtbxFirstName.Visibility = System.Windows.Visibility.Visible;
+                txtbxFirstName.IsEnabled = true;
                 rctLastName.Visibility = System.Windows.Visibility.Visible;
                 lblLastName.Visibility = System.Windows.Visibility.Visible;
                 txtbxLastName.Visibility = System.Windows.Visibility.Visible;
+                txtbxLastName.IsEnabled = true;
 
                 rctSchoolOrganization.Visibility = System.Windows.Visibility.Visible;
                 lblSchoolOrganization.Content = "School";
@@ -397,9 +442,11 @@ namespace RegistrationKiosk {
                 rctFirstName.Visibility = System.Windows.Visibility.Visible;
                 lblFirstName.Visibility = System.Windows.Visibility.Visible;
                 txtbxFirstName.Visibility = System.Windows.Visibility.Visible;
+                txtbxFirstName.IsEnabled = true;
                 rctLastName.Visibility = System.Windows.Visibility.Visible;
                 lblLastName.Visibility = System.Windows.Visibility.Visible;
                 txtbxLastName.Visibility = System.Windows.Visibility.Visible;
+                txtbxLastName.IsEnabled = true;
 
                 rctSchoolOrganization.Visibility = System.Windows.Visibility.Visible;
                 lblSchoolOrganization.Content = "Organization";
@@ -437,9 +484,11 @@ namespace RegistrationKiosk {
                 rctFirstName.Visibility = System.Windows.Visibility.Visible;
                 lblFirstName.Visibility = System.Windows.Visibility.Visible;
                 txtbxFirstName.Visibility = System.Windows.Visibility.Visible;
+                txtbxFirstName.IsEnabled = true;
                 rctLastName.Visibility = System.Windows.Visibility.Visible;
                 lblLastName.Visibility = System.Windows.Visibility.Visible;
                 txtbxLastName.Visibility = System.Windows.Visibility.Visible;
+                txtbxLastName.IsEnabled = true;
 
                 rctSchoolOrganization.Visibility = System.Windows.Visibility.Hidden;
                 lblSchoolOrganization.Visibility = System.Windows.Visibility.Hidden;
@@ -504,66 +553,6 @@ namespace RegistrationKiosk {
             #endregion //REGISTER
         }
 
-
-        /* Phillip: Some of these are here to shush the compiler while I rework the kiosk interface
-           Some of these are testing/mock-up methods */
-        #region DUMMY/MOCK-UP VARIABLES AND METHOD STUBS
-
-        //This method is a mock-up for demonstrating different use cases
-        private void MockCheckIn()
-        {
-            if (txtbxEnterCode.Text == "111111")
-            {
-                SetMode(Controller.RegistrantMode.STUDENT);
-
-                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.STUDENT;
-                txtbxFirstName.Text = "Hiro";
-                txtbxLastName.Text = "Hamada";
-                txtbxSchoolOrganization.Text = "SFIT";
-                cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.SENIOR;
-
-                txtbxMessages.Text  = String.Format("{1}{0}{2}",
-                    Environment.NewLine,
-                    "Please verify your registration info.",
-                    "When you are ready, click 'Check In' to finish.");
-            }
-            else if (txtbxEnterCode.Text == "222222")
-            {
-                SetMode(Controller.RegistrantMode.EMPLOYER);
-
-                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.EMPLOYER;
-                txtbxFirstName.Text = "Jean-Baptiste";
-                txtbxLastName.Text = "Zorg";
-                txtbxSchoolOrganization.Text = "Zorg Co.";
-                txtbxMajorTitle.Text = "CEO";
-
-                txtbxMessages.Text  = String.Format("{1}{0}{2}",
-                    Environment.NewLine,
-                    "Please verify your registration info.",
-                    "When you are ready, click 'Check In' to finish.");
-            }
-            else if (txtbxEnterCode.Text == "333333")
-            {
-                SetMode(Controller.RegistrantMode.GENERAL);
-
-                txtbxFirstName.Text = "Guy";
-                txtbxLastName.Text = "Personson";
-
-                txtbxMessages.Text  = String.Format("{1}{0}{2}",
-                    Environment.NewLine,
-                    "Please verify your registration info.",
-                    "When you are ready, click 'Check In' to finish.");
-            }
-            else
-            {
-                txtbxMessages.Text  = String.Format("{1}{0}{2}{0}{3}",
-                    Environment.NewLine,
-                    "Registrant not found!",
-                    "Please check your registration number and try again.",
-                    "If the problem persists, click 'Register' to continue.");
-            }
-        }
-
-        #endregion
+        
     }
 }
