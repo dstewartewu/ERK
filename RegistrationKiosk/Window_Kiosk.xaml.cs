@@ -242,11 +242,15 @@ namespace RegistrationKiosk {
         {
             if (IsValidRegistrationCode())
             {
+<<<<<<< HEAD
                 txtbxMessages.Text = "Looking up your registration info...";
 
                 try
                 {
                     controller.ActiveRegistrant = await controller.WebAPI.GetRegistrantByCode(Int32.Parse(txtbxEnterCode.Text));
+=======
+                controller.ActiveRegistrant = RegAdapter.GetRegistrant(await controller.WebAPI.GetRegistrantByCode(txtbxEnterCode.Text));
+>>>>>>> 1880b6bb4d5b4aa599492812de6d44938963221c
 
                     DisplayRegistrant();
                 }
