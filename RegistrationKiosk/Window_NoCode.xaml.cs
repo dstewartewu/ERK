@@ -53,17 +53,58 @@ namespace RegistrationKiosk
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            //PG: DEV: IMPLEMENT REGISTRANT SEARCH BY EMAIL
-            if (txtbxEmail.Text.Length == 0)
+            LookupRegistrantByEmail();
+        }
+
+        private void wdwNoCode_KeyDown(object sender, KeyEventArgs e)
+        {
+            //DEV: Some kind of input verification might be useful here
+            if (txtbxEmail.Text.Length > 0)
             {
-                MessageBox.Show("You didn't put anything in the search box.");
-            }
-            else
-            {
-                MessageBox.Show("Yay, it worked!" + Environment.NewLine + "Or it didn't. I don't know");
+                if (e.Key == Key.Enter)
+                {
+                    LookupRegistrantByEmail();
+
+                    e.Handled = true;
+                }
             }
         }
 
         #endregion
+
+        private async void LookupRegistrantByEmail()
+        {
+            txtbxMessages.Text = "Looking up your registration info...";
+
+            //Disable form controls during lookup
+            btnSearch.Visibility = System.Windows.Visibility.Collapsed;
+            btnSearch.IsEnabled = false;
+            btnCancel.Visibility = System.Windows.Visibility.Collapsed;
+            btnCancel.IsEnabled = false;
+
+            try
+            {
+                controller.ActiveRegistrant = await controller.WebAPI.GetRegistrantByEmail(txtbxEmail.Text);
+
+                controller.DisplayRegistrant();
+
+                txtbxEmail.Clear();
+                txtbxMessages.Text = "Enter your email below.";
+            }
+            catch (Exception ex)
+            {
+                txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                    Environment.NewLine,
+                    "An error occurred while looking up your registration info.",
+                    "Please check your email and try again",
+                    "If the problem persists, start over and click 'Register' to continue checking in.");
+            }
+
+            //Reenable form controls after lookup
+            btnSearch.Visibility = System.Windows.Visibility.Visible;
+            btnSearch.IsEnabled = true;
+            btnCancel.Visibility = System.Windows.Visibility.Visible;
+            btnCancel.IsEnabled = true;
+        }
     }
 }

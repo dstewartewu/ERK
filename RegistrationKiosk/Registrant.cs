@@ -42,9 +42,11 @@ namespace RegistrationKiosk
         [DataMember(Name = "classStanding")]
         public String ClassStanding{ get; set; }
 
+        [DataMember(Name = "company")]
         public String Company{ get; set; }
-    
-        public String JobTitle{ get; set; } //Corresponds to event database table column employees.employeePosition
+
+        [DataMember(Name = "employeePosition")]
+        public String Position{ get; set; }
 
         #endregion
 

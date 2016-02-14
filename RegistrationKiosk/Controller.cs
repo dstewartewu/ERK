@@ -11,8 +11,8 @@ namespace RegistrationKiosk
         #region DATA MEMBERS
 
         public enum WindowView { ADMIN, ADMIN_LOGIN, KIOSK, LOAD_EVENT, NO_CODE }
-        public enum RegistrantMode { RESET, STUDENT, EMPLOYER, GENERAL, REGISTER }
-        public enum ClassStanding { SELECT, FRESHMAN, SOPHOMORE, JUNIOR, SENIOR, POSTBAC, GRADUATE, ALUMNUS }
+        public enum RegistrantMode { RESET, STUDENT, EMPLOYEE, GENERAL, REGISTER }
+        public enum ClassStanding { SELECT, FRESHMAN, SOPHOMORE, JUNIOR, SENIOR, POSTBACH, GRADUATE, ALUMNUS }
         private WindowView currentView;
 
         //These windows' references are used to set which window the user can see at any given time
@@ -134,6 +134,19 @@ namespace RegistrationKiosk
             currentView = view_in;
         }
 
+        public void DisplayRegistrant()
+        {
+            SetView(WindowView.KIOSK);
+
+            kiosk.DisplayRegistrant();
+        }
+        
         #endregion
+
+        public void ClearRegistrant()
+        {
+            if (activeRegistrant != null)
+                activeRegistrant = null;
+        }
     }
 }
