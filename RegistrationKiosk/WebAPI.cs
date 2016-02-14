@@ -117,8 +117,10 @@ namespace RegistrationKiosk
                 DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Registrant[]));
 
                 Stream response = await client.GetStreamAsync(request);
-
-                Registrant registrant = ((Registrant[])serializer.ReadObject(response))[0];
+                Registrant registrant = null;
+                Registrant[] decodedResponse = ((Registrant[])serializer.ReadObject(response));
+                if (decodedResponse.Length >= 1)
+                    registrant = decodedResponse[0];
                 return registrant;
             }
         }

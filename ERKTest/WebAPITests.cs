@@ -23,7 +23,7 @@ namespace ERKTest
             testRegistrant.Major = "Unit Testing";
             testRegistrant.College = "Eastern Washington University";
             testRegistrant.RegistrantType = "Student";
-            testRegistrant.ClassStanding = "Sophmore";
+            testRegistrant.ClassStanding = "Sophomore";
             testRegistrant.Email = TEST_EMAIL;
             testRegistrant.EventNumber = TEST_EVENTNUM.ToString();
         }
@@ -68,6 +68,22 @@ namespace ERKTest
             Registrant testRegistrant = new Registrant();
             testRegistrant = await webAPI.GetRegistrantByEmail(TEST_EMAIL);
             Assert.IsNotNull(testRegistrant.FirstName);
+        }
+        // Assert that nonexistant codes return null
+        [TestMethod]
+        public async Task GetRegistrantByCodeNullTest()
+        {
+            Registrant testRegistrant = new Registrant();
+            testRegistrant = await webAPI.GetRegistrantByCode("000000");
+            Assert.IsNull(testRegistrant);
+        }
+        // Assert that nonexistant emails return null
+        [TestMethod]
+        public async Task GetRegistrantByEmailNullTest()
+        {
+            Registrant testRegistrant = new Registrant();
+            testRegistrant = await webAPI.GetRegistrantByEmail("NotAnEmail");
+            Assert.IsNull(testRegistrant);
         }
 
         [Ignore]    // Ignored until it works at all.
