@@ -20,7 +20,7 @@ date_default_timezone_set('America/Los_Angeles');
  */
 function getDB()
 {
-    require_once('../config.php');
+    require_once('../admin/models/config.php');
 
 
     $dbhost = __DBHOST;//ipAddress;
@@ -98,50 +98,6 @@ $app->get('/getRegistrantByCode/:codeNumber/:eventNum', function($codeNumber, $e
     }
 
 });
-
-/**
- * Tim Unger
- *
- * Gets table by table name, for excel dump.
- */
-$app->get('/getTable/:tableName', function($tableName) use($app) {
-
-    try {
-        $db = getDB();
-        $sql = $db->prepare("SELECT * FROM :tableName");
-        $sql->bindParam(':tableName', $tableName, PDO::PARAM_STR);
-        $sql->execute();
-        $table = $sql->fetchAll(PDO::FETCH_ASSOC);
-        $db = null;
-        echo json_encode($table);
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
-});
-
-/**
- * Tim Unger
- *
- * Gets table by table name, for excel dump.
- */
-$app->get('/getRegistrantForExcel/', function() use($app) {
-
-    try {
-        $db = getDB();
-        $sql = $db->prepare("SELECT fName, lName, college, major, classStanding,
-                             email, regType, checkedIn FROM registrant LEFT JOIN
-                             student S ON S.code = R.code LEFT JOIN employees E
-                             ON E.code = S.code");
-        $sql->execute();
-        $table = $sql->fetchAll(PDO::FETCH_ASSOC);
-        $db = null;
-        echo json_encode($table);
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
-});
-
-
 /**
  * Tim Unger
  *
@@ -171,25 +127,31 @@ $app->get('/getRegistrantByEmail/:email/:eventNum', function($email, $eventNum) 
  * Updates student by registration code. Updates both registrant and student tables. Must pass all information
  * that is stored other than email.
  */
-$app->put("/updateRegistrant",
+$app->post("/updateRegistrant",
     function() use ($app){
         $request = $app->request();
         $registrant = json_decode($request->getBody());
+
         try {
+            $time = date("Y-m-d H:i:s");
+            $checkedIn = 'Yes';
+
             $db = getDB();
-            $sql = $db->prepare("UPDATE registrant SET fName = :fName, lName = :lName,
-                                 checkedIn = YES, checkInTime = :chkInTime, regType = :regType,
-								 major = :major, college = :college, classStanding = :classStanding
-                                 WHERE codeNum = :codeNumber AND eventNum = :eventNum");
+            $sql = $db->prepare("UPDATE registrant
+                                 SET fName= :fName , lName= :lName , checkedIn= :checkedIn , checkInTime= :checkInTime ,
+                                 regType= :regType , major= :major , college= :college , classStanding= :classStanding
+                                 WHERE (codeNum = :codeNum AND eventNum = :eventNum)");
+            $sql->bindValue(':codeNum', $registrant->code, PDO::PARAM_STR);
+            $sql->bindValue(':checkInTime', $time, PDO::PARAM_STR);
+            $sql->bindValue(':checkedIn', $checkedIn, PDO::PARAM_STR);
             $sql->bindParam(':fName', $registrant->fName, PDO::PARAM_STR);
             $sql->bindParam(':lName', $registrant->lName, PDO::PARAM_STR);
-			$sql->bindParam(':regType', $registrant->regType, PDO::PARAM_STR);
-            $sql->bindParam(':cknInTime', date("Y-m-d H:i:s"), PDO::PARAM_STR);
-            $sql->bindParam(':codeNumber', $registrant->code, PDO::PARAM_STR);
+            $sql->bindParam(':regType', $registrant->regType, PDO::PARAM_STR);
             $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
             $sql->bindParam(':major', $registrant->major, PDO::PARAM_STR);
             $sql->bindParam(':college', $registrant->college, PDO::PARAM_STR);
             $sql->bindParam(':classStanding', $registrant->classStanding, PDO::PARAM_STR);
+
             $sql->execute();
 
             $db = null;
@@ -197,7 +159,7 @@ $app->put("/updateRegistrant",
         }catch(PDOException $e) {
             echo '{"error":{"text":'. $e->getMessage() .'}}';
         }
-});
+    });
 
 
 $app->post("/addRegistrant", function() use ($app) {
@@ -224,17 +186,17 @@ $app->post("/addRegistrant", function() use ($app) {
         $sql->bindParam(':lName', $student->lName, PDO::PARAM_STR);
         $sql->bindParam(':regType', $student->regType, PDO::PARAM_STR);
         $sql->bindParam(':eventNum', $student->eventNum, PDO::PARAM_INT);
-		$sql->bindParam(':major', $student->major, PDO::PARAM_STR);
-		$sql->bindParam(':college', $student->college, PDO::PARAM_STR);
-		$sql->bindParam(':classStanding', $student->classStanding, PDO::PARAM_STR);
+        $sql->bindParam(':major', $student->major, PDO::PARAM_STR);
+        $sql->bindParam(':college', $student->college, PDO::PARAM_STR);
+        $sql->bindParam(':classStanding', $student->classStanding, PDO::PARAM_STR);
         $sql->execute();
 
-		$db = null;
+        $db = null;
 
-        }catch(PDOException $e) {
-            echo '{"error":{"text":'. $e->getMessage() .'}}'.$app->request()->getBody();
-        }
-    });
+    }catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}'.$app->request()->getBody();
+    }
+});
 
 
 //Generate a random 6 digit number
@@ -256,16 +218,17 @@ function CheckCode($code,$eventNum){
         $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
         $sql->execute();
         $db = null;
-    if($sql->rowCount() > 0){
-        return true;
-    }
-    else{
-        return false;
-    }$db = null;
+        if($sql->rowCount() > 0){
+            return true;
+        }
+        else{
+            return false;
+        }$db = null;
 
     }catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
+    return 0;
 };
 
 $app->run();
