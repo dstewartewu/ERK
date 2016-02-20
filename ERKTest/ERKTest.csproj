@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="PrinterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebAPITests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RegistrationKiosk\RegistrationKiosk.csproj">
