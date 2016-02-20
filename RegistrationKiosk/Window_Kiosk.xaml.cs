@@ -402,9 +402,87 @@ namespace RegistrationKiosk {
                 "Check-in complete!",
                 "Your name tag is printing.");
 
-                //Update stuff
+                //Update or add registrant
+                try
+                {
+                    //If this is a new registrant, create and add to event database
+                    if(controller.ActiveRegistrant == null)
+                    {
+                        controller.ActiveRegistrant = new Registrant();
 
-                //Print stuff
+                        controller.ActiveRegistrant.FirstName = txtbxFirstName.Text;
+                        controller.ActiveRegistrant.LastName = txtbxLastName.Text;
+
+                        if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+                        {
+                            controller.ActiveRegistrant.College = txtbxSchoolOrOrganization.Text;
+                            controller.ActiveRegistrant.Major = txtbxMajorOrPosition.Text;
+
+                            switch(cmbClassStanding.SelectedIndex)
+                            {
+                                case (int)Controller.ClassStanding.FRESHMAN:
+                                    controller.ActiveRegistrant.ClassStanding = "Freshman";
+                                    break;
+
+                                case (int)Controller.ClassStanding.SOPHOMORE:
+                                    controller.ActiveRegistrant.ClassStanding = "Sophomore";
+                                    break;
+
+                                case (int)Controller.ClassStanding.JUNIOR:
+                                    controller.ActiveRegistrant.ClassStanding = "Junior";
+                                    break;
+
+                                case (int)Controller.ClassStanding.SENIOR:
+                                    controller.ActiveRegistrant.ClassStanding = "Senior";
+                                    break;
+
+                                case (int)Controller.ClassStanding.POSTBACH:
+                                    controller.ActiveRegistrant.ClassStanding = "PostBac";
+                                    break;
+
+                                case (int)Controller.ClassStanding.GRADUATE:
+                                    controller.ActiveRegistrant.ClassStanding = "Graduate";
+                                    break;
+
+                                case (int)Controller.ClassStanding.ALUMNUS:
+                                    controller.ActiveRegistrant.ClassStanding = "Alumnus";
+                                    break;
+
+                                default:
+                                    controller.ActiveRegistrant.ClassStanding = "None";
+                                    break;
+                            }
+                        }
+                        else if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.EMPLOYEE)
+                        {
+                            controller.ActiveRegistrant.Company = txtbxSchoolOrOrganization.Text;
+                            controller.ActiveRegistrant.Position = txtbxMajorOrPosition.Text;
+                        }
+
+                        controller.ActiveRegistrant.CheckInTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                        await controller.WebAPI.AddStudent(controller.ActiveRegistrant);
+                    }
+                    //If this registrant already exists, update their database entry
+                    else
+                    {
+
+                    }
+                }
+                catch(Exception e)
+                {
+                    txtbxMessages.Text = "Error updating registrant. That's weird.";
+                }
+
+                //Print registrant name tag
+                try
+                {
+                    //Printer.print(controller.ActiveRegistrant);
+                }
+                catch(Exception e)
+                {
+
+                }
 
                 await Task.Delay(5000);
 
@@ -697,6 +775,8 @@ namespace RegistrationKiosk {
                             "Your registration info was not found.",
                             "Please check your code and try again.",
                             "If the problem persists, start over and click 'Register' to continue checking in.");
+
+                        controller.ClearRegistrant();
                     }
                     else
                     {
@@ -712,6 +792,8 @@ namespace RegistrationKiosk {
                         "An error occurred while looking up your registration info.",
                         "Please check your registration code and try again",
                         "If the problem persists, start over and click 'Register' to continue checking in.");
+
+                    controller.ClearRegistrant();
                 }
             }
             else
@@ -720,6 +802,8 @@ namespace RegistrationKiosk {
                         Environment.NewLine,
                         "Please check your registration code and try again.",
                         "If the problem persists, start over and click 'Register' to continue checking in.");
+
+                controller.ClearRegistrant();
             }
 
             //Reenable form controls after lookup
