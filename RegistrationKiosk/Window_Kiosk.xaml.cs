@@ -61,9 +61,7 @@ namespace RegistrationKiosk {
 
         private void btnCheckIn_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Congrats, you're in.");
-
-            SetMode(Controller.RegistrantMode.RESET);
+            CheckIn();
         }
 
         private void btnEnterCode_Click(object sender, RoutedEventArgs e)
@@ -118,23 +116,20 @@ namespace RegistrationKiosk {
 
         private void txtbxEnterCode_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
+            if (txtbxEnterCode.Text.Length >= 6)
+            {
+                txtbxMessages.Text = "Registration codes are 6 digits only.";
+
+                e.Handled = true;
+
+                return;
+            }
+
             if(Regex.IsMatch(e.Text, "\\D"))
             {
                 e.Handled = true;
 
                 txtbxMessages.Text = "Numbers only, please.";
-            }
-
-            if(txtbxEnterCode.Text.Length >= 6)
-            {
-                e.Handled = true;
-
-                txtbxMessages.Text = "Registration codes are 6 digits.";
-
-                if (txtbxEnterCode.Text.Length > 6)
-                {
-                    txtbxEnterCode.Text = txtbxEnterCode.Text.Substring(0, 6);
-                }
             }
         }
 
@@ -147,6 +142,206 @@ namespace RegistrationKiosk {
             else
             {
                 btnEnterCode.IsEnabled = false;
+            }
+        }
+
+        private void txtbxFirstName_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if(txtbxFirstName.Text.Length >= 64)
+            {
+                txtbxMessages.Text = "First and last names are limited to 64 characters.";
+
+                e.Handled = true;
+
+                return;
+            }
+
+            if(!Regex.IsMatch(e.Text, "[-'\\p{L} ]+"))
+            {
+                txtbxMessages.Text = String.Format("{1}{0}{2}",
+                    Environment.NewLine,
+                    "Only letters, hyphens, apostrophes, and spaces",
+                    "are permitted in first and last names.");
+
+                e.Handled = true;
+
+                return;
+            }
+
+            if(txtbxFirstName.Text.Length >= 16)
+            {
+                txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                    Environment.NewLine,
+                    "First or last names longer than 16 letters tend to display poorly on name tags.",
+                    "If possible, you may want to consider using a shorter name.",
+                    "Sorry for the inconvenience!");
+            }
+        }
+
+        private void txtbxLastName_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (txtbxLastName.Text.Length >= 64)
+            {
+                txtbxMessages.Text = "First and last names are limited to 64 characters.";
+
+                e.Handled = true;
+
+                return;
+            }
+
+            if (!Regex.IsMatch(e.Text, "[-'\\p{L} ]+"))
+            {
+                txtbxMessages.Text = String.Format("{1}{0}{2}",
+                    Environment.NewLine,
+                    "Only letters, hyphens, apostrophes, and spaces",
+                    "are permitted in first and last names.");
+
+                e.Handled = true;
+
+                return;
+            }
+
+            if (txtbxLastName.Text.Length >= 16)
+            {
+                txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                    Environment.NewLine,
+                    "First or last names longer than 16 letters tend to display poorly on name tags.",
+                    "If possible, you may want to consider using a shorter name.",
+                    "Sorry for the inconvenience!");
+            }
+        }
+
+        private void txtbxMajorOrPosition_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+            {
+                if (txtbxMajorOrPosition.Text.Length >= 64)
+                {
+                    txtbxMessages.Text = "Majors are limited to 64 characters.";
+
+                    e.Handled = true;
+
+                    return;
+                }
+
+                if (!Regex.IsMatch(e.Text, "[-\\p{L} ]+"))
+                {
+                    txtbxMessages.Text = String.Format("{1}{0}{2}",
+                        Environment.NewLine,
+                        "Only letters, hyphens, and spaces",
+                        "are permitted in major names.");
+
+                    e.Handled = true;
+
+                    return;
+                }
+
+                if (txtbxMajorOrPosition.Text.Length >= 16)
+                {
+                    txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                        Environment.NewLine,
+                        "Majors names longer than 16 letters tend to display poorly on name tags.",
+                        "Consider shortening or abbreviating the name of your major.",
+                        "Sorry for the inconvenience!");
+                }
+            }
+            else if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.EMPLOYEE)
+            {
+                if (txtbxMajorOrPosition.Text.Length >= 64)
+                {
+                    txtbxMessages.Text = "Job titles are limited to 64 characters.";
+
+                    e.Handled = true;
+
+                    return;
+                }
+
+                if (Regex.IsMatch(e.Text, "\\b[-\\p{L} ]+\\b"))
+                {
+                    txtbxMessages.Text = String.Format("{1}{0}{2}",
+                        Environment.NewLine,
+                        "Only letters, hyphens, and spaces",
+                        "are supported in job titles.");
+
+                    e.Handled = true;
+
+                    return;
+                }
+
+                if (txtbxMajorOrPosition.Text.Length >= 16)
+                {
+                    txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                        "Job titles longer than 16 letters tend to display poorly on name tags.",
+                        "If possible, consider shortening or abbreviating your job title.",
+                        "Sorry for the inconvenience!");
+                }
+            }
+        }
+
+        private void txtbxSchoolOrOrganization_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+            {
+                if (txtbxSchoolOrOrganization.Text.Length >= 64)
+                {
+                    txtbxMessages.Text = "School names are limited to 64 characters.";
+
+                    e.Handled = true;
+
+                    return;
+                }
+
+                if (!Regex.IsMatch(e.Text, "[-\\p{L} ]+"))
+                {
+                    txtbxMessages.Text = String.Format("{1}{0}{2}",
+                        Environment.NewLine,
+                        "Only letters, hyphens, and spaces",
+                        "are permitted in school names.");
+
+                    e.Handled = true;
+
+                    return;
+                }
+
+                if (txtbxSchoolOrOrganization.Text.Length >= 16)
+                {
+                    txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                        Environment.NewLine,
+                        "Majors names longer than 16 letters tend to display poorly on name tags.",
+                        "Consider shortening or abbreviating the name of your major.",
+                        "Sorry for the inconvenience!");
+                }
+            }
+            else if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.EMPLOYEE)
+            {
+                if (txtbxSchoolOrOrganization.Text.Length >= 64)
+                {
+                    txtbxMessages.Text = "Organization names are limited to 64 characters.";
+
+                    e.Handled = true;
+
+                    return;
+                }
+
+                if (Regex.IsMatch(e.Text, "\\b[-\\p{L} ]+\\b"))
+                {
+                    txtbxMessages.Text = String.Format("{1}{0}{2}",
+                        Environment.NewLine,
+                        "Only letters, hyphens, and spaces",
+                        "are supported in organization names.");
+
+                    e.Handled = true;
+
+                    return;
+                }
+
+                if (txtbxSchoolOrOrganization.Text.Length >= 16)
+                {
+                    txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                        "Organization names longer than 16 letters tend to display poorly on name tags.",
+                        "If possible, consider shortening or abbreviating the name of your organization.",
+                        "Sorry for the inconvenience!");
+                }
             }
         }
 
@@ -168,6 +363,10 @@ namespace RegistrationKiosk {
 
                     LookupRegistrant();
                 }
+                else if(btnCheckIn.IsFocused)
+                {
+                    CheckIn();
+                }
                 else
                 {
                     TraversalRequest tRequest = new TraversalRequest(FocusNavigationDirection.Next);
@@ -185,24 +384,31 @@ namespace RegistrationKiosk {
 
         #endregion
 
-        private Boolean IsValidRegistrationCode()
+        private async void CheckIn()
         {
-            if (Regex.IsMatch(txtbxEnterCode.Text, "\\D"))
+            if(IsReadyForCheckIn())
             {
-                txtbxMessages.Text = "Registration codes contain numbers only.";
+                //Hide and disable 'Start Over' and 'Check In' buttons
+                rctStartOver.Visibility = System.Windows.Visibility.Hidden;
+                btnStartOver.Visibility = System.Windows.Visibility.Hidden;
+                btnStartOver.IsEnabled = false;
+                rctCheckInFinish.Visibility = System.Windows.Visibility.Hidden;
+                btnCheckIn.Visibility = System.Windows.Visibility.Hidden;
+                btnCheckIn.IsEnabled = false;
 
-                return false;
-            }
+                //Display check-in confirmation message
+                txtbxMessages.Text = String.Format("{1}{0}{2}",
+                Environment.NewLine,
+                "Check-in complete!",
+                "Your name tag is printing.");
 
-            if (txtbxEnterCode.Text.Length == 6)
-            {
-                txtbxMessages.Text = "Press Enter or click 'Enter Code' to continue.";
+                //Update stuff
 
-                return true;
-            }
-            else
-            {
-                return false;
+                //Print stuff
+
+                await Task.Delay(5000);
+
+                SetMode(Controller.RegistrantMode.RESET);
             }
         }
 
@@ -262,7 +468,7 @@ namespace RegistrationKiosk {
 
                 default:
                     SetMode(Controller.RegistrantMode.REGISTER);
-                    
+
                     break;
             }
 
@@ -273,6 +479,199 @@ namespace RegistrationKiosk {
                 Environment.NewLine,
                 "Registration found.",
                 "Please verify your info and click 'Check In' to finish.");
+        }
+
+        //DEV: PG: This method should highlight fields that have errors when they are found.
+        private Boolean IsReadyForCheckIn()
+        {
+            Boolean isReady = true;
+            Boolean firstNameError = false; //Used to avoid redunant name-related error messages
+            Boolean fieldsLeftBlank = false;
+
+            //Check registrant type selection
+            if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.RESET)
+            {
+                isReady = false;
+
+                txtbxMessages.Clear();
+                txtbxMessages.Text = "You must select a registrant type.";
+            }
+
+            if(cmbRegistrantType.SelectedIndex != (int)Controller.RegistrantMode.EMPLOYEE)
+            {
+                //Check first name
+                if (txtbxFirstName.Text.Length == 0)
+                {
+                    isReady = false;
+                    fieldsLeftBlank = true;
+                }
+                else if (Regex.IsMatch(txtbxFirstName.Text, @"[^-'\p{L} ]"))
+                {
+                    if (isReady)
+                    {
+                        isReady = false;
+                        
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = "Names may only contain letters, apostrophes, hypens, and spaces.";
+
+                        firstNameError = true;
+                    }
+                    else
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                            Environment.NewLine,
+                            txtbxMessages.Text,
+                            "Names may only contain letters, apostrophes, hypens, and spaces.");
+                    }
+                }
+
+                //Check last name
+                if (txtbxLastName.Text.Length == 0)
+                {
+                    isReady = false;
+                    fieldsLeftBlank = true;
+                }
+                else if (Regex.IsMatch(txtbxLastName.Text, @"[^-'\p{L} ]"))
+                {
+                    if (isReady)
+                    {
+                        isReady = false;
+
+                        if (!firstNameError)
+                        {
+                            txtbxMessages.Clear();
+                            txtbxMessages.Text = "Names may only contain letters, apostrophes, hypens, and spaces.";
+                        }
+                    }
+                    else
+                    {
+                        if (!firstNameError)
+                        {
+                            txtbxMessages.Text = String.Format("{1}{0}{2}",
+                                Environment.NewLine,
+                                txtbxMessages.Text,
+                                "Names may only contain letters, apostrophes, hypens, and spaces.");
+                        }
+                    }
+                }
+
+                //Check School name
+                if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+                {
+                    if (txtbxSchoolOrOrganization.Text.Length == 0)
+                    {
+                        isReady = false;
+                        fieldsLeftBlank = true;
+                    }
+                    else if (Regex.IsMatch(txtbxSchoolOrOrganization.Text, @"[^-\p{L} ]"))
+                    {
+                        if (isReady)
+                        {
+                            isReady = false;
+
+                            txtbxMessages.Clear();
+                            txtbxMessages.Text = "School names may only contain letters, hypens, and spaces.";
+                        }
+                        else
+                        {
+                            txtbxMessages.Text = String.Format("{1}{0}{2}",
+                                Environment.NewLine,
+                                txtbxMessages.Text,
+                                "School names may only contain letters, hypens, and spaces.");
+                        }
+                    }
+                }
+
+                //Check Major
+                if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+                {
+                    if (txtbxMajorOrPosition.Text.Length == 0)
+                    {
+                        isReady = false;
+                        fieldsLeftBlank = true;
+                    }
+                    else if (Regex.IsMatch(txtbxMajorOrPosition.Text, @"[^-\p{L} ]"))
+                    {
+                        if (isReady)
+                        {
+                            isReady = false;
+
+                            txtbxMessages.Clear();
+                            txtbxMessages.Text = "Major names may only contain letters, hypens, and spaces.";
+                        }
+                        else
+                        {
+                            txtbxMessages.Text = String.Format("{1}{0}{2}",
+                                Environment.NewLine,
+                                txtbxMessages.Text,
+                                "Major names may only contain letters, hypens, and spaces.");
+                        }
+                    }
+                }
+
+                //Check class standing selection
+                if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+                {
+                    if (cmbClassStanding.SelectedIndex == (int)Controller.ClassStanding.SELECT && !txtbxMessages.Text.Contains("class standing"))
+                    {
+                        if(isReady)
+                        {
+                            isReady = false;
+
+                            txtbxMessages.Clear();
+                            txtbxMessages.Text = "Please select a class standing.";
+                        }
+                        else
+                        {
+                            txtbxMessages.Text = String.Format("{1}{0}{2}",
+                                    Environment.NewLine,
+                                    txtbxMessages.Text,
+                                    "Please select a class standing.");
+                        }
+                    }
+                }
+
+                if(fieldsLeftBlank)
+                {
+                    if(isReady)
+                    {
+                        isReady = false;
+
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = "Blank fields detected. Please fill in any missing info.";
+                    }
+                    else
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                                Environment.NewLine,
+                                txtbxMessages.Text,
+                                "Blank fields detected. Please fill in any missing info.");
+                    }
+                }
+            }
+
+            return isReady;
+        }
+
+        private Boolean IsValidRegistrationCode()
+        {
+            if (Regex.IsMatch(txtbxEnterCode.Text, "\\D"))
+            {
+                txtbxMessages.Text = "Registration codes contain numbers only.";
+
+                return false;
+            }
+
+            if (txtbxEnterCode.Text.Length == 6)
+            {
+                txtbxMessages.Text = "Press Enter or click 'Enter Code' to continue.";
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private async void LookupRegistrant()
@@ -291,11 +690,20 @@ namespace RegistrationKiosk {
 
                 try
                 {
-                    controller.ActiveRegistrant = await controller.WebAPI.GetRegistrantByCode(txtbxEnterCode.Text);
+                    if((controller.ActiveRegistrant = await controller.WebAPI.GetRegistrantByCode(txtbxEnterCode.Text)) == null)
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                            Environment.NewLine,
+                            "Your registration info was not found.",
+                            "Please check your code and try again.",
+                            "If the problem persists, start over and click 'Register' to continue checking in.");
+                    }
+                    else
+                    {
+                        DisplayRegistrant();
 
-                    DisplayRegistrant();
-
-                    return;
+                        return;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -423,7 +831,6 @@ namespace RegistrationKiosk {
             rctCheckInFinish.Visibility = System.Windows.Visibility.Visible;
             btnCheckIn.IsEnabled = true;
             btnCheckIn.Visibility = System.Windows.Visibility.Visible;
-            btnCheckIn.IsEnabled = false;
 
             //Hide grdCheckInStart elements
             txtbxEnterCode.Visibility = System.Windows.Visibility.Collapsed;
@@ -449,6 +856,11 @@ namespace RegistrationKiosk {
 
             if (mode == Controller.RegistrantMode.STUDENT)
             {
+                txtbxMessages.Text = String.Format("{1}{0}{2}",
+                    Environment.NewLine,
+                    "Welcome!",
+                    "Please fill in all the fields below.");
+
                 //Set grdInputFields for STUDENT parameters
                 //Watch for bugs! See declaration of selectionLocked for cautionary info
                 selectionLocked = true;
@@ -491,6 +903,12 @@ namespace RegistrationKiosk {
 
             if (mode == Controller.RegistrantMode.EMPLOYEE)
             {
+                txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                    Environment.NewLine,
+                    "Welcome!",
+                    "Fill in the fields below and click 'Check In' to receive a name tag.",
+                    "All fields are optional.");
+
                 //Set grdInputFields for EMPLOYER parameters
                 //Watch for bugs! See declaration of selectionLocked for cautionary info
                 selectionLocked = true;
@@ -533,6 +951,11 @@ namespace RegistrationKiosk {
 
             if (mode == Controller.RegistrantMode.GENERAL)
             {
+                txtbxMessages.Text = String.Format("{1}{0}{2}",
+                    Environment.NewLine,
+                    "Welcome!",
+                    "Please enter your first and last name.");
+
                 //Set grdInputFields for GENERAL parameters
                 //Watch for bugs! See declaration of selectionLocked for cautionary info
                 selectionLocked = true;

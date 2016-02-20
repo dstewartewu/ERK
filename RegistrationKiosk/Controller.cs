@@ -15,7 +15,6 @@ namespace RegistrationKiosk
         public enum ClassStanding { SELECT, FRESHMAN, SOPHOMORE, JUNIOR, SENIOR, POSTBACH, GRADUATE, ALUMNUS }
         private WindowView currentView;
 
-        //These windows' references are used to set which window the user can see at any given time
         private Window_Admin admin;
         private Window_AdminLogin login;
         private Window_Kiosk kiosk;

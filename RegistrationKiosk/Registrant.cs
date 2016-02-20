@@ -16,7 +16,7 @@ namespace RegistrationKiosk
         public String RegistrationCode { get; set; }
         
         [DataMember(Name = "eventNum")]
-        public String EventNumber { get; set; }
+        public int EventNumber { get; set; }
 
         [DataMember(Name = "fName")]
         public String FirstName { get; set; }

@@ -84,26 +84,37 @@ namespace RegistrationKiosk
 
             try
             {
-                controller.ActiveRegistrant = await controller.WebAPI.GetRegistrantByEmail(txtbxEmail.Text);
+                if((controller.ActiveRegistrant = await controller.WebAPI.GetRegistrantByEmail(txtbxEmail.Text)) == null)
+                {
+                    txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}{0}{4}",
+                        Environment.NewLine,
+                        "Your registration info was not found.",
+                        "Please check your email and try again.",
+                        "If the problem persists, start over and",
+                        "click 'Register' to continue checking in.");
+                }
+                else
+                {
+                    controller.DisplayRegistrant();
 
-                controller.DisplayRegistrant();
-
-                txtbxEmail.Clear();
-                txtbxMessages.Text = "Enter your email below.";
+                    //Reset prompt
+                    txtbxMessages.Text = "Enter your email below.";
+                    txtbxEmail.Clear();
+                }
             }
             catch (Exception ex)
             {
                 txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
                     Environment.NewLine,
-                    "An error occurred while looking up your registration info.",
-                    "Please check your email and try again",
-                    "If the problem persists, start over and click 'Register' to continue checking in.");
+                    "An error occurred. Please try again.",
+                    "If the problem persists, start over and",
+                    "click 'Register' to continue checking in.");
             }
 
             //Reenable form controls after lookup
-            btnSearch.Visibility = System.Windows.Visibility.Visible;
+            btnSearch.Visibility = System.Windows.Visibility.Collapsed;
             btnSearch.IsEnabled = true;
-            btnCancel.Visibility = System.Windows.Visibility.Visible;
+            btnCancel.Visibility = System.Windows.Visibility.Collapsed;
             btnCancel.IsEnabled = true;
         }
     }
