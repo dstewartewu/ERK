@@ -25,7 +25,7 @@ namespace ERKTest
             testRegistrant.RegistrantType = "Student";
             testRegistrant.ClassStanding = "Sophomore";
             testRegistrant.Email = TEST_EMAIL;
-            testRegistrant.EventNumber = TEST_EVENTNUM.ToString();
+            testRegistrant.EventNumber = TEST_EVENTNUM;
         }
 
         // Checks against the basic test return of the API

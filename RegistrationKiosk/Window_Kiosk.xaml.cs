@@ -156,7 +156,7 @@ namespace RegistrationKiosk {
                 return;
             }
 
-            if(!Regex.IsMatch(e.Text, "[-'\\p{L} ]+"))
+            if(Regex.IsMatch(e.Text, @"[^-'\p{L} ]+"))
             {
                 txtbxMessages.Text = String.Format("{1}{0}{2}",
                     Environment.NewLine,
@@ -168,7 +168,7 @@ namespace RegistrationKiosk {
                 return;
             }
 
-            if(txtbxFirstName.Text.Length >= 16)
+            if(txtbxFirstName.Text.Length > 16)
             {
                 txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
                     Environment.NewLine,
@@ -189,7 +189,7 @@ namespace RegistrationKiosk {
                 return;
             }
 
-            if (!Regex.IsMatch(e.Text, "[-'\\p{L} ]+"))
+            if (Regex.IsMatch(e.Text, @"[^-'\p{L} ]+"))
             {
                 txtbxMessages.Text = String.Format("{1}{0}{2}",
                     Environment.NewLine,
@@ -201,7 +201,7 @@ namespace RegistrationKiosk {
                 return;
             }
 
-            if (txtbxLastName.Text.Length >= 16)
+            if (txtbxLastName.Text.Length > 16)
             {
                 txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
                     Environment.NewLine,
@@ -224,7 +224,7 @@ namespace RegistrationKiosk {
                     return;
                 }
 
-                if (!Regex.IsMatch(e.Text, "[-\\p{L} ]+"))
+                if (Regex.IsMatch(e.Text, @"[^-\p{L} ]+"))
                 {
                     txtbxMessages.Text = String.Format("{1}{0}{2}",
                         Environment.NewLine,
@@ -236,7 +236,7 @@ namespace RegistrationKiosk {
                     return;
                 }
 
-                if (txtbxMajorOrPosition.Text.Length >= 16)
+                if (txtbxMajorOrPosition.Text.Length > 16)
                 {
                     txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
                         Environment.NewLine,
@@ -256,7 +256,7 @@ namespace RegistrationKiosk {
                     return;
                 }
 
-                if (Regex.IsMatch(e.Text, "\\b[-\\p{L} ]+\\b"))
+                if (Regex.IsMatch(e.Text, "[^-\\p{L} ]+"))
                 {
                     txtbxMessages.Text = String.Format("{1}{0}{2}",
                         Environment.NewLine,
@@ -271,6 +271,7 @@ namespace RegistrationKiosk {
                 if (txtbxMajorOrPosition.Text.Length >= 16)
                 {
                     txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                        Environment.NewLine,
                         "Job titles longer than 16 letters tend to display poorly on name tags.",
                         "If possible, consider shortening or abbreviating your job title.",
                         "Sorry for the inconvenience!");
@@ -291,7 +292,7 @@ namespace RegistrationKiosk {
                     return;
                 }
 
-                if (!Regex.IsMatch(e.Text, "[-\\p{L} ]+"))
+                if (Regex.IsMatch(e.Text, @"[^-\p{L} ]+"))
                 {
                     txtbxMessages.Text = String.Format("{1}{0}{2}",
                         Environment.NewLine,
@@ -303,7 +304,7 @@ namespace RegistrationKiosk {
                     return;
                 }
 
-                if (txtbxSchoolOrOrganization.Text.Length >= 16)
+                if (txtbxSchoolOrOrganization.Text.Length > 16)
                 {
                     txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
                         Environment.NewLine,
@@ -323,7 +324,7 @@ namespace RegistrationKiosk {
                     return;
                 }
 
-                if (Regex.IsMatch(e.Text, "\\b[-\\p{L} ]+\\b"))
+                if (Regex.IsMatch(e.Text, "[^-\\p{L} ]+"))
                 {
                     txtbxMessages.Text = String.Format("{1}{0}{2}",
                         Environment.NewLine,
@@ -388,19 +389,22 @@ namespace RegistrationKiosk {
         {
             if(IsReadyForCheckIn())
             {
-                //Hide and disable 'Start Over' and 'Check In' buttons
+                //Hide and disable 'Start Over' and 'Check In' buttons, and all input fields
                 rctStartOver.Visibility = System.Windows.Visibility.Hidden;
                 btnStartOver.Visibility = System.Windows.Visibility.Hidden;
                 btnStartOver.IsEnabled = false;
                 rctCheckInFinish.Visibility = System.Windows.Visibility.Hidden;
                 btnCheckIn.Visibility = System.Windows.Visibility.Hidden;
                 btnCheckIn.IsEnabled = false;
+                cmbRegistrantType.IsEnabled = false;
+                txtbxFirstName.IsEnabled = false;
+                txtbxLastName.IsEnabled = false;
+                txtbxSchoolOrOrganization.IsEnabled = false;
+                txtbxMajorOrPosition.IsEnabled = false;
+                cmbClassStanding.IsEnabled = false;
 
                 //Display check-in confirmation message
-                txtbxMessages.Text = String.Format("{1}{0}{2}",
-                Environment.NewLine,
-                "Check-in complete!",
-                "Your name tag is printing.");
+                txtbxMessages.Text = "Checking in, please wait...";
 
                 //Update or add registrant
                 try
@@ -409,6 +413,19 @@ namespace RegistrationKiosk {
                     if(controller.ActiveRegistrant == null)
                     {
                         controller.ActiveRegistrant = new Registrant();
+
+                        switch(cmbRegistrantType.SelectedIndex)
+                        {
+                            case (int)Controller.RegistrantMode.STUDENT:
+                                controller.ActiveRegistrant.RegistrantType = "Student";
+                                break;
+                            case (int)Controller.RegistrantMode.EMPLOYEE:
+                                controller.ActiveRegistrant.RegistrantType = "Employee";
+                                break;
+                            default:
+                                controller.ActiveRegistrant.RegistrantType = "General";
+                                break;
+                        }
 
                         controller.ActiveRegistrant.FirstName = txtbxFirstName.Text;
                         controller.ActiveRegistrant.LastName = txtbxLastName.Text;
@@ -471,8 +488,14 @@ namespace RegistrationKiosk {
                 }
                 catch(Exception e)
                 {
-                    txtbxMessages.Text = "Error updating registrant. That's weird.";
+                    controller.LogError("An error occurred while adding/updating " + controller.ActiveRegistrant.FirstName + " " + controller.ActiveRegistrant.LastName + " to the event database.");
                 }
+
+                //Display check-in confirmation message
+                txtbxMessages.Text = String.Format("{1}{0}{2}",
+                Environment.NewLine,
+                "Check-in complete!",
+                "Your name tag is printing.");
 
                 //Print registrant name tag
                 try
@@ -481,7 +504,7 @@ namespace RegistrationKiosk {
                 }
                 catch(Exception e)
                 {
-
+                    controller.LogError("An error occurred while printing the name tag of " + controller.ActiveRegistrant.FirstName + " " + controller.ActiveRegistrant.LastName + ".");
                 }
 
                 await Task.Delay(5000);
@@ -559,172 +582,338 @@ namespace RegistrationKiosk {
                 "Please verify your info and click 'Check In' to finish.");
         }
 
-        //DEV: PG: This method should highlight fields that have errors when they are found.
         private Boolean IsReadyForCheckIn()
         {
             Boolean isReady = true;
-            Boolean firstNameError = false; //Used to avoid redunant name-related error messages
-            Boolean fieldsLeftBlank = false;
+            String errorMessage;
 
             //Check registrant type selection
             if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.RESET)
             {
+                txtbxMessages.Clear();
+                txtbxMessages.Text = "You must select a registrant type.";
+
+                return false;
+            }
+
+            //Check first name
+            if(txtbxFirstName.Text.Length == 0)
+            {
+                if(cmbRegistrantType.SelectedIndex != (int)Controller.RegistrantMode.EMPLOYEE)
+                {
+                    isReady = false;
+
+                    txtbxMessages.Clear();
+                    txtbxMessages.Text = "First name can't be left blank.";
+                }
+            }
+            else if(Regex.IsMatch(txtbxFirstName.Text, @"[^\p{L}'\- ]+"))
+            {
                 isReady = false;
 
                 txtbxMessages.Clear();
-                txtbxMessages.Text = "You must select a registrant type.";
+                txtbxMessages.Text = "First name may only contain letters, apostrohpes, hyphens, and spaces.";
+            }
+            else if(txtbxFirstName.Text.Length > 64)
+            {
+                isReady = false;
+
+                txtbxMessages.Clear();
+                txtbxMessages.Text = "First name can't exceed 64 characters.";
             }
 
-            if(cmbRegistrantType.SelectedIndex != (int)Controller.RegistrantMode.EMPLOYEE)
+            //Check last name
+            if(txtbxLastName.Text.Length == 0)
             {
-                //Check first name
-                if (txtbxFirstName.Text.Length == 0)
+                if(cmbRegistrantType.SelectedIndex != (int)Controller.RegistrantMode.EMPLOYEE)
                 {
-                    isReady = false;
-                    fieldsLeftBlank = true;
-                }
-                else if (Regex.IsMatch(txtbxFirstName.Text, @"[^-'\p{L} ]"))
-                {
-                    if (isReady)
+                    errorMessage = "Last name can't be left blank.";
+
+                    if(isReady)
                     {
                         isReady = false;
-                        
-                        txtbxMessages.Clear();
-                        txtbxMessages.Text = "Names may only contain letters, apostrophes, hypens, and spaces.";
 
-                        firstNameError = true;
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = errorMessage;
                     }
                     else
                     {
                         txtbxMessages.Text = String.Format("{1}{0}{2}",
                             Environment.NewLine,
                             txtbxMessages.Text,
-                            "Names may only contain letters, apostrophes, hypens, and spaces.");
+                            errorMessage);
                     }
                 }
+            }
+            else if(Regex.IsMatch(txtbxLastName.Text, @"[^\p{L}'\- ]+"))
+            {
+                errorMessage = "Last name may only contain letters, apostrohpes, hyphens, and spaces.";
 
-                //Check last name
-                if (txtbxLastName.Text.Length == 0)
+                if (isReady)
                 {
                     isReady = false;
-                    fieldsLeftBlank = true;
+
+                    txtbxMessages.Clear();
+                    txtbxMessages.Text = errorMessage;
                 }
-                else if (Regex.IsMatch(txtbxLastName.Text, @"[^-'\p{L} ]"))
+                else
                 {
-                    if (isReady)
-                    {
-                        isReady = false;
-
-                        if (!firstNameError)
-                        {
-                            txtbxMessages.Clear();
-                            txtbxMessages.Text = "Names may only contain letters, apostrophes, hypens, and spaces.";
-                        }
-                    }
-                    else
-                    {
-                        if (!firstNameError)
-                        {
-                            txtbxMessages.Text = String.Format("{1}{0}{2}",
-                                Environment.NewLine,
-                                txtbxMessages.Text,
-                                "Names may only contain letters, apostrophes, hypens, and spaces.");
-                        }
-                    }
+                    txtbxMessages.Text = String.Format("{1}{0}{2}",
+                        Environment.NewLine,
+                        txtbxMessages.Text,
+                        errorMessage);
                 }
+            }
+            else if (txtbxLastName.Text.Length > 64)
+            {
+                errorMessage = "Last name can't exceed 64 characters.";
 
-                //Check School name
-                if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+                if (isReady)
                 {
-                    if (txtbxSchoolOrOrganization.Text.Length == 0)
-                    {
-                        isReady = false;
-                        fieldsLeftBlank = true;
-                    }
-                    else if (Regex.IsMatch(txtbxSchoolOrOrganization.Text, @"[^-\p{L} ]"))
-                    {
-                        if (isReady)
-                        {
-                            isReady = false;
+                    isReady = false;
 
-                            txtbxMessages.Clear();
-                            txtbxMessages.Text = "School names may only contain letters, hypens, and spaces.";
-                        }
-                        else
-                        {
-                            txtbxMessages.Text = String.Format("{1}{0}{2}",
-                                Environment.NewLine,
-                                txtbxMessages.Text,
-                                "School names may only contain letters, hypens, and spaces.");
-                        }
-                    }
+                    txtbxMessages.Clear();
+                    txtbxMessages.Text = errorMessage;
                 }
-
-                //Check Major
-                if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+                else
                 {
-                    if (txtbxMajorOrPosition.Text.Length == 0)
-                    {
-                        isReady = false;
-                        fieldsLeftBlank = true;
-                    }
-                    else if (Regex.IsMatch(txtbxMajorOrPosition.Text, @"[^-\p{L} ]"))
-                    {
-                        if (isReady)
-                        {
-                            isReady = false;
-
-                            txtbxMessages.Clear();
-                            txtbxMessages.Text = "Major names may only contain letters, hypens, and spaces.";
-                        }
-                        else
-                        {
-                            txtbxMessages.Text = String.Format("{1}{0}{2}",
-                                Environment.NewLine,
-                                txtbxMessages.Text,
-                                "Major names may only contain letters, hypens, and spaces.");
-                        }
-                    }
+                    txtbxMessages.Text = String.Format("{1}{0}{2}",
+                        Environment.NewLine,
+                        txtbxMessages.Text,
+                        errorMessage);
                 }
+            }
 
-                //Check class standing selection
-                if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+            //Check school or organization name
+            if(txtbxSchoolOrOrganization.Text.Length == 0)
+            {
+                if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
                 {
-                    if (cmbClassStanding.SelectedIndex == (int)Controller.ClassStanding.SELECT && !txtbxMessages.Text.Contains("class standing"))
-                    {
-                        if(isReady)
-                        {
-                            isReady = false;
+                    errorMessage = "School name can't be left blank.";
 
-                            txtbxMessages.Clear();
-                            txtbxMessages.Text = "Please select a class standing.";
-                        }
-                        else
-                        {
-                            txtbxMessages.Text = String.Format("{1}{0}{2}",
-                                    Environment.NewLine,
-                                    txtbxMessages.Text,
-                                    "Please select a class standing.");
-                        }
-                    }
-                }
-
-                if(fieldsLeftBlank)
-                {
                     if(isReady)
                     {
                         isReady = false;
 
                         txtbxMessages.Clear();
-                        txtbxMessages.Text = "Blank fields detected. Please fill in any missing info.";
+                        txtbxMessages.Text = errorMessage;
                     }
                     else
                     {
                         txtbxMessages.Text = String.Format("{1}{0}{2}",
-                                Environment.NewLine,
-                                txtbxMessages.Text,
-                                "Blank fields detected. Please fill in any missing info.");
+                            Environment.NewLine,
+                            txtbxMessages.Text,
+                            errorMessage);
                     }
+                }
+            }
+            else if(Regex.IsMatch(txtbxSchoolOrOrganization.Text, @"[^\p{L}'\- ]+"))
+            {
+                if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+                {
+                    errorMessage = "School names may only contain letters, hyphens, and spaces.";
+
+                    if (isReady)
+                    {
+                        isReady = false;
+
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = errorMessage;
+                    }
+                    else
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                            Environment.NewLine,
+                            txtbxMessages.Text,
+                            errorMessage);
+                    }
+                }
+                else if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.EMPLOYEE)
+                {
+                    errorMessage = "Organization names may only contain letters, hyphens, and spaces.";
+
+                    if (isReady)
+                    {
+                        isReady = false;
+
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = errorMessage;
+                    }
+                    else
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                            Environment.NewLine,
+                            txtbxMessages.Text,
+                            errorMessage);
+                    }
+                }
+            }
+            else if (txtbxSchoolOrOrganization.Text.Length > 64)
+            {
+                if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+                {
+                    errorMessage = "School names can't exceed 64 characters.";
+
+                    if (isReady)
+                    {
+                        isReady = false;
+
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = errorMessage;
+                    }
+                    else
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                            Environment.NewLine,
+                            txtbxMessages.Text,
+                            errorMessage);
+                    }
+                }
+                else if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.EMPLOYEE)
+                {
+                    errorMessage = "Organization names can't exceed 64 characters.";
+
+                    if (isReady)
+                    {
+                        isReady = false;
+
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = errorMessage;
+                    }
+                    else
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                            Environment.NewLine,
+                            txtbxMessages.Text,
+                            errorMessage);
+                    }
+                }
+            }
+
+            //Check major or job title
+            if(txtbxMajorOrPosition.Text.Length == 0)
+            {
+                if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+                {
+                    errorMessage = "Major can't be left blank.";
+
+                    if(isReady)
+                    {
+                        isReady = false;
+
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = errorMessage;
+                    }
+                    else
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                            Environment.NewLine,
+                            txtbxMessages.Text,
+                            errorMessage);
+                    }
+                }
+            }
+            else if(Regex.IsMatch(txtbxMajorOrPosition.Text, @"[^\p{L}'\- ]+"))
+            {
+                if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+                {
+                    errorMessage = "Majors may only contain letters, hyphens, and spaces.";
+
+                    if (isReady)
+                    {
+                        isReady = false;
+
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = errorMessage;
+                    }
+                    else
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                            Environment.NewLine,
+                            txtbxMessages.Text,
+                            errorMessage);
+                    }
+                }
+                else if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.EMPLOYEE)
+                {
+                    errorMessage = "Job titles may only contain letters, hyphens, and spaces.";
+
+                    if (isReady)
+                    {
+                        isReady = false;
+
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = errorMessage;
+                    }
+                    else
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                            Environment.NewLine,
+                            txtbxMessages.Text,
+                            errorMessage);
+                    }
+                }
+            }
+            else if (txtbxMajorOrPosition.Text.Length > 64)
+            {
+                if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT)
+                {
+                    errorMessage = "Major can't exceed 64 characters.";
+
+                    if (isReady)
+                    {
+                        isReady = false;
+
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = errorMessage;
+                    }
+                    else
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                            Environment.NewLine,
+                            txtbxMessages.Text,
+                            errorMessage);
+                    }
+                }
+                else if (cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.EMPLOYEE)
+                {
+                    errorMessage = "Job title can't exceed 64 characters.";
+
+                    if (isReady)
+                    {
+                        isReady = false;
+
+                        txtbxMessages.Clear();
+                        txtbxMessages.Text = errorMessage;
+                    }
+                    else
+                    {
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                            Environment.NewLine,
+                            txtbxMessages.Text,
+                            errorMessage);
+                    }
+                }
+            }
+
+            //Check class standing, if student
+            if(cmbRegistrantType.SelectedIndex == (int)Controller.RegistrantMode.STUDENT && cmbClassStanding.SelectedIndex == (int)Controller.ClassStanding.SELECT)
+            {
+                errorMessage = "You must select a class standing.";
+
+                if (isReady)
+                {
+                    isReady = false;
+
+                    txtbxMessages.Clear();
+                    txtbxMessages.Text = errorMessage;
+                }
+                else
+                {
+                    txtbxMessages.Text = String.Format("{1}{0}{2}",
+                        Environment.NewLine,
+                        txtbxMessages.Text,
+                        errorMessage);
                 }
             }
 

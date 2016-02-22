@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,9 @@ namespace RegistrationKiosk
 
         private WebAPI webAPI;
         private Registrant activeRegistrant;
-        
+
+        private const String ERROR_LOG_PATH = "ERROR_LOG.txt";
+
         #endregion
 
         #region PROPERTIES
@@ -53,7 +56,8 @@ namespace RegistrationKiosk
             loadEvent = new Window_RegisterKiosk(this);
             noCode = new Window_NoCode(this);
             activeRegistrant = null;
-            webAPI = new WebAPI("http://www.timjunger.com/", 1);
+
+            webAPI = new WebAPI("http://www.timjunger.com/", 1); //DEV: PG: UPDATE THIS INITIALIZER
 
             currentView = WindowView.ADMIN_LOGIN;
 
@@ -146,6 +150,34 @@ namespace RegistrationKiosk
         {
             if (activeRegistrant != null)
                 activeRegistrant = null;
+        }
+
+        public void LogError(params String[] errorMessage)
+        {
+            if(!File.Exists(ERROR_LOG_PATH))
+            {
+                using(StreamWriter sw = File.CreateText(ERROR_LOG_PATH))
+                {
+                    foreach(String line in errorMessage)
+                    {
+                        sw.WriteLine(line);
+                    }
+
+                    sw.WriteLine();
+                }
+            }
+            else
+            {
+                using(StreamWriter sw = File.AppendText(ERROR_LOG_PATH))
+                {
+                    foreach(String line in errorMessage)
+                    {
+                        sw.WriteLine(line);
+                    }
+
+                    sw.WriteLine();
+                }
+            }
         }
     }
 }
