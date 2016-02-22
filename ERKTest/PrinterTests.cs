@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RegistrationKiosk;
+using System.Threading.Tasks;
 
 namespace ERKTest
 {
@@ -35,13 +36,21 @@ namespace ERKTest
         [Ignore]    // Ignored due to hardware usage. Comment out in order to run test.
         public void PrintTest()
         {
-            Printer printer = new Printer();
-            Registrant testRegistrant = CreateRegistrant("John", "Doe", "Student", "Eastern Washington University", "Computer Science", "Senior");
+            Registrant testRegistrant = CreateRegistrant("毛泽东", "Guðmundsdóttir", "Student", "Eastern Washington University", "Computer Science", "Senior");
             string testString = Printer.FormatRegistrant(testRegistrant);
-            printer.Print(testRegistrant);
+            Printer.Print(testRegistrant);
 
         }
 
+        [TestMethod]
+        [Ignore]    // Ignored due to hardware usage. Comment out in order to run test.
+        public async Task NetPrintTest()
+        {
+            WebAPI API = new WebAPI("http://www.timjunger.com/", "", 1);
+            Registrant testRegistrant = await API.GetRegistrantByCode("123456");
+            string testString = Printer.FormatRegistrant(testRegistrant);
+            Printer.Print(testRegistrant);
+        }
         public static Registrant CreateRegistrant(string _FirstName, string _LastName, string _RegistrantType, string _College, string _Major, string _ClassStanding)
         {
             Registrant testRegistrant = new Registrant();

@@ -11,19 +11,22 @@ namespace ERKTest
         const int TEST_EVENTNUM = 1;
         const string TEST_EMAIL = "fakemail@notreal.biz";
         const string TEST_URI = "http://www.timjunger.com/";
+        const string TEST_REGISTRATION = "otHarPpYj2lktcgSYvli0GvA03l6dIYy";
         Registrant testRegistrant = new Registrant();
-        WebAPI webAPI = new WebAPI(TEST_URI, TEST_EVENTNUM);
+        WebAPI webAPI = new WebAPI(TEST_URI, TEST_REGISTRATION, TEST_EVENTNUM);
 
         // Run before tests. Initilizes a test registrant.
         [TestInitialize()]
         public void Initialize()
         {
-            testRegistrant.FirstName = "AUTO-JOHN";
-            testRegistrant.LastName = "TEST-HUMAN";
+            testRegistrant.FirstName = "Unit";
+            testRegistrant.LastName = "Test";
             testRegistrant.Major = "Unit Testing";
             testRegistrant.College = "Eastern Washington University";
             testRegistrant.RegistrantType = "Student";
             testRegistrant.ClassStanding = "Sophomore";
+            testRegistrant.RegistrationCode = TEST_CODE;
+            testRegistrant.EventNumber = TEST_EVENTNUM;
             testRegistrant.Email = TEST_EMAIL;
             testRegistrant.EventNumber = TEST_EVENTNUM;
         }
@@ -48,7 +51,7 @@ namespace ERKTest
         [TestMethod]
         public async Task UpdateRegistrantTest()
         {
-            testRegistrant.FirstName = "Jane";
+            testRegistrant.Major = "Unit Testing - UPDATE";
             Assert.IsTrue(await webAPI.UpdateRegistrant(testRegistrant));
             //testRegistrant.Fname = "John";
             //Assert.IsTrue(await webAPI.UpdateStudent(testRegistrant));
@@ -59,7 +62,7 @@ namespace ERKTest
         {
             Registrant testRegistrant = new Registrant();
             testRegistrant = await webAPI.GetRegistrantByCode(TEST_CODE);
-            Assert.IsNotNull(testRegistrant.FirstName);
+            Assert.IsNotNull(testRegistrant);
         }
         // Asserts a registrant object has at least the first name returned.
         [TestMethod]
@@ -67,7 +70,7 @@ namespace ERKTest
         {
             Registrant testRegistrant = new Registrant();
             testRegistrant = await webAPI.GetRegistrantByEmail(TEST_EMAIL);
-            Assert.IsNotNull(testRegistrant.FirstName);
+            Assert.IsNotNull(testRegistrant);
         }
         // Assert that nonexistant codes return null
         [TestMethod]

@@ -7,19 +7,23 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Json;
 using System.IO;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace RegistrationKiosk
 {
     public class WebAPI
     {
-        public Uri TargetURI;
-        int EventNum;
+        private Uri TargetURI;
+        private int EventNum;
+        private string KioskRegistration;
 
         // Construct using target URI as string, and event number.
-        public WebAPI(string _target, int _eventNum)
+        public WebAPI(string target, string kioskRegistration, int eventNum)
         {
-            TargetURI = new Uri(_target);
-            EventNum = _eventNum;
+            TargetURI = new Uri(target);
+            EventNum = eventNum;
+            KioskRegistration = kioskRegistration;
         }
         public async Task<string> RunAsync()
         {
@@ -45,19 +49,15 @@ namespace RegistrationKiosk
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Registrant));
-                /*MemoryStream ms = new MemoryStream();
-                serializer.WriteObject(ms, registrant);
-                ms.Position = 0;
-                StreamReader sr = new StreamReader(ms);
-                string json = (sr.ReadToEnd());*/
-                
-                HttpResponseMessage response = await client.PostAsJsonAsync("api/index.php/addRegistrant", registrant);
+                JObject RegJSON = JObject.FromObject(registrant);
+                RegJSON.Add(new JProperty("kioskReg", KioskRegistration));
+                HttpResponseMessage response = await client.PostAsJsonAsync("api/register.php/addRegistrant", RegJSON);
                 return response.IsSuccessStatusCode;
             }
         }
 
         // Update student
+        // TODO: Make Functional
         public async Task<Boolean> UpdateRegistrant(Registrant registrant)
         {
             using (HttpClient client = new HttpClient())
@@ -66,7 +66,10 @@ namespace RegistrationKiosk
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                HttpResponseMessage response = await client.PutAsJsonAsync("api/index.php/updateRegistrant", registrant);
+                JObject RegJSON = JObject.FromObject(registrant);
+                RegJSON.Add(new JProperty("kioskReg", KioskRegistration));
+                HttpResponseMessage response = await client.PostAsJsonAsync("api/register.php/updateRegistrant", RegJSON);
+                string DEBUG = await response.Content.ReadAsStringAsync();
                 return response.IsSuccessStatusCode;
             }
         }
@@ -74,18 +77,19 @@ namespace RegistrationKiosk
         // Get Registrant object from Code.
         public async Task<Registrant> GetRegistrantByCode(string code)
         {
-            string request = ("api/index.php/getRegistrantByCode/" + code + "/" + EventNum);
+            string request = ("api/register.php/getRegistrantByCode/" + code + "/" + EventNum);
             return await GetAsync(request);
         }
 
         // Get Registrant object from Email.
         public async Task<Registrant> GetRegistrantByEmail(string email)
         {
-            string request = ("api/index.php/getRegistrantByEmail/" + email + "/" + EventNum);
+            string request = ("api/register.php/getRegistrantByEmail/" + email + "/" + EventNum);
             return await GetAsync(request);
         }
 
-        // Currently nonfunctional. Supposed to return 
+        // Currently nonfunctional. Supposed to return number of questions
+        // TODO: Make functional?
         public async Task<int> GetQuestionCount()
         {
             using (HttpClient client = new HttpClient())
@@ -94,7 +98,7 @@ namespace RegistrationKiosk
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string request = ("api/index.php/getQuestionCount/" + EventNum);
+                string request = ("api/register.php/getQuestionCount/" + EventNum);
 
                 //string TEST = await client.GetAsync(request).Result.Content.ReadAsStringAsync();
 
@@ -114,14 +118,15 @@ namespace RegistrationKiosk
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Registrant[]));
-
-                Stream response = await client.GetStreamAsync(request);
-                Registrant registrant = null;
-                Registrant[] decodedResponse = ((Registrant[])serializer.ReadObject(response));
-                if (decodedResponse.Length >= 1)
-                    registrant = decodedResponse[0];
-                return registrant;
+                request = request + "/" + KioskRegistration;    // Append Kiosk registration key
+                HttpResponseMessage response = await client.GetAsync(request);
+                if (response.IsSuccessStatusCode)
+                {
+                    Registrant[] decodedResponse = JsonConvert.DeserializeObject<Registrant[]>(await response.Content.ReadAsStringAsync());
+                    if (decodedResponse.Length >= 1)    // Check if registrant entry was returned, else null
+                        return decodedResponse[0];
+                }
+                return null;
             }
         }
     }

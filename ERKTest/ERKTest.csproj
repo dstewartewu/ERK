@@ -72,7 +72,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <None Include="packages.config" />
+=======
+    <None Include="app.config" />
+>>>>>>> ef328ace1c084b67fcca97e6f10e1cb72d4f8790
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
