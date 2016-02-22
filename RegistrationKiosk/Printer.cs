@@ -12,24 +12,25 @@ namespace RegistrationKiosk{
     /// <summary>
     /// Class containing methods for using a DYMO label printer
     /// </summary>
-    public class Printer{
+    public static class Printer{
         
         /// <summary>
         /// Prints a jobfair nametag
         /// </summary>
         /// <param name="registrant">The registrant to print</param>
-        public void Print(Registrant registrant){
+        public static void Print(Registrant registrant){
             
 
             var label = (DYMO.Label.Framework.ILabel)null;
-            string labelName = registrant.FirstName + ((registrant.FirstName.Length + registrant.LastName.Length >= 16) ? "\n" : "") + registrant.LastName;
+            string labelName = registrant.FirstName + ((registrant.FirstName.Length + registrant.LastName.Length >= 16) ? "\n" : " ") + registrant.LastName;
             string labelDetails = FormatRegistrant(registrant);
 
             try {
-                label = DYMO.Label.Framework.Label.Open(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "/ERK.label");
+                label = DYMO.Label.Framework.Label.Open(Path.GetFullPath("ERK.label"));
+                //System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "/ERK.label"
             }
             catch {
-                MessageBox.Show("File 'ERK.label' not found in " + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+                MessageBox.Show("File 'ERK.label' not found in directory");
                 return;
             }
                         
