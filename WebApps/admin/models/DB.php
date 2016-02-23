@@ -10,7 +10,7 @@
  */
 function getDB()
 {
-    require_once('../../config.php');
+    require_once('config.php');
 
 
     $dbhost = __DBHOST;//ipAddress;

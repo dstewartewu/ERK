@@ -9,6 +9,8 @@ app.controller( 'createEventsController', ['$scope', '$http', function($scope, $
 
     $scope.createEvent = function () {
 
+        //Creates a deep copy of the createEventForm object in order to keep the 2-way binding from breaking
+
         $scope.submitEvent = jQuery.extend(true, {}, $scope.createEventForm);
 
         //Below, form values are converted to human readable input for db.

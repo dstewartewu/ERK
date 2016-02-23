@@ -1,10 +1,8 @@
 <?php
 	require 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
-	include 'config.php';
+	include '../../admin/models/config.php';
 	$postCode = $_SESSION['code'];
 	$to = $_POST['email'];
-	$img = base64_encode(require_once('imageRender.php'));
-	$_SESSION['barcode'] = $img; //Store barcode
 	$file = fopen("emailMessage.txt", 'r');
 	$pageText = fread($file, 25000);
 	$string = nl2br($pageText) . '<br/>';
@@ -12,13 +10,13 @@
 	<html>
 	<head>
 		<title>
-			Barcode
+			Registration Code
 		</title>
 	</head>
-	
-	<body>		
+
+	<body>
 		<p>'.$string.'</p>
-		<img src="data:image/png;base64,'.$img.'">			
+		<h1><b>$postCode</b></h1>
 	</body>
 </html>
 	';

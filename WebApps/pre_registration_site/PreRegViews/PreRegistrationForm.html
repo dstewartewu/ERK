@@ -1,0 +1,124 @@
+<form name = "Information" id="Information" action="/pre_registration_site/PreRegViews/preRegistrationForm.php" method="post" onsubmit="return validate();">
+    <div class="col-md-4">
+        <fieldset>
+            <legend>General Information:</legend>
+
+            First Name: <div class="form-group"><input class="form-control" name="fName" id="fName" type="text" size="30"></div>
+            Last Name: <div class="form-group"><input class="form-control" name="lName" id="lName" type="text" size="30"></div>
+
+            <br/>
+            <br/>
+
+            Email: <div class="form-group"><input class="form-control" name="email" id="email" type="text" size="30"></div>
+
+        </fieldset>
+    </div>
+
+    <div class="col-md-4">
+        <fieldset>
+
+            <legend>Registrant Type:</legend>
+
+            <div class="radio">
+                <label>
+                    <input type="radio" onclick="javascript:IfStudent();" id="Student" name="registrantType" value="Student">Student/Alumnus
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" onclick="javascript:IfGeneral();" id="General" name="registrantType" value="General">General
+                </label>
+            </div>
+        </fieldset>
+        <br/>
+        <fieldset name="studentInfo" id="studentInfo" style="display:none;">
+            <legend>Student Information</legend>
+            <div class="form-group">
+                Class Standing:
+
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="Class" value="Freshman">Freshman
+                    </label>
+                </div>
+
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="Class" value="Sophomore">Sophomore
+                    </label>
+                </div>
+
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="Class" value="Junior">Junior
+                    </label>
+                </div>
+
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="Class" value="Senior">Senior
+                    </label>
+                </div>
+
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="Class" value="PostBaccalaureate">Post Baccalaureate
+                    </label>
+                </div>
+
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="Class" value="Graduate">Graduate Student
+                    </label>
+                </div>
+
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="Class" id="Alumnus" value="Alumnus">Alumnus
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                College:
+                <select class="form-control" name="college" id="college" onchange="javascript:CheckUniversity()">
+                    <option value="EWU">Eastern Washington University</option>
+                    <option value="ZAG">Gonzaga University</option>
+                    <option value="WSU">Washington State University</option>
+                    <option value="WHIT">Whitworth University</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div id="otherUniversity" style="display:none">
+                Other University:
+                <div class="form-group" >
+                    <input name="otherUniversity" placeholder="Please type in your college here"
+                           class="form-control" type="text" size="30">
+                </div>
+            </div>
+
+            Major:
+            <div class="form-group">
+                <input class="form-control" name="major" id="major" type="text" size="30">
+            </div>
+
+        </fieldset>
+
+        <br/>
+    </div>
+
+    <div class="col-md-4">
+
+        <fieldset name="questions" id="questions" style="display:none;">
+            <legend name="questionsLegend" id="questionsLegend" style="display:none;">Questions</legend>
+            <div id='divButton'>
+            </div>
+        </fieldset>
+
+        <br/><br/>
+
+        <input class="btn btn-success" type="submit" name="submit" id="submitButton" value="Submit" onclick="validate()">
+
+    </div>
+</form>

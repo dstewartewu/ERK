@@ -34,6 +34,46 @@ $app->get('/getEventsWithPreRegList', function() use ($app) {
         }
 });
 
+$app->get('/getRegistrantNameEmail/:eventNum', function($eventNum) use ($app) {
+
+    try {
+
+        $db = getDB();
+        $sql = $db->prepare("SELECT fname, lname, email FROM registrant WHERE eventNum = :eventNum AND email <> 'null'");
+        $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_STR);
+        $sql->execute();
+        $emaillist = $sql->fetchAll(PDO::FETCH_ASSOC);
+        $db = null;
+        echo json_encode($emaillist);
+    }
+    catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+});
+
+$app->get('/getRegistrantCSVDump/:eventNum', function($eventNum) use ($app) {
+
+    try {
+
+        $db = getDB();
+        $sql = $db->prepare("SELECT registrant.fname, registrant.lname, registrant.registerDate, registrant.regType, registrant.major,
+                             registrant.college, registrant.classStanding, registrant.company, registrant.employeePosition,
+                             registrant.checkedIn, registrant.checkInTime, GROUP_CONCAT(choices.choice SEPARATOR ', ') FROM registrant
+                             LEFT JOIN answers ON registrant.codeNum = answers.codeNum AND registrant.eventNum = answers.eventNum
+                             LEFT JOIN choices ON answers.questionID = choices.questionID AND registrant.eventNum = choices.eventNum
+                             WHERE registrant.eventNum = :eventNum GROUP BY registrant.codeNum");
+        $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_STR);
+        $sql->execute();
+        $reglist = $sql->fetchAll(PDO::FETCH_ASSOC);
+        $db = null;
+        echo json_encode($reglist);
+    }
+    catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+});
+
+
 $app->get('/getEventsList', function() use ($app) {
 
     try {
@@ -290,7 +330,8 @@ $app->post('/updateChoice', function() use ($app) {
     $data = array();
     try {
         $db = getDB();
-        $sql = $db->prepare("UPDATE choices SET choice = :choice WHERE questionID = :questionID AND eventNum = :eventNum");
+        $sql = $db->prepare("UPDATE choices SET choice = :choice WHERE choiceID = :choiceID AND questionID = :questionID AND eventNum = :eventNum");
+        $sql->bindParam(':choice', $validate->choiceID, PDO::PARAM_INT);
         $sql->bindParam(':choice', $validate->choice, PDO::PARAM_STR);
         $sql->bindParam(':questionID', $validate->questionID, PDO::PARAM_INT);
         $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
@@ -310,6 +351,7 @@ $app->post('/RegisterKiosk', function() use ($app){
 
     $key = openssl_random_pseudo_bytes(24);
     $key = base64_encode($key);
+    $key = preg_replace("/[^A-Za-z0-9 ]/", 'a', $key);
     $date = new DateTime();
     $date->add(new DateInterval('P2D'));
 

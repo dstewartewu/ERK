@@ -1,8 +1,7 @@
 body {
-    font-family: "Times New Roman", Georgia, Serif;
+    font-family: "Arial" ,SansSerifSerif;
     font-size: 16px;
-    background-color: #81ADAA;
-    color: #81ADAA"; 
+    background-color: #FFFFFF;
 }
 
 #banner {
@@ -11,7 +10,6 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: "ewu_banner.jpg";
     background-repeat: no-repeat;
     background-size: contain;
 }

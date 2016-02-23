@@ -112,8 +112,8 @@
 			if($con->connect_errno > 0){ //If there's an error with the connection
 				die('Unable to connect to database [' . $con->connect_error . ']');
 			}
-			$sqllist = $con->prepare("INSERT INTO registrant (`codeNum`,`Fname`,`Lname`, `Email`, `RegType`,`CheckedIn`) VALUES".
-			"(?,?,?,?,?,?)"); //Create a prepared statement
+			$sqllist = $con->prepare("INSERT INTO registrant (`codeNum`,`Fname`,`Lname`, `Email`, `RegType`,`CheckedIn`, `eventNum`) VALUES".
+			"(?,?,?,?,?,?, 1)"); //Create a prepared statement
 			$code = null;
 			while($invalidCode){
 				$code = generateCode(); //Get random code that will be primary key in database
@@ -137,10 +137,7 @@
 						$file = fopen("successRegistrationMessage.txt", 'r');
 	    					$pageText = fread($file, 25000);
 						echo nl2br($pageText).'<br/>';
-						$img = $_SESSION['barcode'];
-						echo '<img src="data:image/png;base64,'.$img.'">';
 					}
-					
 					session_destroy();
 			}else{ //There was an error inserting into the database
 				die('There was an error preregistering [' . $con->error . ']');
@@ -157,7 +154,7 @@
 	
 	function CheckDatabaseRowSize($con) //Counts how many questions are in the database
 	{		
-		$sql = "SELECT * from questions";
+		$sql = "SELECT * from questions WHERE eventNum = 1";
 		$result = mysqli_query($con, $sql);
 		$rows = 0;
 		if($result->num_rows > 0){
@@ -174,8 +171,8 @@
 		
 		for ($x = 1; $x <= $rows; $x++) { //For each question, grab the answer the user selected and insert it
 			$answer = $_POST['A'.$x];
-			$sql = $con->prepare("INSERT INTO answers (`codeNum`,`questionID`,`answer`) VALUES".
-			"(?,?,?)"); //Create a prepared statement
+			$sql = $con->prepare("INSERT INTO answers (`codeNum`,`questionID`,`answer`, `eventNum`) VALUES".
+			"(?,?,?, 1)"); //Create a prepared statement
 			$sql->bind_param("sss", $code, $x, $answer);
 			if(!$sql->Execute()){ //This will display if there is an error
 				die('There was an error preregistering [' . $con->error . ']');
@@ -187,7 +184,7 @@
 	
 	//Checks if code already exists
 	function CheckCode($con,$code){
-		$sql = "SELECT * FROM registrant WHERE codeNum = '$code'";
+		$sql = "SELECT * FROM registrant WHERE codeNum = '$code' AND eventNum = 1";
 		$query = mysqli_query($con,$sql);
 		if(mysqli_num_rows($query) > 0){
 			return true;
@@ -198,20 +195,10 @@
 	}
 	
 	function isStudent($con,$code,$major,$college,$class){
-		$sqllist = $con->prepare("INSERT INTO student (`codeNum`, `Major`, `College`, `ClassStanding`) VALUES".
-			"(?,?,?,?)"); //Create a prepared statement
+		$sqllist = $con->prepare("INSERT INTO student (`codeNum`, `Major`, `College`, `ClassStanding`, `eventNum`) VALUES".
+			"(?,?,?,?, 1)"); //Create a prepared statement
 			
 			$sqllist->bind_param("ssss",$code,$major, $college,$class); //Bind the parameters for security purposes
-			if(!$sqllist->Execute()){ //This will display if there is an error
-				die('There was an error preregistering [' . $con->error . ']');
-			}
-	}
-	
-	function isEmployer($con,$code,$business,$jobTitle){
-		$sqllist = $con->prepare("INSERT INTO employee (`codeNum`,`Business`,`Job`) VALUES".
-			"(?,?,?)"); //Create a prepared statement
-			
-			$sqllist->bind_param("sss",$code,$business,$jobTitle); //Bind the parameters for security purposes
 			if(!$sqllist->Execute()){ //This will display if there is an error
 				die('There was an error preregistering [' . $con->error . ']');
 			}
