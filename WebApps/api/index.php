@@ -64,7 +64,7 @@ $app->get('/getQuestionCount/:eventNum', function($eventNum) use($app){
     try {
         $db = getDB();
         $sql = $db->prepare("SELECT * FROM questions WHERE eventNum = :eventNum");
-        $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
+        $sql->bindParam(':eventNum', filter_var($eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
         $sql->execute();
         $count = array();
 

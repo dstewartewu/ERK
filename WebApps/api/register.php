@@ -60,11 +60,11 @@ $app->get('/', function() use($app) {
  * Gets row count in Questions table and returns that count.
  */
 $app->get('/getQuestionCount/:eventNum/:kioskReg', function($eventNum, $kioskReg) use($app){
-    if(CheckRegistration($kioskReg)) {
+    if(CheckRegistration(filter_var($kioskReg,FILTER_SANITIZE_STRING))) {
         try {
             $db = getDB();
             $sql = $db->prepare("SELECT * FROM questions WHERE eventNum = :eventNum");
-            $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
+            $sql->bindParam(':eventNum', filter_var($eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
             $sql->execute();
             $count = array();
 
@@ -86,13 +86,13 @@ $app->get('/getQuestionCount/:eventNum/:kioskReg', function($eventNum, $kioskReg
  * Gets registrant by registration code. Returns JSON.
  */
 $app->get('/getRegistrantByCode/:codeNumber/:eventNum/:kioskReg', function($codeNumber, $eventNum, $kioskReg) use($app) {
-    if(CheckRegistration($kioskReg)) {
+    if(CheckRegistration(filter_var($kioskReg, FILTER_SANITIZE_STRING))) {
         try {
             $db = getDB();
 
             $sql = $db->prepare("SELECT * FROM registrant WHERE codeNum = :codeNum AND eventNum = :eventNum");
-            $sql->bindParam(':codeNum', $codeNumber, PDO::PARAM_INT);
-            $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
+            $sql->bindParam(':codeNum', filter_var($codeNumber, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':eventNum', filter_var($eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
             $sql->execute();
             $reg = $sql->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
@@ -111,12 +111,12 @@ $app->get('/getRegistrantByCode/:codeNumber/:eventNum/:kioskReg', function($code
  * Gets registrant by email. For registrants who forget/lose registration code. Returns JSON.
  */
 $app->get('/getRegistrantByEmail/:email/:eventNum/:kioskReg', function($email, $eventNum, $kioskReg) use($app) {
-    if(CheckRegistration($kioskReg)) {
+    if(CheckRegistration(filter_var($kioskReg,FILTER_SANITIZE_STRING))) {
         try {
             $db = getDB();
             $sql = $db->prepare("SELECT * FROM registrant WHERE email = :email AND eventNum = :eventNum");
-            $sql->bindParam(':email', $email, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
+            $sql->bindParam(':email', filter_var($email,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':eventNum', filter_var($eventNum,FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
             $sql->execute();
             $reg = $sql->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
@@ -136,7 +136,7 @@ $app->post('/checkKioskRegistration', function() use($app){
     try {
         $db = getDB();
         $sql = $db->prepare("SELECT * FROM kiosks WHERE kioskReg = :kioskReg");
-        $sql->bindParam(':kioskReg', $registrant->kioskReg, PDO::PARAM_STR);
+        $sql->bindParam(':kioskReg', filter_var($registrant->kioskReg,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
         $sql->execute();
         $reg = $sql->fetch(PDO::FETCH_ASSOC);
 
@@ -144,7 +144,7 @@ $app->post('/checkKioskRegistration', function() use($app){
 
 
             $sql = $db->prepare("SELECT * FROM eventInfo WHERE eventNum = :eventNum");
-            $sql->bindParam(':eventNum', $reg['eventNum'], PDO::PARAM_INT);
+            $sql->bindParam(':eventNum', filter_var($reg['eventNum'],FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
             $sql->execute();
             $event = $sql->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
@@ -154,7 +154,7 @@ $app->post('/checkKioskRegistration', function() use($app){
         {
             $db = getDB();
             $sql = $db->prepare("DELETE FROM kiosks WHERE kioskReg = :kioskReg");
-            $sql->bindValue(':kioskReg', $registrant->kioskReg, PDO::PARAM_STR);
+            $sql->bindValue(':kioskReg', filter_var($registrant->kioskReg,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
             $sql->execute();
             $db = null;
             echo '[]';
@@ -185,19 +185,21 @@ $app->post("/updateRegistrant",
                 $db = getDB();
                 $sql = $db->prepare("UPDATE registrant
                                  SET fName= :fName , lName= :lName , checkedIn= :checkedIn , checkInTime= :checkInTime ,
-                                 regType= :regType , major= :major , college= :college , classStanding= :classStanding
+                                 regType= :regType , major= :major , college= :college , classStanding= :classStanding,
+                                 company=:company, employeePosition=:employeePosition
                                  WHERE (codeNum = :codeNum AND eventNum = :eventNum)");
-                $sql->bindValue(':codeNum', $registrant->code, PDO::PARAM_STR);
+                $sql->bindValue(':codeNum', filter_var($registrant->code,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
                 $sql->bindValue(':checkInTime', $time, PDO::PARAM_STR);
                 $sql->bindValue(':checkedIn', $checkedIn, PDO::PARAM_STR);
-                $sql->bindParam(':fName', $registrant->fName, PDO::PARAM_STR);
-                $sql->bindParam(':lName', $registrant->lName, PDO::PARAM_STR);
-                $sql->bindParam(':regType', $registrant->regType, PDO::PARAM_STR);
-                $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
-                $sql->bindParam(':major', $registrant->major, PDO::PARAM_STR);
-                $sql->bindParam(':college', $registrant->college, PDO::PARAM_STR);
-                $sql->bindParam(':classStanding', $registrant->classStanding, PDO::PARAM_STR);
-
+                $sql->bindParam(':fName', filter_var($registrant->fName,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+                $sql->bindParam(':lName', filter_var($registrant->lName, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+                $sql->bindParam(':regType', filter_var($registrant->regType, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+                $sql->bindParam(':eventNum', filter_var($registrant->eventNum,FILTER_SANITIZE_STRING), PDO::PARAM_INT);
+                $sql->bindParam(':major', filter_var($registrant->major, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+                $sql->bindParam(':college', filter_var($registrant->college,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+                $sql->bindParam(':classStanding', filter_var($registrant->classStanding,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+                $sql->bindParam(':company', filter_var($registrant->company,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+                $sql->bindParam(':employeePosition', filter_var($registrant->employeePosition,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
                 $sql->execute();
 
                 $db = null;
@@ -228,18 +230,20 @@ $app->post("/addRegistrant", function() use ($app) {
             $time = date("Y-m-d H:i:s");
             $checkedIn = 'yes';
 
-            $sql = $db->prepare("INSERT INTO registrant (fName, lName, checkedIn, checkInTime, regType, codeNum, eventNum, major, college, classStanding)
-                                 VALUES (:fName, :lName, :checkedIn, :checkInTime, :regType, :codeNum, :eventNum, :major, :college, :classStanding)");
+            $sql = $db->prepare("INSERT INTO registrant (fName, lName, checkedIn, checkInTime, regType, codeNum, eventNum, major, college, classStanding, company, employeePosition)
+                                 VALUES (:fName, :lName, :checkedIn, :checkInTime, :regType, :codeNum, :eventNum, :major, :college, :classStanding, :company, :employeePosition)");
             $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
             $sql->bindValue(':checkInTime', $time, PDO::PARAM_STR);
             $sql->bindValue(':checkedIn', $checkedIn, PDO::PARAM_STR);
-            $sql->bindParam(':fName', $registrant->fName, PDO::PARAM_STR);
-            $sql->bindParam(':lName', $registrant->lName, PDO::PARAM_STR);
-            $sql->bindParam(':regType', $registrant->regType, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $registrant->eventNum, PDO::PARAM_INT);
-            $sql->bindParam(':major', $registrant->major, PDO::PARAM_STR);
-            $sql->bindParam(':college', $registrant->college, PDO::PARAM_STR);
-            $sql->bindParam(':classStanding', $registrant->classStanding, PDO::PARAM_STR);
+            $sql->bindParam(':fName', filter_var($registrant->fName, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':lName', filter_var($registrant->lName, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':regType', filter_var($registrant->regType, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':eventNum', filter_var($registrant->eventNum, FILTER_SANITIZE_STRING), PDO::PARAM_INT);
+            $sql->bindParam(':major', filter_var($registrant->major, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':college', filter_var($registrant->college, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':classStanding', filter_var($registrant->classStanding, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':company', filter_var($registrant->company, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':employeePosition', filter_var($registrant->employeePosition, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
             $sql->execute();
 
             $db = null;
@@ -269,8 +273,8 @@ function CheckCode($code,$eventNum){
     try {
         $db = getDB();
         $sql = $db->prepare("SELECT * FROM registrant WHERE codeNum = :codeNum AND eventNum = :eventNum");
-        $sql->bindParam(':codeNum', $code, PDO::PARAM_STR);
-        $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
+        $sql->bindParam(':codeNum', filter_var($code,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+        $sql->bindParam(':eventNum', filter_var($eventNum,FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
         $sql->execute();
         $db = null;
         if($sql->rowCount() > 0){
@@ -290,7 +294,7 @@ function CheckRegistration($reg){
     try {
         $db = getDB();
         $sql = $db->prepare("SELECT * FROM kiosks WHERE kioskReg = :kioskReg");
-        $sql->bindValue(':kioskReg', $reg, PDO::PARAM_STR);
+        $sql->bindValue(':kioskReg', filter_var($reg,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
         $sql->execute();
         $reg = $sql->fetch(PDO::FETCH_ASSOC);
         $db = null;
@@ -300,7 +304,7 @@ function CheckRegistration($reg){
         else {
             $db = getDB();
             $sql = $db->prepare("DELETE FROM kiosks WHERE kioskReg = :kioskReg");
-            $sql->bindValue(':kioskReg', $reg, PDO::PARAM_STR);
+            $sql->bindValue(':kioskReg', filter_var($reg,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
             $sql->execute();
             $db = null;
         }
