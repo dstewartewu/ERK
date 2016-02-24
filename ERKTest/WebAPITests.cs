@@ -11,7 +11,7 @@ namespace ERKTest
         const int TEST_EVENTNUM = 1;
         const string TEST_EMAIL = "fakemail@notreal.biz";
         const string TEST_URI = "http://www.timjunger.com/";
-        const string TEST_REGISTRATION = "otHarPpYj2lktcgSYvli0GvA03l6dIYy";
+        const string TEST_REGISTRATION = "";
         Registrant testRegistrant = new Registrant();
         WebAPI webAPI = new WebAPI(TEST_URI, TEST_REGISTRATION, TEST_EVENTNUM);
 
@@ -39,6 +39,12 @@ namespace ERKTest
             Assert.IsTrue(response.Contains("Welcome to EWU Career Services Pre-Registration API. This is a test function."));
         }
 
+        [TestMethod]
+        public async Task EventInfoTest()
+        {
+            EventInfo Info = await webAPI.GetEventInfo();
+            Assert.IsNotNull(Info);
+        }
         // Adds a student, not a very comprehensive check that it worked.
         [TestMethod]
         public async Task AddStudentTest()

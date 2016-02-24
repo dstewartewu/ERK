@@ -78,6 +78,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EventInfo.cs" />
     <Compile Include="WebAPI.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Window_AdminAccess.xaml.cs">

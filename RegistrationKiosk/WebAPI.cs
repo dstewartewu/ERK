@@ -74,6 +74,28 @@ namespace RegistrationKiosk
             }
         }
 
+        public async Task<EventInfo> GetEventInfo()
+        {
+            // checkKioskRegistration
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = TargetURI;
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string request = "api/register.php/checkKioskRegistration";    // Append Kiosk registration key
+                JObject RegJSON = new JObject();    // Create JSON for string "kioskReg"
+                RegJSON.Add("kioskReg", KioskRegistration);
+                HttpResponseMessage response = await client.PostAsJsonAsync(request, RegJSON);
+                if (response.IsSuccessStatusCode)
+                {
+                    EventInfo[] decodedResponse = JsonConvert.DeserializeObject<EventInfo[]>(await response.Content.ReadAsStringAsync());
+                    if (decodedResponse.Length >= 1)    // Check if registrant entry was returned, else null
+                        return decodedResponse[0];
+                }
+                return null;
+            }
+        }
         // Get Registrant object from Code.
         public async Task<Registrant> GetRegistrantByCode(string code)
         {
