@@ -57,7 +57,6 @@ namespace RegistrationKiosk
         }
 
         // Update student
-        // TODO: Make Functional
         public async Task<Boolean> UpdateRegistrant(Registrant registrant)
         {
             using (HttpClient client = new HttpClient())
@@ -69,7 +68,6 @@ namespace RegistrationKiosk
                 JObject RegJSON = JObject.FromObject(registrant);
                 RegJSON.Add(new JProperty("kioskReg", KioskRegistration));
                 HttpResponseMessage response = await client.PostAsJsonAsync("api/register.php/updateRegistrant", RegJSON);
-                string DEBUG = await response.Content.ReadAsStringAsync();
                 return response.IsSuccessStatusCode;
             }
         }
