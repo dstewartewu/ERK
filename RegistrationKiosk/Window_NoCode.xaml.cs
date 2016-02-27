@@ -58,7 +58,6 @@ namespace RegistrationKiosk
 
         private void wdwNoCode_KeyDown(object sender, KeyEventArgs e)
         {
-            //DEV: Some kind of input verification might be useful here
             if (txtbxEmail.Text.Length > 0)
             {
                 if (e.Key == Key.Enter)
@@ -109,12 +108,14 @@ namespace RegistrationKiosk
                     "An error occurred. Please try again.",
                     "If the problem persists, start over and",
                     "click 'Register' to continue checking in.");
+
+                controller.LogError(ex.Message);
             }
 
             //Reenable form controls after lookup
-            btnSearch.Visibility = System.Windows.Visibility.Collapsed;
+            btnSearch.Visibility = System.Windows.Visibility.Visible;
             btnSearch.IsEnabled = true;
-            btnCancel.Visibility = System.Windows.Visibility.Collapsed;
+            btnCancel.Visibility = System.Windows.Visibility.Visible;
             btnCancel.IsEnabled = true;
         }
     }

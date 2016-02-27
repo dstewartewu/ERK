@@ -57,7 +57,7 @@ namespace RegistrationKiosk
             noCode = new Window_NoCode(this);
             activeRegistrant = null;
 
-            webAPI = new WebAPI("http://www.timjunger.com/", 1); //DEV: PG: UPDATE THIS INITIALIZER
+            webAPI = new WebAPI("http://www.timjunger.com/", "kioskRegistration", 1); //DEV: PG: UPDATE THIS INITIALIZER
 
             currentView = WindowView.ADMIN_LOGIN;
 
@@ -158,6 +158,8 @@ namespace RegistrationKiosk
             {
                 using(StreamWriter sw = File.CreateText(ERROR_LOG_PATH))
                 {
+                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
                     foreach(String line in errorMessage)
                     {
                         sw.WriteLine(line);
@@ -170,6 +172,8 @@ namespace RegistrationKiosk
             {
                 using(StreamWriter sw = File.AppendText(ERROR_LOG_PATH))
                 {
+                    sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
                     foreach(String line in errorMessage)
                     {
                         sw.WriteLine(line);
