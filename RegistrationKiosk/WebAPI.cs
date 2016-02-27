@@ -57,7 +57,6 @@ namespace RegistrationKiosk
         }
 
         // Update student
-        // TODO: Make Functional
         public async Task<Boolean> UpdateRegistrant(Registrant registrant)
         {
             using (HttpClient client = new HttpClient())
@@ -69,11 +68,32 @@ namespace RegistrationKiosk
                 JObject RegJSON = JObject.FromObject(registrant);
                 RegJSON.Add(new JProperty("kioskReg", KioskRegistration));
                 HttpResponseMessage response = await client.PostAsJsonAsync("api/register.php/updateRegistrant", RegJSON);
-                string DEBUG = await response.Content.ReadAsStringAsync();
                 return response.IsSuccessStatusCode;
             }
         }
 
+        public async Task<EventInfo> GetEventInfo()
+        {
+            // checkKioskRegistration
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = TargetURI;
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string request = "api/register.php/checkKioskRegistration";    // Append Kiosk registration key
+                JObject RegJSON = new JObject();    // Create JSON for string "kioskReg"
+                RegJSON.Add("kioskReg", KioskRegistration);
+                HttpResponseMessage response = await client.PostAsJsonAsync(request, RegJSON);
+                if (response.IsSuccessStatusCode)
+                {
+                    EventInfo[] decodedResponse = JsonConvert.DeserializeObject<EventInfo[]>(await response.Content.ReadAsStringAsync());
+                    if (decodedResponse.Length >= 1)    // Check if registrant entry was returned, else null
+                        return decodedResponse[0];
+                }
+                return null;
+            }
+        }
         // Get Registrant object from Code.
         public async Task<Registrant> GetRegistrantByCode(string code)
         {

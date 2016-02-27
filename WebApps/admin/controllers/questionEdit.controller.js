@@ -61,9 +61,6 @@ app.controller( 'questionEditController', ['$scope', '$http', function($scope, $
             data: $scope.questionsList,
             headers: {'Content-Type': 'application/json'}
         });
-        if($scope.newChoice.choice !== ""){
-            $scope.choices.push($scope.newChoice);
-        }
         $scope.choices.forEach(function($choice) {
             $http({
                 method: 'POST',
@@ -72,6 +69,13 @@ app.controller( 'questionEditController', ['$scope', '$http', function($scope, $
                 headers: {'Content-Type': 'application/json'}
             })
         });
+
+        $http({
+            method: 'POST',
+            url: 'models/webModelAPI.php/addChoice',
+            data: $scope.newChoice,
+            headers: {'Content-Type': 'application/json'}
+        })
 
     };
 }]);

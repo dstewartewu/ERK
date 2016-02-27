@@ -2,154 +2,40 @@
 <html>
 	<head>
 		<title>Eastern Washington University Pre-Registration</title>
-		<link href="PreRegCSS/jobfair.css" rel="stylesheet">
+		<link href="pre_registration_site/PreRegCSS/jobfair.css" rel="stylesheet">
 
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
-		<link rel="icon" type="image/x-icon" href="PreRegImages/favicon.ico">
-		<link rel="shortcut icon" type="image/x-icon" href="PreRegImages/favicon.ico">
+		<link rel="icon" type="image/x-icon" href="pre_registration_site/PreRegImages/favicon.ico">
+		<link rel="shortcut icon" type="image/x-icon" href="pre_registration_site/PreRegImages/favicon.ico">
+        <script src="admin/dist/js/shared/angular.min.js"></script>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	</head>
-	<body>
+	<body ng-app = 'PreRegistration'>
 		<div class="col-lg-12">
-		<form name = "Information" id="Information" action="PreRegModels/preRegistrationForm.php" method="post" onsubmit="return validate();">
-			
-			<img id="bannerImage" src="PreRegImages/ewu_banner.jpg" width="40%" class="pull-left" alt=""/>
+
+			<img id="bannerImage" src="pre_registration_site/PreRegImages/ewu_banner.jpg" width="40%" class="pull-left" alt=""/>
 			<div style="text-align: center;">
 
 			<br/>	
-				<h1 id="EventText"><b></b></h1>
+				<h1 id="EventText"><b>Welcome To Event Pre-Registration</b></h1>
 			</div>
 
 			<hr>
 		
 			<br/>
-			
-			<div class="col-md-4">
-				<fieldset>
-					<legend>General Information:</legend>
 
-					First Name: <div class="form-group"><input class="form-control" name="fName" id="fName" type="text" size="30"></div>
-					Last Name: <div class="form-group"><input class="form-control" name="lName" id="lName" type="text" size="30"></div>
-
-					<br/>
-					<br/>
-
-					Email: <div class="form-group"><input class="form-control" name="email" id="email" type="text" size="30"></div>
-
-				</fieldset>
-			</div>
-
-			<div class="col-md-4">
-				<fieldset>
-
-					<legend>Registrant Type:</legend>
-					
-					<div class="radio">
-						<label>
-						<input type="radio" onclick="javascript:IfStudent();" id="Student" name="registrantType" value="Student">Student/Alumnus
-						</label>
-					</div>
-					<div class="radio">
-						<label>
-						<input type="radio" onclick="javascript:IfGeneral();" id="General" name="registrantType" value="General">General
-						</label>
-					</div>
-				</fieldset>
-			<br/>
-			<fieldset name="studentInfo" id="studentInfo" style="display:none;">
-				<legend>Student Information</legend>
-				<div class="form-group">
-				Class Standing:
-
-				<div class="radio">
-					<label> 
-					<input type="radio" name="Class" value="Freshman">Freshman
-					</label>
-				</div>
-				
-				<div class="radio">
-					<label> 
-					<input type="radio" name="Class" value="Sophomore">Sophomore
-					</label>
-				</div>
-				
-				<div class="radio">
-					<label> 
-					<input type="radio" name="Class" value="Junior">Junior
-					</label>
-				</div>
-				
-				<div class="radio">
-					<label> 
-					<input type="radio" name="Class" value="Senior">Senior
-					</label>
-				</div>
-				
-				<div class="radio">
-					<label> 
-					<input type="radio" name="Class" value="PostBaccalaureate">Post Baccalaureate
-					</label>
-				</div>
-				
-				<div class="radio">
-					<label> 
-					<input type="radio" name="Class" value="Graduate">Graduate Student
-					</label>
-				</div>
-				
-				<div class="radio">
-					<label> 
-					<input type="radio" name="Class" id="Alumnus" value="Alumnus">Alumnus
-					</label>
-				</div>
-				</div>
-
-				<div class="form-group">
-					College: 
-					<select class="form-control" name="college" id="college" onchange="javascript:CheckUniversity()">
-						<option value="EWU">Eastern Washington University</option>
-						<option value="ZAG">Gonzaga University</option>
-						<option value="WSU">Washington State University</option>
-						<option value="WHIT">Whitworth University</option>
-						<option value="Other">Other</option>
-					</select>
-				</div>
-
-				<div id="otherUniversity" style="display:none">
-						Other University:
-					<div class="form-group" >
-						<input name="otherUniversity" placeholder="Please type in your college here"
-								class="form-control" type="text" size="30">
-					</div>
-				</div>
-				
-				Major:
-				<div class="form-group">
-					<input class="form-control" name="major" id="major" type="text" size="30">
-				</div>
-				
-			</fieldset>
-			
-			</br>
-			</div>
-
-			<div class="col-md-4">
-				
-				<fieldset name="questions" id="questions" style="display:none;">
-					<legend name="questionsLegend" id="questionsLegend" style="display:none;">Questions</legend>
-					<div id='divButton'>
-					</div>
-				</fieldset>
-				
-				</br></br>
-				
-				<input class="btn btn-success" type="submit" name="submit" id="submitButton" value="Submit" onclick="validate()">
-
-			</div>
-		</form>
 		</div>
+        <div class="container">
+
+            <!-- content is injected here -->
+            <div ng-view>
+
+            </div>
+
+        </div>
+        <!-- /container -->
 		<div class="col-md-12">
 		<br/><br/>
 		<p style="width:100%; text-align: center;">
@@ -158,24 +44,35 @@
 			Careers@ewu.edu
 		</p>
 		</div>
+        <script src="admin/dist/js/shared/angular-route.min.js"></script>
+        <!-- jQuery -->
+        <script src="admin/dist/js/shared/jquery.min.js"></script>
+
+        <!-- Angular UI Bootstrap Core JavaScript -->
+        <script src="admin/dist/js/shared/ui-bootstrap-1.0.3.min.js"></script>
+        <script src="admin/dist/js/shared/ui-bootstrap-tpls-1.0.3.min.js"></script>
+
+        <script src="pre_registration_site/preReg.js"></script>
+        <script src="pre_registration_site/PreRegControllers/select.controller.js"></script>
+        <script src="pre_registration_site/PreRegControllers/register.controller.js"></script>
+
 
 <!-- Start the Javascript -->
 		<script>
 			window.onload = init;
 			function init(){
-				var eventText = new XMLHttpRequest();
-				eventText.open("GET", 'jobfairname.txt', false);
-				eventText.send(null);
-
-				document.getElementById("EventText").innerHTML = "Pre-Registration Form for ".bold() + eventText.response.bold();
 				getData();
+
+
+				//document.getElementById("EventText").innerHTML = "Pre-Registration Form for ".bold() + message.preR.bold();
+
 			}
 			<!-- Will hide the student and employer section when the page is first loaded -->
 
 			$(function() {
 					IfGeneral();
 					getData();
-			})
+			});
 			
 			<!-- Will show the student section and hide the employer section -->
 			function IfStudent(){
@@ -186,7 +83,6 @@
 			function IfGeneral(){
 				document.getElementById("studentInfo").style.display = 'none';
 				resetStudent();
-				ChangeText();
 			}
 			
 			<!-- Will check to see what university is selected. If other is selected, it will display the 'other' input box. If not, it will hide it -->
@@ -202,7 +98,7 @@
 			}
 			
 			function getData(){
-	            $.getJSON("questions.php", "",
+	            $.getJSON("pre_registration_site/PreRegModels/questions.php", "",
 	               function(data) {
 	                    $.each(data, function(key, val) {
 
@@ -222,7 +118,7 @@
 
 
 			function getAnswers(questionID, string){
-	           $.getJSON("answers.php",{id:questionID},
+	           $.getJSON("pre_registration_site/PreRegModels/answers.php",{id:questionID},
 	               function(data){
 	                    string += "<select class='form-control' name=A" + questionID + ">";
 
@@ -411,10 +307,6 @@
 			}
 
 			function resetStudent(){
-				studentID = document.getElementById("id");
-				studentID.style.backgroundColor = "white";
-				graduation = document.getElementById("graduationYear");
-				graduation.style.backgroundColor = "white";
 			}
 
 			function checkEmail(email)   
