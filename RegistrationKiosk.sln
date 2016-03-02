@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistrationKiosk", "RegistrationKiosk\RegistrationKiosk.csproj", "{FCD40643-D8EA-4EDA-A212-EA311486E9B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERKTest", "ERKTest\ERKTest.csproj", "{BC73E60D-A887-4363-A910-AF268E114988}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
