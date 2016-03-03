@@ -15,15 +15,20 @@ namespace RegistrationKiosk
     public class WebAPI
     {
         private Uri TargetURI;
-        private int EventNum;
         private string KioskRegistration;
+        public EventInfo Event;
 
         // Construct using target URI as string, and event number.
-        public WebAPI(string target, string kioskRegistration, int eventNum)
+        public WebAPI(string target, string kioskRegistration)
         {
             TargetURI = new Uri(target);
-            EventNum = eventNum;
             KioskRegistration = kioskRegistration;
+            Task<EventInfo>.Run( async () => { Event = await GetEventInfo(); }).Wait();
+            if (Event == null)
+                throw new ArgumentException("Could not get event information", "Event");
+        }
+        public WebAPI(string target, string kioskRegistration, int eventNumber) : this(target, kioskRegistration)
+        {
         }
         public async Task<string> RunAsync()
         {
@@ -51,6 +56,7 @@ namespace RegistrationKiosk
 
                 JObject RegJSON = JObject.FromObject(registrant);
                 RegJSON.Add(new JProperty("kioskReg", KioskRegistration));
+                RegJSON["eventNum"] = Event.EventNumber;
                 HttpResponseMessage response = await client.PostAsJsonAsync("api/register.php/addRegistrant", RegJSON);
                 return response.IsSuccessStatusCode;
             }
@@ -67,6 +73,7 @@ namespace RegistrationKiosk
 
                 JObject RegJSON = JObject.FromObject(registrant);
                 RegJSON.Add(new JProperty("kioskReg", KioskRegistration));
+                RegJSON["eventNum"] = Event.EventNumber;
                 HttpResponseMessage response = await client.PostAsJsonAsync("api/register.php/updateRegistrant", RegJSON);
                 return response.IsSuccessStatusCode;
             }
@@ -97,14 +104,14 @@ namespace RegistrationKiosk
         // Get Registrant object from Code.
         public async Task<Registrant> GetRegistrantByCode(string code)
         {
-            string request = ("api/register.php/getRegistrantByCode/" + code + "/" + EventNum);
+            string request = ("api/register.php/getRegistrantByCode/" + code + "/" + Event.EventNumber);
             return await GetAsync(request);
         }
 
         // Get Registrant object from Email.
         public async Task<Registrant> GetRegistrantByEmail(string email)
         {
-            string request = ("api/register.php/getRegistrantByEmail/" + email + "/" + EventNum);
+            string request = ("api/register.php/getRegistrantByEmail/" + email + "/" + Event.EventNumber);
             return await GetAsync(request);
         }
 
@@ -118,7 +125,7 @@ namespace RegistrationKiosk
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string request = ("api/register.php/getQuestionCount/" + EventNum);
+                string request = ("api/register.php/getQuestionCount/" + Event.EventNumber);
 
                 //string TEST = await client.GetAsync(request).Result.Content.ReadAsStringAsync();
 
