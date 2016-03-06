@@ -13,7 +13,7 @@ namespace ERKTest
         const string TEST_URI = "http://www.timjunger.com/";
         const string TEST_REGISTRATION = "";
         Registrant testRegistrant = new Registrant();
-        WebAPI webAPI = new WebAPI(TEST_URI, TEST_REGISTRATION, TEST_EVENTNUM);
+        WebAPI webAPI = new WebAPI(TEST_URI, TEST_REGISTRATION);
 
         // Run before tests. Initilizes a test registrant.
         [TestInitialize()]
@@ -30,7 +30,12 @@ namespace ERKTest
             testRegistrant.Email = TEST_EMAIL;
             testRegistrant.EventNumber = TEST_EVENTNUM;
         }
-
+        [TestMethod]
+        public async Task CreateWebAPITest()
+        {
+            WebAPI TestAPI = await WebAPI.CreateWebAPI(TEST_URI, TEST_REGISTRATION);
+            Assert.IsNotNull(TestAPI.Event);
+        }
         // Checks against the basic test return of the API
         [TestMethod]
         public async Task TestFunctionTest()

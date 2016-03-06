@@ -16,7 +16,7 @@ namespace RegistrationKiosk
     {
         private Uri TargetURI;
         private string KioskRegistration;
-        public EventInfo Event;
+        public EventInfo Event=  null;
 
         // Construct using target URI as string, and event number.
         public WebAPI(string target, string kioskRegistration)
@@ -27,8 +27,14 @@ namespace RegistrationKiosk
             if (Event == null)
                 throw new ArgumentException("Could not get event information", "Event");
         }
+        //TODO: Remove when all references removed.
         public WebAPI(string target, string kioskRegistration, int eventNumber) : this(target, kioskRegistration)
         {
+        }
+        public static async Task<WebAPI> CreateWebAPI(string target, string kioskRegistration)
+        {
+            WebAPI NewAPI = await Task<WebAPI>.Run(() => { return new WebAPI(target, kioskRegistration); });
+            return NewAPI;
         }
         public async Task<string> RunAsync()
         {
