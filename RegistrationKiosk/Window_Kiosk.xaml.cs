@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -92,7 +93,7 @@ namespace RegistrationKiosk {
 
         private void cmbRegistrantType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (wdwMain.IsLoaded && !selectionLocked)
+            if (wdwKiosk.IsLoaded && !selectionLocked)
             {
                 switch (cmbRegistrantType.SelectedIndex)
                 {
@@ -351,7 +352,7 @@ namespace RegistrationKiosk {
             if (e.Key == Key.F1)
             {
                 SetMode(Controller.RegistrantMode.RESET);
-                controller.SetView(Controller.WindowView.ADMIN_LOGIN);
+                controller.SetView(Controller.WindowView.START_MENU);
                 e.Handled = true;
                 return;
             }
@@ -413,6 +414,11 @@ namespace RegistrationKiosk {
                     if(controller.ActiveRegistrant == null)
                     {
                         controller.ActiveRegistrant = new Registrant();
+
+                        if(controller.IsOnlineEnabled)
+                        {
+                            controller.ActiveRegistrant.EventNumber = controller.WebAPI.Event.EventNumber;
+                        }
 
                         switch(cmbRegistrantType.SelectedIndex)
                         {
@@ -476,19 +482,119 @@ namespace RegistrationKiosk {
                             controller.ActiveRegistrant.Position = txtbxMajorOrPosition.Text;
                         }
 
-                        controller.ActiveRegistrant.CheckInTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                        if(controller.IsOnlineEnabled)
+                        {
+                            controller.ActiveRegistrant.CheckInTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-                        await controller.WebAPI.AddStudent(controller.ActiveRegistrant);
+                            await controller.WebAPI.AddStudent(controller.ActiveRegistrant);
+                        }
                     }
                     //If this registrant already exists, update their database entry
                     else
                     {
+                        switch (cmbRegistrantType.SelectedIndex)
+                        {
+                            case (int)Controller.RegistrantMode.STUDENT:
+                                controller.ActiveRegistrant.RegistrantType = "Student";
+                                controller.ActiveRegistrant.FirstName = txtbxFirstName.Text;
+                                controller.ActiveRegistrant.LastName = txtbxLastName.Text;
+                                controller.ActiveRegistrant.College = txtbxSchoolOrOrganization.Text;
+                                controller.ActiveRegistrant.Major = txtbxMajorOrPosition.Text;
 
+                                switch (cmbClassStanding.SelectedIndex)
+                                {
+                                    case (int)Controller.ClassStanding.FRESHMAN:
+                                        controller.ActiveRegistrant.ClassStanding = "Freshman";
+                                        break;
+
+                                    case (int)Controller.ClassStanding.SOPHOMORE:
+                                        controller.ActiveRegistrant.ClassStanding = "Sophomore";
+                                        break;
+
+                                    case (int)Controller.ClassStanding.JUNIOR:
+                                        controller.ActiveRegistrant.ClassStanding = "Junior";
+                                        break;
+
+                                    case (int)Controller.ClassStanding.SENIOR:
+                                        controller.ActiveRegistrant.ClassStanding = "Senior";
+                                        break;
+
+                                    case (int)Controller.ClassStanding.POSTBACH:
+                                        controller.ActiveRegistrant.ClassStanding = "PostBac";
+                                        break;
+
+                                    case (int)Controller.ClassStanding.GRADUATE:
+                                        controller.ActiveRegistrant.ClassStanding = "Graduate";
+                                        break;
+
+                                    case (int)Controller.ClassStanding.ALUMNUS:
+                                        controller.ActiveRegistrant.ClassStanding = "Alumnus";
+                                        break;
+
+                                    default:
+                                        controller.ActiveRegistrant.ClassStanding = "None";
+                                        break;
+                                }
+
+                                controller.ActiveRegistrant.Company = null;
+                                controller.ActiveRegistrant.Position = null;
+
+                                break;
+
+                            case (int)Controller.RegistrantMode.EMPLOYEE:
+                                controller.ActiveRegistrant.RegistrantType = "Employee";
+
+                                if(txtbxFirstName.Text.Length != 0)
+                                {
+                                    controller.ActiveRegistrant.FirstName = txtbxFirstName.Text;
+                                }
+
+                                if(txtbxLastName.Text.Length != 0)
+                                {
+                                    controller.ActiveRegistrant.LastName = txtbxLastName.Text;
+                                }
+
+                                if(txtbxSchoolOrOrganization.Text.Length != 0)
+                                {
+                                    controller.ActiveRegistrant.Company = txtbxSchoolOrOrganization.Text;
+                                }
+
+                                if(txtbxMajorOrPosition.Text.Length != 0)
+                                {
+                                    controller.ActiveRegistrant.Position = txtbxMajorOrPosition.Text;
+                                }
+
+                                controller.ActiveRegistrant.College = null;
+                                controller.ActiveRegistrant.Major = null;
+                                controller.ActiveRegistrant.ClassStanding = null;
+
+                                break;
+
+                            default:
+                                controller.ActiveRegistrant.RegistrantType = "General";
+                                controller.ActiveRegistrant.FirstName = txtbxFirstName.Text;
+                                controller.ActiveRegistrant.LastName = txtbxLastName.Text;
+                                controller.ActiveRegistrant.College = null;
+                                controller.ActiveRegistrant.Major = null;
+                                controller.ActiveRegistrant.ClassStanding = null;
+                                controller.ActiveRegistrant.Company = null;
+                                controller.ActiveRegistrant.Position = null;
+                                break;
+                        }
+
+                        if(controller.IsOnlineEnabled)
+                        {
+                            controller.ActiveRegistrant.CheckInTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                            await controller.WebAPI.UpdateRegistrant(controller.ActiveRegistrant);
+                        }
                     }
                 }
                 catch(Exception e)
                 {
                     controller.LogError("An error occurred while adding/updating " + controller.ActiveRegistrant.FirstName + " " + controller.ActiveRegistrant.LastName + " to the event database.");
+
+                    Thread.Sleep(3500);
                 }
 
                 //Display check-in confirmation message
@@ -500,17 +606,27 @@ namespace RegistrationKiosk {
                 //Print registrant name tag
                 try
                 {
-                    //Printer.print(controller.ActiveRegistrant);
+                    Printer.Print(controller.ActiveRegistrant);
                 }
                 catch(Exception e)
                 {
                     controller.LogError("An error occurred while printing the name tag of " + controller.ActiveRegistrant.FirstName + " " + controller.ActiveRegistrant.LastName + ".");
                 }
 
-                await Task.Delay(5000);
+                await Task.Delay(3500);
 
                 SetMode(Controller.RegistrantMode.RESET);
             }
+        }
+
+        public void Connect()
+        {
+
+        }
+
+        public void Disconnect()
+        {
+
         }
 
         public void DisplayRegistrant()
@@ -1004,6 +1120,21 @@ namespace RegistrationKiosk {
             btnRegister.IsEnabled = true;
         }
 
+        public void SetCustomEventName(String eventName)
+        {
+            if(eventName == null)
+            {
+                txtbxHeader.Text = "Event Check-In";
+            }
+            else
+            {
+                txtbxHeader.Text = String.Format("{1}{0}{2}",
+                    Environment.NewLine,
+                    eventName,
+                    "Check-In");
+            }
+        }
+
         public void SetMode(Controller.RegistrantMode mode)
         {
             if (mode < Controller.RegistrantMode.RESET || mode > Controller.RegistrantMode.REGISTER)
@@ -1019,76 +1150,88 @@ namespace RegistrationKiosk {
                 //Clear controller.activeRegistrant, if any
                 controller.ClearRegistrant();
 
-                //Set welcome message and starting instructions
-                txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}{0}{4}",
-                                                Environment.NewLine,
-                                                "Enter your 6-digit code if you pre-registered online.",
-                                                "Don't have your code? Click 'No Code' to check in by email.",
-                                                "Otherwise, click 'Register' to check in.",
-                                                "Employers, click 'Register' to receive a name tag.");
+                if(controller.IsOnlineEnabled)
+                {
+                    //Set welcome message and starting instructions
+                    txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}{0}{4}",
+                        Environment.NewLine,
+                        "Enter your 6-digit code if you pre-registered online.",
+                        "Don't have your code? Click 'No Code' to check in by email.",
+                        "Otherwise, click 'Register' to check in.",
+                        "Employers, click 'Register' to receive a name tag.");
 
-                //Show grdCheckInStart elements
-                rctCheckInStart.Visibility = System.Windows.Visibility.Visible;
-                txtbxEnterCode.IsEnabled = true;
-                txtbxEnterCode.Clear();
-                txtbxEnterCode.Visibility = System.Windows.Visibility.Visible;
-                txtbxEnterCode.Focus();
-                btnEnterCode.IsEnabled = false;
-                btnEnterCode.Visibility = System.Windows.Visibility.Visible;
-                btnNoCode.IsEnabled = true;
-                btnNoCode.Visibility = System.Windows.Visibility.Visible;
-                btnRegister.IsEnabled = true;
-                btnRegister.Visibility = System.Windows.Visibility.Visible;
+                    //Show grdCheckInStart elements
+                    rctCheckInStart.Visibility = System.Windows.Visibility.Visible;
+                    txtbxEnterCode.IsEnabled = true;
+                    txtbxEnterCode.Clear();
+                    txtbxEnterCode.Visibility = System.Windows.Visibility.Visible;
+                    txtbxEnterCode.Focus();
+                    btnEnterCode.IsEnabled = false;
+                    btnEnterCode.Visibility = System.Windows.Visibility.Visible;
+                    btnNoCode.IsEnabled = true;
+                    btnNoCode.Visibility = System.Windows.Visibility.Visible;
+                    btnRegister.IsEnabled = true;
+                    btnRegister.Visibility = System.Windows.Visibility.Visible;
 
-                //Hide 'Start Over' button
-                rctStartOver.Visibility = System.Windows.Visibility.Hidden;
-                btnStartOver.Visibility = System.Windows.Visibility.Hidden;
-                btnStartOver.IsEnabled = false;
+                    //Hide 'Start Over' button
+                    rctStartOver.Visibility = System.Windows.Visibility.Hidden;
+                    btnStartOver.Visibility = System.Windows.Visibility.Hidden;
+                    btnStartOver.IsEnabled = false;
 
-                //Hide and reset grdInputFields elements
-                rctRegistrantType.Visibility = System.Windows.Visibility.Hidden;
-                lblRegistrantType.Visibility = System.Windows.Visibility.Hidden;
-                cmbRegistrantType.Visibility = System.Windows.Visibility.Hidden;
+                    //Hide and reset grdInputFields elements
+                    rctRegistrantType.Visibility = System.Windows.Visibility.Hidden;
+                    lblRegistrantType.Visibility = System.Windows.Visibility.Hidden;
+                    cmbRegistrantType.Visibility = System.Windows.Visibility.Hidden;
 
-                selectionLocked = true;
-                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.RESET;
-                selectionLocked = false;
+                    selectionLocked = true;
+                    cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.RESET;
+                    selectionLocked = false;
 
-                cmbRegistrantType.IsEnabled = false;
-                rctFirstName.Visibility = System.Windows.Visibility.Hidden;
-                lblFirstName.Visibility = System.Windows.Visibility.Hidden;
-                txtbxFirstName.Visibility = System.Windows.Visibility.Hidden;
-                txtbxFirstName.Clear();
-                txtbxFirstName.IsEnabled = false;
-                rctLastName.Visibility = System.Windows.Visibility.Hidden;
-                lblLastName.Visibility = System.Windows.Visibility.Hidden;
-                txtbxLastName.Visibility = System.Windows.Visibility.Hidden;
-                txtbxLastName.Clear();
-                txtbxLastName.IsEnabled = false;
-                rctSchoolOrOrganization.Visibility = System.Windows.Visibility.Hidden;
-                lblSchoolOrOrganization.Visibility = System.Windows.Visibility.Hidden;
-                lblSchoolOrOrganization.Content = "School";
-                txtbxSchoolOrOrganization.Visibility = System.Windows.Visibility.Hidden;
-                txtbxSchoolOrOrganization.Clear();
-                txtbxSchoolOrOrganization.IsEnabled = false;
-                rctMajorOrPosition.Visibility = System.Windows.Visibility.Hidden;
-                lblMajorOrPosition.Visibility = System.Windows.Visibility.Hidden;
-                lblMajorOrPosition.Content = "Major";
-                txtbxMajorOrPosition.Visibility = System.Windows.Visibility.Hidden;
-                txtbxMajorOrPosition.Clear();
-                txtbxMajorOrPosition.IsEnabled = false;
-                rctClassStanding.Visibility = System.Windows.Visibility.Hidden;
-                lblClassStanding.Visibility = System.Windows.Visibility.Hidden;
-                cmbClassStanding.Visibility = System.Windows.Visibility.Hidden;
-                cmbClassStanding.SelectedIndex = (int)Controller.RegistrantMode.RESET;
-                cmbClassStanding.IsEnabled = false;
+                    cmbRegistrantType.IsEnabled = false;
+                    rctFirstName.Visibility = System.Windows.Visibility.Hidden;
+                    lblFirstName.Visibility = System.Windows.Visibility.Hidden;
+                    txtbxFirstName.Visibility = System.Windows.Visibility.Hidden;
+                    txtbxFirstName.Clear();
+                    txtbxFirstName.IsEnabled = false;
+                    rctLastName.Visibility = System.Windows.Visibility.Hidden;
+                    lblLastName.Visibility = System.Windows.Visibility.Hidden;
+                    txtbxLastName.Visibility = System.Windows.Visibility.Hidden;
+                    txtbxLastName.Clear();
+                    txtbxLastName.IsEnabled = false;
+                    rctSchoolOrOrganization.Visibility = System.Windows.Visibility.Hidden;
+                    lblSchoolOrOrganization.Visibility = System.Windows.Visibility.Hidden;
+                    lblSchoolOrOrganization.Content = "School";
+                    txtbxSchoolOrOrganization.Visibility = System.Windows.Visibility.Hidden;
+                    txtbxSchoolOrOrganization.Clear();
+                    txtbxSchoolOrOrganization.IsEnabled = false;
+                    rctMajorOrPosition.Visibility = System.Windows.Visibility.Hidden;
+                    lblMajorOrPosition.Visibility = System.Windows.Visibility.Hidden;
+                    lblMajorOrPosition.Content = "Major";
+                    txtbxMajorOrPosition.Visibility = System.Windows.Visibility.Hidden;
+                    txtbxMajorOrPosition.Clear();
+                    txtbxMajorOrPosition.IsEnabled = false;
+                    rctClassStanding.Visibility = System.Windows.Visibility.Hidden;
+                    lblClassStanding.Visibility = System.Windows.Visibility.Hidden;
+                    cmbClassStanding.Visibility = System.Windows.Visibility.Hidden;
+                    cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.SELECT;
+                    cmbClassStanding.IsEnabled = false;
 
-                //Hide 'Check In' button
-                rctCheckInFinish.Visibility = System.Windows.Visibility.Hidden;
-                btnCheckIn.Visibility = System.Windows.Visibility.Hidden;
-                btnCheckIn.IsEnabled = false;
+                    //Hide 'Check In' button
+                    rctCheckInFinish.Visibility = System.Windows.Visibility.Hidden;
+                    btnCheckIn.Visibility = System.Windows.Visibility.Hidden;
+                    btnCheckIn.IsEnabled = false;
 
-                return;
+                    return;
+                }
+                else
+                {
+                    txtbxFirstName.Clear();
+                    txtbxLastName.Clear();
+                    txtbxSchoolOrOrganization.Clear();
+                    txtbxMajorOrPosition.Clear();
+                    cmbRegistrantType.Focus();
+                    mode = Controller.RegistrantMode.REGISTER;
+                }
             }
             #endregion
 
@@ -1269,10 +1412,16 @@ namespace RegistrationKiosk {
 
             if (mode == Controller.RegistrantMode.REGISTER)
             {
-                //Set REGISTER mode
+                //Set welcome message and starting instructions
+                txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                    Environment.NewLine,
+                    "Welcome!",
+                    "Are you a student, employer, or general attendee?",
+                    "Please make a selection below.");
+
                 //Watch for bugs! See declaration of selectionLocked for cautionary info
                 selectionLocked = true;
-                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.REGISTER;
+                cmbRegistrantType.SelectedIndex = (int)Controller.RegistrantMode.RESET;
                 selectionLocked = false;
 
                 //Hide all other grdInputFields elements until registrant type is selected
@@ -1300,6 +1449,7 @@ namespace RegistrationKiosk {
                 lblClassStanding.Visibility = System.Windows.Visibility.Hidden;
                 cmbClassStanding.IsEnabled = false;
                 cmbClassStanding.Visibility = System.Windows.Visibility.Hidden;
+                cmbClassStanding.SelectedIndex = (int)Controller.ClassStanding.SELECT;
 
                 return;
             }

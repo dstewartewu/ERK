@@ -1,0 +1,37 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" x:Name="wdwStartMenu" mc:Ignorable="d" x:Class="RegistrationKiosk.Window_StartMenu"
+        Title="Admin Panel" WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize" Topmost="True" Background="{DynamicResource BackgroundDark}" WindowState="Maximized" Height="716.5" Width="766.5">
+    <Grid x:Name="grdWindow">
+        <Grid x:Name="grdStartMenu" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource BackgroundDark}" Margin="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle x:Name="rctHeader" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="0,10" Height="95" Effect="{DynamicResource DropShadow}"/>
+            <Label x:Name="lblHeader" Content="Start Menu" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="72" FontFamily="{DynamicResource HeaderFont}" FontWeight="Bold" Foreground="White" Margin="15,10"/>
+            <Rectangle x:Name="rctMessages" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Grid.Row="1" Margin="0,10" Effect="{DynamicResource DropShadow}"/>
+            <TextBox x:Name="txtbxMessages" TextWrapping="Wrap" Text="Messages" FontSize="24" Grid.Row="1" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Margin="10,15" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Focusable="False" IsTabStop="False" SelectionBrush="{x:Null}" IsHitTestVisible="False" AllowDrop="False" IsUndoEnabled="False" MinLines="3"/>
+            <Grid x:Name="grdControlsColumn" Grid.Row="2" Margin="0,10,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Rectangle x:Name="rctControlsColumn" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="0" Effect="{DynamicResource DropShadow}" Grid.RowSpan="4"/>
+                <Button x:Name="btnRegisterKiosk" Content="Register Kiosk" VerticalAlignment="Center" FontSize="24" Padding="10,10,10,8" Margin="20,20,20,10" Background="{DynamicResource Button}" BorderBrush="Black" Foreground="White" FontFamily="{DynamicResource LabelFont}" Width="200" Click="btnRegisterKiosk_Click"/>
+                <Button x:Name="btnOpenKiosk" Content="Open Kiosk" VerticalAlignment="Center" FontSize="24" Padding="10,10,10,8" Margin="20,10" Grid.Row="1" Click="btnOpenKiosk_Click" Background="{DynamicResource Button}" FontFamily="{DynamicResource LabelFont}" Foreground="White" BorderBrush="Black" Width="200"/>
+                <Button x:Name="btnQuit" Content="Quit" VerticalAlignment="Center" FontSize="24" Padding="10,10,10,8" Margin="20,10,20,20" Grid.Row="3" Click="btnQuit_Click" Background="{DynamicResource Button}" FontFamily="{DynamicResource LabelFont}" Foreground="White" BorderBrush="Black" Width="200"/>
+                <Button x:Name="btnNameMode" Content="Custom Name" VerticalAlignment="Center" FontSize="24" Padding="10,10,10,8" Margin="20,10" Grid.Row="2" Click="btnNameMode_Click" Background="{DynamicResource Button}" FontFamily="{DynamicResource LabelFont}" Foreground="White" BorderBrush="Black" Width="200"/>
+            </Grid>
+        </Grid>
+        <Label x:Name="lblOnline" Content="OFFLINE" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0" FontSize="18" Foreground="#FF292929"/>
+    </Grid>
+</Window>

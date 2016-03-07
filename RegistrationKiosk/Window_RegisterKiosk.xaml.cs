@@ -36,26 +36,65 @@ namespace RegistrationKiosk
 
             controller = controller_in;
 
-            txtbxMessages.Text = String.Format("{1}{0}{2}",
+            txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
                 Environment.NewLine,
-                "To set up this kiosk, enter the kiosk",
-                "registration code and click 'Register'.");
+                "Kiosk is in offline mode.",
+                "To connect to an event database, enter",
+                "the kiosk registration code below.");
         }
 
         #endregion
 
+        //PG: DEV: Hey, throw some Key.Enter handlers in here!
         #region EVENT HANDLERS
-
-        private void btnConnect_Click(object sender, RoutedEventArgs e)
-        {
-            controller.SetView(Controller.WindowView.ADMIN);
-        }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            controller.SetView(Controller.WindowView.ADMIN);
+            controller.SetView(Controller.WindowView.START_MENU);
+        }
+
+        private void btnDisconnect_Click(object sender, RoutedEventArgs e)
+        {
+            controller.Disconnect();
+        }
+
+        private void btnRegister_Click(object sender, RoutedEventArgs e)
+        {
+            RegisterKiosk();
+        }
+
+        private void wdwRegisterKiosk_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && btnRegister.IsFocused)
+            {
+                RegisterKiosk();
+
+                e.Handled = true;
+            }
         }
 
         #endregion
+
+        public void Connect()
+        {
+
+        }
+
+        public void Disconnect()
+        {
+
+        }
+
+        //PG: DEV: Run some kind of input validation here
+        private void RegisterKiosk()
+        {
+            controller.Connect(txtbxKioskCode.Text);
+        }
+
+        public void SetMessage(String message)
+        {
+            txtbxMessages.Text = message;
+        }
+
     }
 }

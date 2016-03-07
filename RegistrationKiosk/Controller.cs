@@ -11,17 +11,17 @@ namespace RegistrationKiosk
     {
         #region DATA MEMBERS
 
-        public enum WindowView { ADMIN, ADMIN_LOGIN, KIOSK, LOAD_EVENT, NO_CODE }
+        public enum WindowView { INITIAL, START_MENU, KIOSK, REGISTER_KIOSK, NO_CODE }
         public enum RegistrantMode { RESET, STUDENT, EMPLOYEE, GENERAL, REGISTER }
         public enum ClassStanding { SELECT, FRESHMAN, SOPHOMORE, JUNIOR, SENIOR, POSTBACH, GRADUATE, ALUMNUS }
         private WindowView currentView;
 
-        private Window_Admin admin;
-        private Window_AdminLogin login;
+        private Window_StartMenu startMenu;
         private Window_Kiosk kiosk;
-        private Window_RegisterKiosk loadEvent;
+        private Window_RegisterKiosk registerKiosk;
         private Window_NoCode noCode;
 
+        private String api_url;
         private WebAPI webAPI;
         private Registrant activeRegistrant;
 
@@ -29,12 +29,40 @@ namespace RegistrationKiosk
 
         #endregion
 
-        #region PROPERTIES
+        #region INITIALIZATION
 
-        public WebAPI WebAPI
+        private Controller() { }
+
+        public Controller(Window_StartMenu admin_in)
         {
-            get { return webAPI; }
+            startMenu = admin_in;
+            kiosk = new Window_Kiosk(this);
+            registerKiosk = new Window_RegisterKiosk(this);
+            noCode = new Window_NoCode(this);
+
+            api_url = "http://www.timjunger.com/";
+            webAPI = null;
+            activeRegistrant = null;
+
+            currentView = WindowView.INITIAL;
+
+            //Hide and disable all windows at program start
+            startMenu.Visibility = System.Windows.Visibility.Hidden;
+            startMenu.IsEnabled = false;
+            kiosk.Visibility = System.Windows.Visibility.Hidden;
+            kiosk.IsEnabled = false;
+            registerKiosk.Visibility = System.Windows.Visibility.Hidden;
+            registerKiosk.IsEnabled = false;
+            noCode.Visibility = System.Windows.Visibility.Hidden;
+            noCode.IsEnabled = false;
+
+            //Display initial window (admin)
+            SetView(WindowView.START_MENU);
         }
+
+        #endregion
+
+        #region PROPERTIES
 
         public Registrant ActiveRegistrant
         {
@@ -42,36 +70,32 @@ namespace RegistrationKiosk
             set { activeRegistrant = value; }
         }
 
-        #endregion
-
-        #region INITIALIZATION
-
-        private Controller() { }
-
-        public Controller(Window_Admin admin_in)
+        public String EventName
         {
-            admin = admin_in;
-            login = new Window_AdminLogin(this);
-            kiosk = new Window_Kiosk(this);
-            loadEvent = new Window_RegisterKiosk(this);
-            noCode = new Window_NoCode(this);
-            activeRegistrant = null;
+            get
+            {
+                if (webAPI != null)
+                {
+                    return webAPI.Event.EventName;
+                }
+                else
+                {
+                    return "[OFFLINE]";
+                }
+            }
+        }
 
-            webAPI = new WebAPI("http://www.timjunger.com/", "kioskRegistration", 1); //DEV: PG: UPDATE THIS INITIALIZER
+        public Boolean IsOnlineEnabled
+        {
+            get
+            {
+                return webAPI != null;
+            }
+        }
 
-            currentView = WindowView.ADMIN_LOGIN;
-
-            //Hide and disable all windows at program start
-            admin.Visibility = System.Windows.Visibility.Hidden;
-            admin.IsEnabled = false;
-            login.Visibility = System.Windows.Visibility.Hidden;
-            login.IsEnabled = false;
-            kiosk.Visibility = System.Windows.Visibility.Hidden;
-            kiosk.IsEnabled = false;
-            loadEvent.Visibility = System.Windows.Visibility.Hidden;
-            loadEvent.IsEnabled = false;
-            noCode.Visibility = System.Windows.Visibility.Hidden;
-            noCode.IsEnabled = false;
+        public WebAPI WebAPI
+        {
+            get { return webAPI; }
         }
 
         #endregion
@@ -83,25 +107,23 @@ namespace RegistrationKiosk
             //Enable and show window specified by paramters view_in
             switch (view_in)
             {
-                case (WindowView.ADMIN):
-                    admin.IsEnabled = true;
-                    admin.Visibility = System.Windows.Visibility.Visible;
-                    break;
-                case (WindowView.ADMIN_LOGIN):
-                    login.IsEnabled = true;
-                    login.Visibility = System.Windows.Visibility.Visible;
+                case (WindowView.START_MENU):
+                    startMenu.IsEnabled = true;
+                    startMenu.Visibility = System.Windows.Visibility.Visible;
                     break;
                 case (WindowView.KIOSK):
                     kiosk.IsEnabled = true;
                     kiosk.Visibility = System.Windows.Visibility.Visible;
                     break;
-                case (WindowView.LOAD_EVENT):
-                    loadEvent.IsEnabled = true;
-                    loadEvent.Visibility = System.Windows.Visibility.Visible;
+                case (WindowView.REGISTER_KIOSK):
+                    registerKiosk.IsEnabled = true;
+                    registerKiosk.Visibility = System.Windows.Visibility.Visible;
+                    registerKiosk.txtbxKioskCode.Focus();
                     break;
                 case (WindowView.NO_CODE):
                     noCode.IsEnabled = true;
                     noCode.Visibility = System.Windows.Visibility.Visible;
+                    noCode.txtbxEmail.Focus();
                     break;
                 default:
                     break;
@@ -110,21 +132,17 @@ namespace RegistrationKiosk
             //Hide and disable current window
             switch (currentView)
             {
-                case (WindowView.ADMIN):
-                    admin.Visibility = System.Windows.Visibility.Hidden;
-                    admin.IsEnabled = false;
-                    break;
-                case (WindowView.ADMIN_LOGIN):
-                    login.Visibility = System.Windows.Visibility.Hidden;
-                    login.IsEnabled = false;
+                case (WindowView.START_MENU):
+                    startMenu.Visibility = System.Windows.Visibility.Hidden;
+                    startMenu.IsEnabled = false;
                     break;
                 case (WindowView.KIOSK):
                     kiosk.Visibility = System.Windows.Visibility.Hidden;
                     kiosk.IsEnabled = false;
                     break;
-                case (WindowView.LOAD_EVENT):
-                    loadEvent.Visibility = System.Windows.Visibility.Hidden;
-                    loadEvent.IsEnabled = false;
+                case (WindowView.REGISTER_KIOSK):
+                    registerKiosk.Visibility = System.Windows.Visibility.Hidden;
+                    registerKiosk.IsEnabled = false;
                     break;
                 case (WindowView.NO_CODE):
                     noCode.Visibility = System.Windows.Visibility.Hidden;
@@ -150,6 +168,60 @@ namespace RegistrationKiosk
         {
             if (activeRegistrant != null)
                 activeRegistrant = null;
+        }
+
+        public async void Connect(String kioskRegistration)
+        {
+            registerKiosk.SetMessage("Attempting to register kiosk...");
+
+            try
+            {
+                webAPI = await WebAPI.CreateWebAPI(api_url, kioskRegistration);
+
+                if(webAPI == null)
+                {
+                    registerKiosk.SetMessage(String.Format("{1}{0}{2}{0}{3}",
+                        Environment.NewLine,
+                        "Kiosk registration not found.",
+                        "Please check your registration code and try again."));
+                }
+                else
+                {
+                    registerKiosk.SetMessage(String.Format("{1}{0}{2}",
+                        Environment.NewLine,
+                        "Kiosk registration successful!",
+                        "Event \"" + EventName + "\" loaded."));
+
+                    startMenu.Connect();
+                    kiosk.Connect();
+                    registerKiosk.Connect();
+                    noCode.Connect();
+
+                    SetView(WindowView.START_MENU);
+                }
+            }
+            catch(Exception e)
+            {
+                registerKiosk.SetMessage(String.Format("{1}{0}{2}{0}{3}{0}{4}",
+                    Environment.NewLine, 
+                    "An error has occurred.",
+                    "Please check your registration code and try again.",
+                    "If errors continue, contact the system administrator",
+                    "and check ERROR_LOG.txt in the kiosk program folder."));
+
+                LogError(e.Message);
+            }
+        }
+
+        public void Disconnect()
+        {
+            webAPI = null;
+            ClearRegistrant();
+
+            startMenu.Disconnect();
+            kiosk.Disconnect();
+            registerKiosk.Disconnect();
+            noCode.Disconnect();
         }
 
         public void LogError(params String[] errorMessage)
@@ -181,6 +253,18 @@ namespace RegistrationKiosk
 
                     sw.WriteLine();
                 }
+            }
+        }
+
+        public void UseCustomEventName(Boolean useCustom)
+        {
+            if(useCustom)
+            {
+                kiosk.SetCustomEventName(EventName);
+            }
+            else
+            {
+                kiosk.SetCustomEventName(null);
             }
         }
     }

@@ -1,10 +1,10 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" x:Name="wdwMain" mc:Ignorable="d" x:Class="RegistrationKiosk.Window_Kiosk"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" x:Name="wdwKiosk" mc:Ignorable="d" x:Class="RegistrationKiosk.Window_Kiosk"
         Title="Event Registration Kiosk" WindowStartupLocation="CenterScreen" MinWidth="1300" MinHeight="800" WindowStyle="None" WindowState="Maximized" Foreground="{x:Null}" Background="#FF343434" Loaded="wdwMain_Loaded" KeyDown="wdwMain_KeyDown" Width="1400" Height="900">
-    <Grid x:Name="grdAdminPrompt" Background="{DynamicResource BackgroundDark}" Margin="0">
-        <Grid x:Name="grdMain" Background="#FF0F0F0F" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
+    <Grid x:Name="grdWindow" Background="{DynamicResource BackgroundDark}" Margin="0">
+        <Grid x:Name="grdKiosk" Background="#FF0F0F0F" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -16,7 +16,7 @@
                 <ColumnDefinition Width="26*"/>
             </Grid.ColumnDefinitions>
             <Rectangle x:Name="rctHeader" Margin="0,10" Stroke="#00000000" Fill="#FFA10022" RadiusX="2" RadiusY="2" StrokeThickness="0" Effect="{DynamicResource DropShadow}" Grid.ColumnSpan="3"/>
-            <Label x:Name="lblHeader" Content="Event Check-In" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="72" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="15" FontFamily="{DynamicResource HeaderFont}" FontWeight="Bold" Foreground="White" Grid.ColumnSpan="3"/>
+            <TextBox x:Name="txtbxHeader" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Event Check-In" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="15" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Foreground="White" FontSize="72" FontWeight="Bold" MaxLines="2" IsReadOnly="True" Grid.ColumnSpan="3" Focusable="False" AllowDrop="False" IsTabStop="False"/>
             <Rectangle x:Name="rctMessages" Margin="0,10" Stroke="Black" RadiusX="2" RadiusY="2" StrokeThickness="0" Effect="{DynamicResource DropShadow}" Grid.Row="1" Grid.ColumnSpan="3" Fill="{DynamicResource EWURed}"/>
             <TextBox x:Name="txtbxMessages" TextWrapping="Wrap" Text="Messages" FontSize="24" Grid.Row="1" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Margin="10,15" Grid.ColumnSpan="3" MinLines="4" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Focusable="False" IsTabStop="False" SelectionBrush="{x:Null}" IsHitTestVisible="False" AllowDrop="False" IsUndoEnabled="False"/>
             <Grid x:Name="grdStartOver" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Row="2">
@@ -129,7 +129,8 @@
                 <Button x:Name="btnCheckIn" Content="Check In" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="30" Padding="10" Margin="20" Width="200" Click="btnCheckIn_Click" Height="60" Background="{DynamicResource Button}" Grid.Row="1" Grid.Column="1" BorderBrush="Black" Foreground="White" FontFamily="Myriad Pro"/>
             </Grid>
         </Grid>
-        <Label x:Name="lblAdminPrompt" Content="Press F1 to return to admin panel (password required)" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0" FontSize="18" Foreground="#FF292929"/>
+        <Label x:Name="lblReturnPrompt" Content="Press F1 to return to start menu" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0" FontSize="18" Foreground="#FF292929"/>
+        <Label x:Name="lblOnline" Content="OFFLINE" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0" FontSize="18" Foreground="#FF292929"/>
 
     </Grid>
 

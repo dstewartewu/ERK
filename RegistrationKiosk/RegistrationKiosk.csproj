@@ -92,8 +92,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Registrant.cs" />
-    <Compile Include="Window_Admin.xaml.cs">
-      <DependentUpon>Window_Admin.xaml</DependentUpon>
+    <Compile Include="Window_StartMenu.xaml.cs">
+      <DependentUpon>Window_StartMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Window_RegisterKiosk.xaml.cs">
       <DependentUpon>Window_RegisterKiosk.xaml</DependentUpon>
@@ -121,7 +121,7 @@
       <DependentUpon>Window_Kiosk.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Window_Admin.xaml">
+    <Page Include="Window_StartMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -78,7 +78,7 @@ namespace RegistrationKiosk
             }
             else
             {
-                controller.SetView(Controller.WindowView.ADMIN);
+                controller.SetView(Controller.WindowView.START_MENU);
 
                 txtbxMessages.Text = "Enter kiosk code to return to admin panel.";
                 passbxPassword.Clear();

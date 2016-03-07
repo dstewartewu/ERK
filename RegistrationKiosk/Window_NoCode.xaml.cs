@@ -71,6 +71,16 @@ namespace RegistrationKiosk
 
         #endregion
 
+        public void Connect()
+        {
+
+        }
+
+        public void Disconnect()
+        {
+
+        }
+
         private async void LookupRegistrantByEmail()
         {
             txtbxMessages.Text = "Looking up your registration info...";
