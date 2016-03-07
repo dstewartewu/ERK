@@ -39,7 +39,10 @@ namespace RegistrationKiosk
 
             controller = controller_in;
 
-            txtbxMessages.Text = "Enter your email below.";
+            txtbxMessages.Text = "This feature is disabled in offline mode.";
+
+            txtbxEmail.IsEnabled = false;
+            btnSearch.IsEnabled = false;
         }
 
         #endregion
@@ -73,12 +76,25 @@ namespace RegistrationKiosk
 
         public void Connect()
         {
+            lblOnline.Content = "ONLINE";
 
+            txtbxMessages.Text = String.Format("{1}{0}{2}",
+                Environment.NewLine,
+                "Enter your email below and click",
+                "'Search' to find your registration.");
+
+            txtbxEmail.IsEnabled = true;
+            btnSearch.IsEnabled = true;
         }
 
         public void Disconnect()
         {
+            lblOnline.Content = "OFFLINE";
 
+            txtbxMessages.Text = "This feature is disabled in offline mode.";
+
+            txtbxEmail.IsEnabled = false;
+            btnSearch.IsEnabled = false;
         }
 
         private async void LookupRegistrantByEmail()

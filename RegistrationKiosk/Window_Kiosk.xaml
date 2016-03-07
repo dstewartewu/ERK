@@ -79,10 +79,10 @@
                 <Rectangle x:Name="rctRegistrantType" Margin="0,10" Stroke="#00000000" Fill="#FFA10022" RadiusX="2" RadiusY="2" StrokeThickness="0" Effect="{DynamicResource DropShadow}" Grid.ColumnSpan="2"/>
                 <Label x:Name="lblRegistrantType" Content="Registrant Type" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" Margin="10,20,5,20" FontFamily="Myriad Pro" Foreground="White"/>
                 <ComboBox x:Name="cmbRegistrantType" VerticalAlignment="Center" Grid.Column="1" FontSize="24" Margin="5,25,15,25" SelectionChanged="cmbRegistrantType_SelectionChanged" Background="{DynamicResource Button}" BorderBrush="Black" Foreground="White" FontFamily="Myriad Pro" Padding="8,8,4,3" Width="450">
-                    <ComboBoxItem x:Name="cmbitmSelectType" Content="- Select -" HorizontalAlignment="Left" IsSelected="True"/>
-                    <ComboBoxItem x:Name="cmbitmStudentAlumnus" Content="Student/Alumnus" HorizontalAlignment="Left"/>
-                    <ComboBoxItem x:Name="cmbitmEmployee" Content="Employer/Employee" HorizontalAlignment="Left"/>
-                    <ComboBoxItem x:Name="cmbitmGeneral" Content="General" HorizontalAlignment="Left"/>
+                    <ComboBoxItem x:Name="cmbitmSelectType" Content="- Select -" IsSelected="True"/>
+                    <ComboBoxItem x:Name="cmbitmStudentAlumnus" Content="Student/Alumnus"/>
+                    <ComboBoxItem x:Name="cmbitmEmployee" Content="Employer/Employee"/>
+                    <ComboBoxItem x:Name="cmbitmGeneral" Content="General"/>
                 </ComboBox>
                 <Rectangle x:Name="rctFirstName" Margin="0,10" Stroke="#00000000" Fill="#FFA10022" RadiusX="2" RadiusY="2" StrokeThickness="0" Grid.Row="1" Effect="{DynamicResource DropShadow}" Grid.ColumnSpan="2"/>
                 <Label x:Name="lblFirstName" Content="First Name" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" Margin="10,20,5,20" Grid.Row="1" FontFamily="Myriad Pro" Foreground="White"/>
@@ -99,14 +99,14 @@
                 <Rectangle x:Name="rctClassStanding" Margin="0,10" Stroke="#00000000" Fill="#FFA10022" RadiusX="2" RadiusY="2" StrokeThickness="0" Grid.Row="5" Effect="{DynamicResource DropShadow}" Grid.ColumnSpan="2"/>
                 <Label x:Name="lblClassStanding" Content="Class Standing" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" Margin="15,20,5,20" Grid.Row="5" Foreground="White" FontFamily="Myriad Pro"/>
                 <ComboBox x:Name="cmbClassStanding" VerticalAlignment="Center" FontSize="24" Grid.Row="5" Grid.Column="1" Margin="5,25,15,25" SelectedIndex="0" Background="{DynamicResource Button}" BorderBrush="Black" Foreground="White" FontFamily="Myriad Pro" Padding="8,8,4,3" Width="450">
-                    <ComboBoxItem x:Name="cmbitmSelectStanding" Content="- Select -" HorizontalAlignment="Left" Width="248" IsSelected="True"/>
-                    <ComboBoxItem x:Name="cmbitmFreshman" Content="Freshman" HorizontalAlignment="Left" Width="248"/>
-                    <ComboBoxItem x:Name="cmbitmSophomore" Content="Sophomore" HorizontalAlignment="Left" Width="248"/>
-                    <ComboBoxItem x:Name="cmbitmJunior" Content="Junior" HorizontalAlignment="Left" Width="248"/>
-                    <ComboBoxItem x:Name="cmbitmSenior" Content="Senior" HorizontalAlignment="Left" Width="248"/>
-                    <ComboBoxItem x:Name="cmbitmPostBac" Content="Post Baccalaureate" HorizontalAlignment="Left" Width="248"/>
-                    <ComboBoxItem x:Name="cmbitmGraduate" Content="Graduate Student" HorizontalAlignment="Left" Width="248"/>
-                    <ComboBoxItem x:Name="cmbitmAlumnus" Content="Alumnus" HorizontalAlignment="Left" Width="248"/>
+                    <ComboBoxItem x:Name="cmbitmSelectStanding" Content="- Select -" IsSelected="True"/>
+                    <ComboBoxItem x:Name="cmbitmFreshman" Content="Freshman"/>
+                    <ComboBoxItem x:Name="cmbitmSophomore" Content="Sophomore"/>
+                    <ComboBoxItem x:Name="cmbitmJunior" Content="Junior"/>
+                    <ComboBoxItem x:Name="cmbitmSenior" Content="Senior"/>
+                    <ComboBoxItem x:Name="cmbitmPostBac" Content="Post Baccalaureate"/>
+                    <ComboBoxItem x:Name="cmbitmGraduate" Content="Graduate Student"/>
+                    <ComboBoxItem x:Name="cmbitmAlumnus" Content="Alumnus"/>
                 </ComboBox>
             </Grid>
             <Grid x:Name="grdCheckInFinish" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.Row="2" Grid.Column="2">

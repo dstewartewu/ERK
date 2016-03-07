@@ -45,7 +45,6 @@ namespace RegistrationKiosk
 
         #endregion
 
-        //PG: DEV: Hey, throw some Key.Enter handlers in here!
         #region EVENT HANDLERS
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -77,12 +76,28 @@ namespace RegistrationKiosk
 
         public void Connect()
         {
+            lblOnline.Content = "ONLINE";
 
+            if(controller.IsOnlineEnabled)
+            {
+                txtbxMessages.Text = String.Format("{1}{0}{2}",
+                    Environment.NewLine,
+                    "Connected to \"" + controller.EventName + "\"",
+                    "Click 'Disconnect' to return to offline mode.");
+            }
+
+            txtbxKioskCode.Clear();
         }
 
         public void Disconnect()
         {
+            lblOnline.Content = "OFFLINE";
 
+            txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
+                Environment.NewLine,
+                "Kiosk is in offline mode.",
+                "To connect to an event database, enter",
+                "the kiosk registration code below.");
         }
 
         //PG: DEV: Run some kind of input validation here

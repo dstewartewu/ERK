@@ -110,10 +110,19 @@ namespace RegistrationKiosk
                 case (WindowView.START_MENU):
                     startMenu.IsEnabled = true;
                     startMenu.Visibility = System.Windows.Visibility.Visible;
+                    startMenu.Focus();
                     break;
                 case (WindowView.KIOSK):
                     kiosk.IsEnabled = true;
                     kiosk.Visibility = System.Windows.Visibility.Visible;
+                    if(IsOnlineEnabled)
+                    {
+                        kiosk.txtbxEnterCode.Focus();
+                    }
+                    else
+                    {
+                        kiosk.cmbRegistrantType.Focus();
+                    }
                     break;
                 case (WindowView.REGISTER_KIOSK):
                     registerKiosk.IsEnabled = true;

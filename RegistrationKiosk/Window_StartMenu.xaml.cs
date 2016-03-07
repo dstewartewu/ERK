@@ -37,6 +37,11 @@ namespace RegistrationKiosk {
             usingCustomEventname = false;
 
             btnNameMode.IsEnabled = false;
+
+            txtbxMessages.Text = String.Format("{1}{0}{2}",
+                Environment.NewLine,
+                "Click 'Register Kiosk' to connect to an event database.",
+                "Click 'Open Kiosk' to run the kiosk in offline mode.");
         }
 
         #endregion
@@ -62,7 +67,7 @@ namespace RegistrationKiosk {
                     txtbxMessages.Text = String.Format("{1}{0}{2}",
                                     Environment.NewLine,
                                     "Event \"" + controller.EventName + "\" loaded.",
-                                    "This kiosk will display a generic event name.");
+                                    "This kiosk displays a generic event name.");
 
                     controller.UseCustomEventName(false);
                     usingCustomEventname = false;
@@ -73,7 +78,7 @@ namespace RegistrationKiosk {
                     txtbxMessages.Text = String.Format("{1}{0}{2}",
                                     Environment.NewLine,
                                     "Event \"" + controller.EventName + "\" loaded.",
-                                    "This kiosk will display the event name.");
+                                    "This kiosk displays the event name.");
 
                     controller.UseCustomEventName(true);
                     usingCustomEventname = true;
@@ -85,7 +90,7 @@ namespace RegistrationKiosk {
                 txtbxMessages.Text = String.Format("{1}{0}{2}",
                                     Environment.NewLine,
                                     "Custom event names are disabled in offline mode.",
-                                    "This kiosk will display a generic event name.");
+                                    "This kiosk displays a generic event name.");
             }
         }
 
@@ -101,12 +106,36 @@ namespace RegistrationKiosk {
 
         public void Connect()
         {
+            lblOnline.Content = "ONLINE";
 
+            /* PG: If StartMenu.Connect() is called outside of Controller.Connect, then
+             the following statement may not execute, causing unexpected behavior.
+             StartMenu.Connect() should not be called outside this context. ?Any way to enforce that?*/
+            if(controller.IsOnlineEnabled)
+            {
+                txtbxMessages.Text = String.Format("{1}{0}{2}",
+                    Environment.NewLine,
+                    "Connected to \"" + controller.EventName + "\"",
+                    "This kiosk displays the event name.");
+
+                usingCustomEventname = true;
+                btnNameMode.Content = "Custom Name";
+                btnNameMode.IsEnabled = true;
+            }
         }
 
         public void Disconnect()
         {
+            lblOnline.Content = "OFFLINE";
 
+            txtbxMessages.Text = String.Format("{1}{0}{2}",
+                Environment.NewLine,
+                "Click 'Register Kiosk' to connect to an event database.",
+                "Click 'Open Kiosk' to run the kiosk in offline mode.");
+
+            usingCustomEventname = false;
+            btnNameMode.Content = "Default Name";
+            btnNameMode.IsEnabled = false;
         }
     }
 }

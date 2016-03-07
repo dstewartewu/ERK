@@ -621,12 +621,23 @@ namespace RegistrationKiosk {
 
         public void Connect()
         {
+            lblOnline.Content = "ONLINE";
 
+            if(controller.IsOnlineEnabled)
+            {
+                SetCustomEventName(controller.EventName);
+            }
+
+            SetMode(Controller.RegistrantMode.RESET);
         }
 
         public void Disconnect()
         {
+            lblOnline.Content = "OFFLINE";
 
+            SetCustomEventName(null);
+
+            SetMode(Controller.RegistrantMode.RESET);
         }
 
         public void DisplayRegistrant()
