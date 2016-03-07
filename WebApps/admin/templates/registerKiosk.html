@@ -1,13 +1,12 @@
 <div class="row">
-    <div class="col-lg-10">
+    <div class="col-lg-10 col-md-10 col-sm-10">
         <h1 class="page-header">Register Kiosk</h1>
     </div>
     <!-- /.col-lg-10 -->
 </div>
 <!-- /.row -->
-<!-- /.row -->
 <div class="row">
-    <div class="col-lg-4 col-lg-offset-1">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-lg-offset-1 col-md-offset-1">
         <div class="form-group" ng-init="getEvents()">
             <label for="events">Select Event:</label>
             <select class="form-control" id="events" ng-model="eventObj" ng-options="item as item.eventName for item in message track by item.eventNum">
@@ -17,18 +16,18 @@
 </div>
 <form ng-submit="generateRegistrationCode()">
 <div class="row">
-    <div class="col-lg-8 col-lg-offset-1">
+    <div class="col-lg-8 col-md-8 col-sm-8 col-lg-offset-1 col-md-offset-1">
         <fieldset>
             <legend>Please Generate A Key For Your Event Kiosks:</legend>
         </fieldset>
         <label>Please copy the generated key and input it into your kiosks. The key will allow access for the specified event. Keys expire after 48 hours.</label>
         <br/><br/><br/>
-        <div class="col-lg-6 col-lg-offset-2">
-            <input class="form-control" size="45" type="text" id="kioskKey" name="kioskKey" ng-model="eventReg.key">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-lg-offset-2 col-md-offset-2">
+            <input class="form-control" size="45" type="text" id="kioskKey" name="kioskKey" ng-model="eventReg.regKey">
             <label>Expires:</label><br/>
             <label class="alert-success">{{eventReg.expire}}</label>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-4 col-md-4 col-sm-4">
             <input class="btn btn-success" type="submit" name="generateButton" id="generateButton" value="Generate Key"><br/><br/>
         </div>
     </div>

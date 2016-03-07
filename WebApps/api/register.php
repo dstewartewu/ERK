@@ -188,7 +188,7 @@ $app->post("/updateRegistrant",
                                  regType= :regType , major= :major , college= :college , classStanding= :classStanding,
                                  company=:company, employeePosition=:employeePosition
                                  WHERE (codeNum = :codeNum AND eventNum = :eventNum)");
-                $sql->bindValue(':codeNum', filter_var($registrant->code,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+                $sql->bindValue(':codeNum', filter_var($registrant->codeNum,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
                 $sql->bindValue(':checkInTime', $time, PDO::PARAM_STR);
                 $sql->bindValue(':checkedIn', $checkedIn, PDO::PARAM_STR);
                 $sql->bindParam(':fName', filter_var($registrant->fName,FILTER_SANITIZE_STRING), PDO::PARAM_STR);
@@ -257,6 +257,7 @@ $app->post("/addRegistrant", function() use ($app) {
         }
 });
 
+//Start of Server side helper functions that can't be called from outside
 
 //Generate a random 6 digit number
 function generateCode(){

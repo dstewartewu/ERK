@@ -16,4 +16,8 @@ app.controller( 'selectController', ['$scope', '$http', function($scope, $http) 
                 $scope.message = data;
             })
     };
+
+    $scope.redirectPreReg = function(){
+        window.location = '#PreRegister/' + $scope.eventObj.eventNum;
+    }
 }]);

@@ -1,20 +1,25 @@
 <?php
-	include '../../admin/models/config.php'; //Holds database information
-	$con = mysqli_connect(__DBHOST, __DBUSER, __DBPWD, __DBNAME); //Create a connection
-	if($con->connect_errno > 0){ //If there's an error with the connection
-		die('Unable to connect to database [' . $con->connect_error . ']');
-	}
-	
-	$id = $_GET["id"]; //Get question ID
-	$eventNum = $_GET["eventNum"];
+include '../../admin/models/config.php'; //Holds database information
+include '../../admin/models/DB.php';
 
-	$sql = "SELECT * FROM choices WHERE questionID = ".$id."AND eventNum =".$eventNum;
-	$result = mysqli_query($con, $sql);
-	if($result->num_rows > 0){
-		$rows = array();
-		while($row = $result->fetch_assoc()){
-			$rows[] = $row;
-		}
-		echo json_encode($rows);
-	}
+header('Content-Type: application/json');
+try {
+	$db = getDB(); //Create a connection
+
+	$eventNum = $_GET['eventNum'];
+	$questionID = $_GET['questionID'];
+
+	$sql = $db->prepare("SELECT * from choices WHERE questionID = :questionID AND eventNum = :eventNum");
+    $sql->bindParam(':questionID', $questionID, PDO::PARAM_INT);
+	$sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
+	$sql->execute();
+	$questions = $sql->fetchAll(PDO::FETCH_ASSOC);
+
+	$db = null;
+
+	echo json_encode($questions);
+
+} catch (PDOException $e) {
+	echo '{"error":{"text":' . $e->getMessage() . '}}';
+}
 ?>

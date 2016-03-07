@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-lg-10 col-md-10 col-sm-10">
+        <h1 class="page-header">Manage Admins</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<form ng-submit="deleteAdmin()">
+<div class="row">
+    <div class="form-group" ng-init="getAdmins()">
+        <div class="col-lg-4 col-md-4 col-sm-8 col-lg-offset-1 col-md-offset-1">
+
+            <label for="admins">Select Admin To Delete:</label>
+            <select class="form-control" id="admins" ng-model="adminObj" ng-options="item as item.userName for item in message">
+            </select>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-8 col-lg-offset-1 col-md-offset-1">
+            <label for="delete">Delete Admin:</label><br/>
+            <input class="btn btn-danger" type="submit" id="delete" value="Delete"/>
+        </div>
+    </div>
+</div>
+</form>
+<br/>
+<br/>
+<br/>
+<form ng-submit="addAdmin()">
+    <div class="row">
+        <div class="col-lg-4 col-md-4 col-sm-8 col-lg-offset-1 col-md-offset-1">
+            <input class="form-control" size="45" type="text" id="adminUserName" ng-model="adminAdd.userName">
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-8 col-lg-offset-1 col-md-offset-1">
+            <input class="btn btn-success" type="submit" id="add" value="Add Admin"/>
+        </div>
+    </div>
+</form>

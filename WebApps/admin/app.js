@@ -24,13 +24,11 @@ app.config(['$routeProvider', function($routeProvider) {
             controller : 'questionAddController'
         })
 
-        // route for the CreateEvent page
         .when('/RegisterKiosk', {
             templateUrl : 'templates/registerKiosk.html',
             controller : 'kioskController'
         })
 
-        // route for the CreateEvent page
         .when('/ManageEvents', {
             templateUrl : 'templates/manageEvents.html',
             controller : 'manageController'
@@ -41,10 +39,14 @@ app.config(['$routeProvider', function($routeProvider) {
             controller : 'questionEditController'
         })
 
-        // route for the CreateEvent page
         .when('/EventReports', {
             templateUrl : 'templates/statsGraphs.html',
             controller : 'statsController'
+        })
+
+        .when('/ManageAdmins', {
+            templateUrl : 'templates/addAdmin.html',
+            controller : 'usersController'
         })
 
 }]);

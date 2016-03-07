@@ -1,26 +1,29 @@
 <div class="row">
-    <div class="col-lg-10">
+    <div class="col-lg-10 col-md-10 col-sm-10">
         <h1 class="page-header">Manage Events</h1>
     </div>
     <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
+<form ng-submit="deleteEvent()">
 <div class="row">
-    <div class="col-lg-4 col-lg-push-1">
+    <div class="col-lg-4 col-md-4 col-sm-4 col-lg-offset-1 col-md-offset-1">
         <div class="form-group" ng-init="getEvents()">
             <label for="events">Select Event:</label>
             <select class="form-control" id="events"  ng-model="updateEventForm" ng-options="item as item.eventName for item in message track by item.eventNum">
             </select>
         </div>
     </div>
-    <div class="col-lg-3 col-lg-push-3">
+    <div class="col-lg-3 col-md-3 col-sm-3 col-lg-offset-1 col-md-offset-1">
         <label for="deleteEvent">DELETE EVENT CAN'T BE UNDONE</label>
-        <span class="col-lg-2"></span><input class="btn btn-danger" name="deleteEvent" id="deleteEvent" value="Delete Event">
+        <span class="col-lg-2"></span>
+        <input class="btn btn-danger" type="submit" name="deleteEvent" id="deleteEvent" value="Delete Event">
     </div>
 </div>
-<form ng-submit="updateEvent(item)">
+</form>
+<form ng-submit="updateEvent()">
 <div class="row">
-    <div class="col-lg-8 col-lg-push-1">
+    <div class="col-lg-8 col-md-8 col-sm-8 col-lg-offset-1 col-md-offset-1">
         <fieldset>
             <legend>Basic Event Information:</legend>
             <span class="help-block">{{changed}}</span>
@@ -34,7 +37,7 @@
     </div>
 </div>
     <div class="row">
-        <div class="col-lg-8 col-lg-push-1">
+        <div class="col-lg-8 col-md-8 col-sm-8 col-lg-offset-1 col-md-offset-1">
 
             <fieldset>
                 <legend>Event Pre-Registration Options:</legend>
@@ -47,8 +50,8 @@
         </div>
     </div>
 <div class="row">
-    <div class="col-lg-8 col-lg-push-1">
-        <div class="col-lg-4 col-lg-offset-8">
+    <div class="col-lg-8 col-md-8 col-sm-8 col-lg-offset-1 col-md-offset-1">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-lg-offset-8 col-md-offset-8 col-sm-offset-8">
             <button type="submit" class="btn btn-success btn-lg btn-block">Change Event
             </button><br/><br/>
         </div>

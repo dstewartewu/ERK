@@ -1,12 +1,14 @@
 
 app.controller( 'dashboardController', ['$scope', '$http', function($scope, $http) {
     $scope.message = "";
-    $scope.welcome = 'Welcome to EWU Career Services Event Management, Username!';
+    $scope.welcome = 'Welcome to EWU Career Services Event Management!';
+    $scope.key = {key: null};
     $scope.getEvents = function () {
+        $scope.key.key = document.getElementById('key').value;
         $http({
-            method: 'GET',
+            method: 'POST',
             url: 'models/webModelAPI.php/getEventsList',
-            data: {"key" : $scope.key },
+            data: $scope.key,
             headers: {'Content-Type': 'application/json'}
         })
             .success(function (data) {

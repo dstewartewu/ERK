@@ -5,12 +5,12 @@
 app.controller( 'createEventsController', ['$scope', '$http', function($scope, $http) {
 
     $scope.createEventForm = {eventName: null, eventDate: new Date(), startTime: null, endTime: null,
-                              preRegistration: false, siteHeader: null, customQuestions: false};
+                              preRegistration: false, siteHeader: null, customQuestions: false, key: null};
 
     $scope.createEvent = function () {
 
         //Creates a deep copy of the createEventForm object in order to keep the 2-way binding from breaking
-
+        $scope.createEventForm.key = document.getElementById('key').value;
         $scope.submitEvent = jQuery.extend(true, {}, $scope.createEventForm);
 
         //Below, form values are converted to human readable input for db.
@@ -33,7 +33,7 @@ app.controller( 'createEventsController', ['$scope', '$http', function($scope, $
         $http({
             method: 'POST',
             url: 'models/webModelAPI.php/createEvent',
-            data: JSON.stringify($scope.submitEvent),
+            data: $scope.submitEvent,
             headers: {'Content-Type': 'application/json'}
         })
             .success(function(data) {

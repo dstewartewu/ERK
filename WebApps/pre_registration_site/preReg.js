@@ -9,7 +9,7 @@ app.config(['$routeProvider', function($routeProvider) {
             controller : 'selectController'
         })
 
-        .when('/PreRegister', {
+        .when('/PreRegister/:eventNum', {
             templateUrl : 'pre_registration_site/PreRegViews/PreRegistrationForm.html',
             controller : 'registerController'
         })

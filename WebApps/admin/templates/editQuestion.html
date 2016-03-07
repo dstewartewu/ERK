@@ -1,70 +1,83 @@
 <div class="row">
-    <div class="col-lg-10">
+    <div class="col-lg-10 col-md-10 col-sm-10">
         <h1 class="page-header">Manage Events</h1>
     </div>
     <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
-<form ng-submit="getQuestions(eventsList.eventNum)">
+<form ng-submit="getQuestions()">
     <div class="row">
-        <div class="col-lg-4 col-lg-offset-1">
+        <div class="col-lg-4 col-md-4 col-sm-8 col-lg-offset-1 col-md-offset-1">
             <div class="form-group" ng-init="getEvents()">
                 <label for="events">Select Event:</label>
-                <select class="form-control" id="events" ng-model="eventsList" ng-options="item as item.eventName for item in message track by item.eventNum">
+                <select class="form-control" id="events" ng-model="eventsList" ng-options="item as item.eventName for item in message track by item.eventNum" ng-change="getQuestions()">
                 </select>
             </div>
         </div>
-        <div class="col-lg-4 col-lg-offset-1">
+        <div class="col-lg-4 col-md-4 col-sm-8 col-lg-offset-1 col-md-offset-1">
             <label> </label><br/>
             <button type="submit" class="btn btn-success">Get Questions</button>
+            <button type="button" ng-click="addQuestions();" class="btn btn-success">Add Questions</button>
         </div>
     </div>
 </form>
-<form ng-submit="loadChoices(questionsList.eventNum, questionsList.questionID)">
+<form ng-submit="loadChoices()">
     <div class="row">
-        <div class="col-lg-4 col-lg-offset-1">
+        <div class="col-lg-4 col-md-4 col-sm-8 col-lg-offset-1 col-md-offset-1">
             <div class="form-group" >
                 <label for="events">Select Question:</label>
                 <select class="form-control" ng-model="questionsList" ng-options="item as item.question for item in questions track by item.questionID">
                 </select>
             </div>
         </div>
-        <div class="col-lg-4 col-lg-offset-1">
+        <div class="col-lg-4 col-md-4 col-sm-8 col-lg-offset-1 col-md-offset-1">
             <label> </label><br/>
             <button type="submit" class="btn btn-success">Get Choices</button>
         </div>
     </div>
 </form>
 <div class="row">
-    <div class="col-lg-10">
+    <div class="col-lg-10 col-md-10 col-sm-10">
         <fieldset>
             <legend>Edit Event Pre-Registration Site:</legend>
         </fieldset>
     </div>
 </div>
-<form ng-submit="updateQuestion()">
 <div class="row">
-
-    <div class="col-lg-5">
+    <div class="col-lg-5 col-md-5 col-sm-5">
         <div class="input-group">
             <label for="questionEdit">Question:</label><br/>
             <input type="text" ng-model= "questionsList.question" class="list-group-item" size="45" id="questionEdit">
         </div>
+        <br/><br/>
+        <input class="btn btn-success" type="button" ng-click="updateQuestion();" id="submitQuestionButton" value="Update Question">
+        <span style="padding: 10%"></span>
+        <input class="btn btn-danger" type="button" ng-click="deleteQuestion();" id="deleteQuestionButton" value="Delete Question">
     </div>
-        <div class="col-lg-4">
-            <div class="input-group">
-                <label>Choices:</label>
-                <ul>
-                    <li ng-repeat="choice in choices" class="input-lg list-unstyled"><input class="list-group-item" size="35" type="text" ng-model="choice.choice"/></li>
-                    <li class="input-lg list-unstyled"><input class="list-group-item" size="35" type="text" ng-model="newChoice.choice"/></li>
-                </ul>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <div class="input-group">
+            <label>Choices:</label>
+            <table class="table">
+                <tr ng-repeat="choice in choices">
+                    <td>{{choice.choice}}</td>
+                    <td><a ng-click="editItem(choice);">Edit</a></td>
+                    <td><a ng-click="deleteChoice(choice);">Delete</a></td>
+                </tr>
+                <tr>
+                    <td>{{newChoice.choice}}</td>
+                    <td></td>
+                    <td><a ng-click="editItem(newChoice);">Add</a></td>
+                </tr>
+            </table>
+            <div ng-show="editing">
+                <div class="form-inline">
+                    <input type="text" ng-model="editing.choice" class="list-group-item"/>
+                    <input class="btn btn-success" type="button" value="Change" ng-click="submitChange();">
+                    <span class="help-block">{{error}}</span>
+                </div>
             </div>
             <br/><br/>
         </div>
-    <div class="row">
-        <div class="col-lg-2 col-lg-offset-7">
-        <input class="btn btn-success" type="submit" name="submit" id="submitQuestionButton" value="Update Question">
     </div>
 </div>
-</form>
 <br/><br/>

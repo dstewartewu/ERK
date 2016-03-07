@@ -2,14 +2,15 @@ app.controller( 'statsController', ['$scope', '$http', function($scope, $http) {
 
     $scope.eventObj = {
         eventNum: 0, eventName: "", eventDate: null, startTime: null, endTime: null,
-        preReg: false, siteHeader: "", cusQuest: false
-    };
+        preReg: false, siteHeader: "", cusQuest: false, key: null};
+    $scope.key = {key: null};
+    $scope.key.key = document.getElementById('key').value;
 
     $scope.getEvents = function () {
         $http({
-            method: 'GET',
-            url: 'models/webModelAPI.php/getEventsWithPreRegList',
-            data: {},
+            method: 'POST',
+            url: 'models/webModelAPI.php/getEventsList',
+            data: $scope.key,
             headers: {'Content-Type': 'application/json'}
         })
             .success(function (data) {
@@ -17,19 +18,16 @@ app.controller( 'statsController', ['$scope', '$http', function($scope, $http) {
             })
     };
 
-    $scope.getAnswerCount = function () {
 
-    };
-
-    $scope.getPreRegister = function () {
-
-    };
     $emailList = {};
-    $scope.getEmailList = function ($eventNum) {
+    $scope.getEmailList = function () {
+        $scope.key = {key: null, eventNum: 0};
+        $scope.key.key = document.getElementById('key').value;
+        $scope.key.eventNum = $scope.eventObj.eventNum;
         $http({
-            method: 'GET',
-            url: 'models/webModelAPI.php/getRegistrantNameEmail/' + $eventNum,
-            data:{},
+            method: 'POST',
+            url: 'models/webModelAPI.php/getRegistrantNameEmail',
+            data:$scope.key,
             headers: {'Content-Type': 'application/json'}
         })
 
@@ -47,11 +45,14 @@ app.controller( 'statsController', ['$scope', '$http', function($scope, $http) {
                 document.body.removeChild(downloadLink);
             });
     };
-    $scope.getRegList = function ($eventNum) {
+    $scope.getRegList = function () {
+        $scope.key = {key: null, eventNum: 0};
+        $scope.key.key = document.getElementById('key').value;
+        $scope.key.eventNum = $scope.eventObj.eventNum;
         $http({
-            method: 'GET',
-            url: 'models/webModelAPI.php/getRegistrantCSVDump/' + $eventNum,
-            data:{},
+            method: 'Post',
+            url: 'models/webModelAPI.php/getRegistrantCSVDump',
+            data:$scope.key,
             headers: {'Content-Type': 'application/json'}
         })
 

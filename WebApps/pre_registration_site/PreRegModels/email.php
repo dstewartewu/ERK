@@ -1,9 +1,11 @@
 <?php
+
 	require 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
 	include '../../admin/models/config.php';
 	$postCode = $_SESSION['code'];
-	$to = $_POST['email'];
-	$file = fopen("emailMessage.txt", 'r');
+	$to = $_SESSION['email'];
+
+	$file = fopen("../temp/emailMessage.txt", 'r');
 	$pageText = fread($file, 25000);
 	$string = nl2br($pageText) . '<br/>';
 	$content = '
@@ -20,8 +22,6 @@
 	</body>
 </html>
 	';
-
-	$img = chunk_split($img);
 
 	$mail = new PHPMailer;
 
@@ -42,8 +42,6 @@
 	$mail->Body = $content;
 	
 	$mail->addAddress($to, "");
-	
-	$mail->addAttachment($img,"Barcode");
 	
 	if(!$mail->Send()){
 		echo "<br/>There was a problem sending the email. Please try again.<br/>";

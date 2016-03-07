@@ -1,5 +1,5 @@
 <?php
-    //require_once 'scripts/authorize.php';
+    require_once 'models/authorize.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,13 +13,12 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <!-- MetisMenu CSS -->
+    <link href="dist/js/shared/metisMenu.min.css" rel="stylesheet">
     <!-- Font Awesome Icons -->
     <link href="dist/css/font-awesome.min.css" rel="stylesheet">
-
     <!-- Custom CSS -->
     <link href="dist/css/sb-admin-2.css" rel="stylesheet">
-
     <!-- Angularjs Library -->
     <script src="dist/js/shared/angular.min.js"></script>
 
@@ -35,8 +34,7 @@
 
 <body ng-app = 'AdminPanel'>
 
-    <div id="wrapper" class="container-fluid">
-
+    <div id="wrapper" class="container-fluid col-lg-12 col-md-12">
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0; background-color: #a10022">
             <div class="navbar-header">
@@ -49,28 +47,6 @@
                 <a class="navbar-brand" href="#/">Career Services Event Management Admin Panel</a>
             </div>
             <!-- /.navbar-header -->
-
-            <ul class="nav navbar-top-links navbar-right">
-                <!-- /.dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-user fa-fw"></i><i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a><i class="fa fa-user fa-fw"></i> User Profile</a>
-                        </li>
-                        <li><a><i class="fa fa-gear fa-fw"></i> Settings</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-user -->
-                </li>
-                <!-- /.dropdown -->
-            </ul>
-            <!-- /.navbar-top-links -->
-
             <div class="navbar-default sidebar" role="navigation" style="background-color: #ffffff">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
@@ -95,6 +71,9 @@
                         <li>
                             <a href="#EventReports">Event Reports</a>
                         </li>
+                        <li>
+                            <a href="#ManageAdmins">Manage Admins</a>
+                        </li>
                     </ul>
                     <br/><br/><br/>
 
@@ -104,7 +83,7 @@
             <!-- /.navbar-static-side -->
         </nav>
         <div id="page-wrapper">
-            <div class="container">
+            <div class="container-fluid">
 
                 <!-- content is injected here -->
                 <div ng-view>
@@ -115,9 +94,10 @@
             <!-- /container -->
         </div>
     </div>
+    <input hidden="hidden" value="QBGDmHa3SFq2Ykp6" id="key">
     <!-- /#wrapper -->
     </div>
-    <div class="col-lg-12">
+    <div class="col-lg-12 col-md-12">
         <br/><br/>
         <p style="width:100%; text-align: center;"><span style="color: white;">
             Eastern Washington University Career Services</br>
@@ -133,12 +113,10 @@
     <!-- Angular UI Bootstrap Core JavaScript -->
     <script src="dist/js/shared/ui-bootstrap-1.0.3.min.js"></script>
     <script src="dist/js/shared/ui-bootstrap-tpls-1.0.3.min.js"></script>
+    <script src="dist/js/shared/bootstrap.min.js"
 
     <!-- Metis Menu Plugin JavaScript -->
     <script src="dist/js/shared/metisMenu.min.js"></script>
-
-    <!-- Custom Theme JavaScript -->
-    <script src="dist/js/shared/sb-admin-2.js"></script>
 
     <!-- Modules -->
     <script src="app.js"></script>
