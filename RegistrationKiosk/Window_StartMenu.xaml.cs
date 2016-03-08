@@ -165,7 +165,6 @@ namespace RegistrationKiosk {
         private void BtnClick(object sender, RoutedEventArgs e)
         {
             Button b = (Button)sender;                                          //Create the button from the passed-in object.
-            b.Background = Brushes.White;
             Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
             b.Style = style;                                                    //Apply the new style for the click effect.
         }
@@ -177,6 +176,5 @@ namespace RegistrationKiosk {
             Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
             b.Style = style;                                                    //Apply the new style for the desired effect.
         }
-
     }
 }
