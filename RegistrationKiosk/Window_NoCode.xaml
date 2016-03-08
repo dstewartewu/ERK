@@ -32,8 +32,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnSearch" FontSize="{DynamicResource ButtonFont}" Margin="20,0,10,20" VerticalAlignment="Center" Width="150" Click="btnSearch_Click" Background="{DynamicResource Button}" BorderBrush="Black" Foreground="White" FontFamily="Myriad Pro" HorizontalAlignment="Center" Content="Search"/>
-                <Button x:Name="btnCancel" Content="Cancel" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFont}" Click="btnCancel_Click" Background="{DynamicResource Button}" BorderBrush="Black" FontFamily="Myriad Pro" Foreground="White" Margin="10,0,20,20" Grid.Column="1" Width="150" HorizontalAlignment="Center"/>
+                <Button x:Name="btnSearch" FontSize="{DynamicResource ButtonFont}" Margin="20,0,10,20" VerticalAlignment="Center" Width="150" Click="btnSearch_Click" Background="{DynamicResource Button}" BorderBrush="Black" Foreground="White" FontFamily="Myriad Pro" HorizontalAlignment="Center" Content="Search" IsEnabledChanged="EnableBtnChanged" MouseEnter="BtnMouseHover" MouseLeave="BtnMouseLeave"/>
+                <Button x:Name="btnCancel" Content="Cancel" VerticalAlignment="Center" FontSize="{DynamicResource ButtonFont}" Click="btnCancel_Click" Background="{DynamicResource Button}" BorderBrush="Black" FontFamily="Myriad Pro" Foreground="White" Margin="10,0,20,20" Grid.Column="1" Width="150" HorizontalAlignment="Center" IsEnabledChanged="EnableBtnChanged" MouseEnter="BtnMouseHover" MouseLeave="BtnMouseLeave"/>
             </Grid>
 
         </Grid>
