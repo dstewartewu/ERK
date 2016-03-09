@@ -148,6 +148,5 @@ namespace RegistrationKiosk
             Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
             b.Style = style;                                                    //Apply the new style for the desired effect.
         }
-
     }
 }

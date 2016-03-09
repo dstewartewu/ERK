@@ -1475,11 +1475,12 @@ namespace RegistrationKiosk {
 
         //Handlers for button appearance.
         Style tempStyle;    //Temproary style variable
+        Style tempCBStyle;
 
         //This is the handler for mouse hover of any button.
         private void BtnMouseHover(object sender, MouseEventArgs e)
         {
-            Button b = (Button)sender;                                           //Create the button from the passed-in object.
+            Button b = (Button)sender;                                          //Create the button from the passed-in object.
             Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
             tempStyle = b.Style;                                                //Save the current button state for use when the mouse is no longer hovering over it.
             b.Style = style;                                                    //Apply the new style for the hover effect.
