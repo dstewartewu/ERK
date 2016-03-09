@@ -7,39 +7,26 @@ using System.Web;
 using System.Windows.Forms;
 using System.Management;
 
-namespace RegistrationKiosk{
-
-    /// <summary>
-    /// Class containing methods for using a DYMO label printer
-    /// </summary>
-    public static class Printer{
-        
-        /// <summary>
-        /// Prints a jobfair nametag
-        /// </summary>
-        /// <param name="registrant">The registrant to print</param>
-        public static void Print(Registrant registrant){
-            
-
+namespace RegistrationKiosk
+{
+    public static class Printer
+    {
+        const string LABEL_NAME = "ERK.label";
+        public static void Print(Registrant registrant)
+        {
             var label = (DYMO.Label.Framework.ILabel)null;
             string labelName = registrant.FirstName + ((registrant.FirstName.Length + registrant.LastName.Length >= 16) ? "\n" : " ") + registrant.LastName;
             string labelDetails = FormatRegistrant(registrant);
 
-            try {
-                label = DYMO.Label.Framework.Label.Open(Path.GetFullPath("ERK.label"));
-                //System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "/ERK.label"
-            }
-            catch {
-                MessageBox.Show("File 'ERK.label' not found in directory");
-                return;
-            }
-                        
+            // Liable to throw System.IO.FileNotFoundException, and DYMO.DLS.Runtime.DlsRuntimeException
+            label = DYMO.Label.Framework.Label.Open("asd");   //Path.GetFullPath("ERK.label"));
+
             label.SetObjectText("Name", labelName);
             label.SetObjectText("Details", labelDetails);
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Printer");
             string printerName = "";
-
-            foreach (ManagementObject printer in searcher.Get()) {
+            foreach (ManagementObject printer in searcher.Get())
+            {
                 printerName = printer["Name"].ToString();
                 if (printerName.Equals(@"DYMO LabelWriter 450 DUO Label"))
                     if (printer["WorkOffline"].ToString().ToLower().Equals("true"))
@@ -51,13 +38,11 @@ namespace RegistrationKiosk{
                         try
                         {
                             label.Print("DYMO LabelWriter 450 DUO Label");
-
-                            MessageBox.Show("Thank you for registering!\n\n" +
-                                            "Retrieve your name tag and enjoy the event!");
                         }
-                        catch (Exception)
+                        catch (DYMO.DLS.Runtime.DlsRuntimeException e)
                         {
                             MessageBox.Show("'DYMO LabelWriter 450 DUO Label' - Failed to print");
+                            throw e;
                         }
                     }
             }
