@@ -19,8 +19,7 @@ namespace RegistrationKiosk
             string labelDetails = FormatRegistrant(registrant);
 
             // Liable to throw System.IO.FileNotFoundException, and DYMO.DLS.Runtime.DlsRuntimeException
-            label = DYMO.Label.Framework.Label.Open("asd");   //Path.GetFullPath("ERK.label"));
-
+            label = DYMO.Label.Framework.Label.Open("ERK.label");
             label.SetObjectText("Name", labelName);
             label.SetObjectText("Details", labelDetails);
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Printer");
