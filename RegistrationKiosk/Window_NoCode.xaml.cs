@@ -24,6 +24,9 @@ namespace RegistrationKiosk
         //Reference to main project controller
         private Controller controller;
 
+        //For temporarily storing style values
+        Style tempStyle;
+
         #endregion
 
         #region INITIALIZATION
@@ -49,6 +52,8 @@ namespace RegistrationKiosk
 
         #region EVENT HANDLERS
 
+        #region CONTROLS
+
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             BtnClick(sender, e);
@@ -73,6 +78,44 @@ namespace RegistrationKiosk
                 }
             }
         }
+
+        #endregion
+
+        #region STYLE
+
+        //This is the handler for mouse hover of any button.
+        private void BtnMouseHover(object sender, MouseEventArgs e)
+        {
+            Button b = (Button)sender;                                           //Create the button from the passed-in object.
+            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
+            tempStyle = b.Style;                                                //Save the current button state for use when the mouse is no longer hovering over it.
+            b.Style = style;                                                    //Apply the new style for the hover effect.
+        }
+
+        //This is the handler for when the mouse hover ends on any button.
+        private void BtnMouseLeave(object sender, MouseEventArgs e)
+        {
+            Button b = (Button)sender;                                          //Create the button from the passed-in object.
+            b.Style = tempStyle;                                                //Use the saved variable from BtnMouseHover to return the button's visual state.
+        }
+
+        //This is the handler for click on any button.
+        private void BtnClick(object sender, RoutedEventArgs e)
+        {
+            Button b = (Button)sender;                                          //Create the button from the passed-in object.
+            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
+            b.Style = style;                                                    //Apply the new style for the click effect.
+        }
+
+        //This is the handler for the enable/disable change on any button.
+        private void EnableBtnChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            Button b = (Button)sender;                                          //Create the button from the passed-in object.
+            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
+            b.Style = style;                                                    //Apply the new style for the desired effect.
+        }
+
+        #endregion
 
         #endregion
 
@@ -129,6 +172,23 @@ namespace RegistrationKiosk
                     txtbxEmail.Clear();
                 }
             }
+            catch(System.Net.Http.HttpRequestException http_ex)
+            {
+                controller.Disconnect();
+
+                txtbxMessages.Text = String.Format("{1}{0}{2}",
+                    Environment.NewLine,
+                    "Online connection lost. Returning to offline mode.",
+                    "Please check your internet connection and try again.");
+
+                controller.LogError("Online connection lost.", http_ex.Message);
+
+                btnSearch.Visibility = System.Windows.Visibility.Visible;
+                btnCancel.Visibility = System.Windows.Visibility.Visible;
+                btnCancel.IsEnabled = true;
+
+                return;
+            }
             catch (Exception ex)
             {
                 txtbxMessages.Text = String.Format("{1}{0}{2}{0}{3}",
@@ -146,41 +206,5 @@ namespace RegistrationKiosk
             btnCancel.Visibility = System.Windows.Visibility.Visible;
             btnCancel.IsEnabled = true;
         }
-
-        //Handlers for button appearance.
-        Style tempStyle;    //Temproary style variable
-
-        //This is the handler for mouse hover of any button.
-        private void BtnMouseHover(object sender, MouseEventArgs e)
-        {
-            Button b = (Button)sender;                                           //Create the button from the passed-in object.
-            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
-            tempStyle = b.Style;                                                //Save the current button state for use when the mouse is no longer hovering over it.
-            b.Style = style;                                                    //Apply the new style for the hover effect.
-        }
-
-        //This is the handler for when the mouse hover ends on any button.
-        private void BtnMouseLeave(object sender, MouseEventArgs e)
-        {
-            Button b = (Button)sender;                                          //Create the button from the passed-in object.
-            b.Style = tempStyle;                                                //Use the saved variable from BtnMouseHover to return the button's visual state.
-        }
-
-        //This is the handler for click on any button.
-        private void BtnClick(object sender, RoutedEventArgs e)
-        {
-            Button b = (Button)sender;                                          //Create the button from the passed-in object.
-            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
-            b.Style = style;                                                    //Apply the new style for the click effect.
-        }
-
-        //This is the handler for the enable/disable change on any button.
-        private void EnableBtnChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            Button b = (Button)sender;                                          //Create the button from the passed-in object.
-            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
-            b.Style = style;                                                    //Apply the new style for the desired effect.
-        }
-
     }
 }

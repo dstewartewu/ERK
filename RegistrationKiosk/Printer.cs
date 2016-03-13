@@ -12,7 +12,7 @@ namespace RegistrationKiosk
     public static class Printer
     {
         const string LABEL_NAME = "ERK.label";
-        public static void Print(Registrant registrant)
+        public static Boolean Print(Registrant registrant, Controller controller)
         {
             var label = (DYMO.Label.Framework.ILabel)null;
             string labelName = registrant.FirstName + ((registrant.FirstName.Length + registrant.LastName.Length >= 16) ? "\n" : " ") + registrant.LastName;
@@ -28,24 +28,41 @@ namespace RegistrationKiosk
             {
                 printerName = printer["Name"].ToString();
                 if (printerName.Equals(@"DYMO LabelWriter 450 DUO Label"))
+                {
                     if (printer["WorkOffline"].ToString().ToLower().Equals("true"))
                     {
                         MessageBox.Show("'DYMO LabelWriter 450 DUO Label' - Printer not found.");
+
+                        if(controller != null)
+                        {
+                            controller.LogError("'DYMO LabelWriter 450 DUO Label' - Printer not found.");
+                        }
+                        
+                        return false;
                     }
                     else
                     {
                         try
                         {
                             label.Print("DYMO LabelWriter 450 DUO Label");
+                            return true;
                         }
                         catch (DYMO.DLS.Runtime.DlsRuntimeException e)
                         {
                             MessageBox.Show("'DYMO LabelWriter 450 DUO Label' - Failed to print");
-                            throw e;
+
+                            if(controller != null)
+                            {
+                                controller.LogError("'DYMO LabelWriter 450 DUO Label' - Failed to print", e.Message);
+                            }
+                            
+                            return false;
                         }
                     }
+                }
             }
-            
+
+            return false;
         }
         public static string FormatRegistrant(Registrant registrant)
         {

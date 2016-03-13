@@ -11,7 +11,7 @@ namespace RegistrationKiosk
     {
         #region DATA MEMBERS
 
-        public enum WindowView { INITIAL, START_MENU, KIOSK, REGISTER_KIOSK, NO_CODE }
+        public enum WindowView { START_MENU, KIOSK, REGISTER_KIOSK, NO_CODE }
         public enum RegistrantMode { RESET, STUDENT, EMPLOYEE, GENERAL, REGISTER }
         public enum ClassStanding { SELECT, FRESHMAN, SOPHOMORE, JUNIOR, SENIOR, POSTBACH, GRADUATE, ALUMNUS }
         private WindowView currentView;
@@ -44,7 +44,7 @@ namespace RegistrationKiosk
             webAPI = null;
             activeRegistrant = null;
 
-            currentView = WindowView.INITIAL;
+            currentView = WindowView.START_MENU;
 
             //Hide and disable all windows at program start
             startMenu.Visibility = System.Windows.Visibility.Hidden;
@@ -138,30 +138,33 @@ namespace RegistrationKiosk
                     break;
             }
 
-            //Hide and disable current window
-            switch (currentView)
+            if(view_in != currentView)
             {
-                case (WindowView.START_MENU):
-                    startMenu.Visibility = System.Windows.Visibility.Hidden;
-                    startMenu.IsEnabled = false;
-                    break;
-                case (WindowView.KIOSK):
-                    kiosk.Visibility = System.Windows.Visibility.Hidden;
-                    kiosk.IsEnabled = false;
-                    break;
-                case (WindowView.REGISTER_KIOSK):
-                    registerKiosk.Visibility = System.Windows.Visibility.Hidden;
-                    registerKiosk.IsEnabled = false;
-                    break;
-                case (WindowView.NO_CODE):
-                    noCode.Visibility = System.Windows.Visibility.Hidden;
-                    noCode.IsEnabled = false;
-                    break;
-                default:
-                    break;
-            }
+                //Hide and disable current window
+                switch (currentView)
+                {
+                    case (WindowView.START_MENU):
+                        startMenu.Visibility = System.Windows.Visibility.Hidden;
+                        startMenu.IsEnabled = false;
+                        break;
+                    case (WindowView.KIOSK):
+                        kiosk.Visibility = System.Windows.Visibility.Hidden;
+                        kiosk.IsEnabled = false;
+                        break;
+                    case (WindowView.REGISTER_KIOSK):
+                        registerKiosk.Visibility = System.Windows.Visibility.Hidden;
+                        registerKiosk.IsEnabled = false;
+                        break;
+                    case (WindowView.NO_CODE):
+                        noCode.Visibility = System.Windows.Visibility.Hidden;
+                        noCode.IsEnabled = false;
+                        break;
+                    default:
+                        break;
+                }
 
-            currentView = view_in;
+                currentView = view_in;
+            }
         }
 
         public void DisplayRegistrant()
@@ -208,6 +211,15 @@ namespace RegistrationKiosk
 
                     SetView(WindowView.START_MENU);
                 }
+            }
+            catch(System.Net.Http.HttpRequestException http_ex)
+            {
+                registerKiosk.SetMessage(String.Format("{1}{0}{2}",
+                    Environment.NewLine,
+                    "Online connection failed.",
+                    "Please check your internet connection and try again."));
+
+                LogError("Online connection failed.", http_ex.Message);
             }
             catch(Exception e)
             {

@@ -35,6 +35,9 @@ namespace RegistrationKiosk {
          * firing when SetMode() changes the selected index in cmbRegistrantType. */
         private Boolean selectionLocked;
 
+        //For temporarily storing style values
+        Style tempStyle;
+
         #endregion
 
         #region INITIALIZATION
@@ -59,6 +62,8 @@ namespace RegistrationKiosk {
         #endregion
 
         #region EVENT HANDLERS
+
+        #region CONTROLS
 
         private void btnCheckIn_Click(object sender, RoutedEventArgs e)
         {
@@ -391,6 +396,44 @@ namespace RegistrationKiosk {
 
         #endregion
 
+        #region STYLE
+
+        //This is the handler for mouse hover of any button.
+        private void BtnMouseHover(object sender, MouseEventArgs e)
+        {
+            Button b = (Button)sender;                                          //Create the button from the passed-in object.
+            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
+            tempStyle = b.Style;                                                //Save the current button state for use when the mouse is no longer hovering over it.
+            b.Style = style;                                                    //Apply the new style for the hover effect.
+        }
+
+        //This is the handler for when the mouse hover ends on any button.
+        private void BtnMouseLeave(object sender, MouseEventArgs e)
+        {
+            Button b = (Button)sender;                                          //Create the button from the passed-in object.
+            b.Style = tempStyle;                                                //Use the saved variable from BtnMouseHover to return the button's visual state.
+        }
+
+        //This is the handler for click on any button.
+        private void BtnClick(object sender, RoutedEventArgs e)
+        {
+            Button b = (Button)sender;                                          //Create the button from the passed-in object.
+            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
+            b.Style = style;                                                    //Apply the new style for the click effect.
+        }
+
+        //This is the handler for the enable/disable change on any button.
+        private void EnableBtnChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            Button b = (Button)sender;                                          //Create the button from the passed-in object.
+            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
+            b.Style = style;                                                    //Apply the new style for the desired effect.
+        }
+
+        #endregion
+
+        #endregion
+
         private async void CheckIn()
         {
             if(IsReadyForCheckIn())
@@ -594,33 +637,81 @@ namespace RegistrationKiosk {
                             await controller.WebAPI.UpdateRegistrant(controller.ActiveRegistrant);
                         }
                     }
+
+                    txtbxMessages.Text = "Printing name tag...";
+                }
+                catch(System.Net.Http.HttpRequestException http_ex)
+                {
+                    Registrant saveRegistrant = controller.ActiveRegistrant;
+
+                    controller.Disconnect();
+
+                    controller.ActiveRegistrant = saveRegistrant;
+
+                    DisplayRegistrant();
+
+                    txtbxMessages.Text = String.Format("{1}{0}{2}",
+                        Environment.NewLine,
+                        "Online connection lost. Returning to offline mode.",
+                        "Attempting to print name tag...");
+
+                    controller.LogError("Online connection lost. Returning to offline mode.", http_ex.Message);
                 }
                 catch(Exception e)
                 {
-                    controller.LogError("An error occurred while adding/updating " + controller.ActiveRegistrant.FirstName + " " + controller.ActiveRegistrant.LastName + " to the event database.");
+                    txtbxMessages.Text = String.Format("{1}{0}{2}",
+                        Environment.NewLine,
+                        "An error occurred while checking in.",
+                        "Attempting to print name tag...");
 
-                    Thread.Sleep(3500);
+                    controller.LogError("An error occurred while adding/updating " + controller.ActiveRegistrant.FirstName + " " + controller.ActiveRegistrant.LastName + " to the event database.", e.Message);
                 }
-
-                //Display check-in confirmation message
-                txtbxMessages.Text = String.Format("{1}{0}{2}",
-                Environment.NewLine,
-                "Check-in complete!",
-                "Your name tag is printing.");
 
                 //Print registrant name tag
                 try
                 {
-                    Printer.Print(controller.ActiveRegistrant);
+                    if((Printer.Print(controller.ActiveRegistrant, controller)) == true)
+                    {
+                        txtbxMessages.Text = "Check-in complete!";
+
+                        await Task.Delay(3500);
+
+                        SetMode(Controller.RegistrantMode.RESET);
+                    }
+                    else
+                    {
+                        Registrant saveRegistrant = controller.ActiveRegistrant;
+
+                        SetMode(Controller.RegistrantMode.RESET);
+
+                        controller.ActiveRegistrant = saveRegistrant;
+
+                        DisplayRegistrant();
+
+                        txtbxMessages.Text = String.Format("{1}{0}{2}",
+                            Environment.NewLine,
+                            "An error occurred while printing your name tag.",
+                            "Please verify that the printer is connected and working, and try again.");
+                    }
+                    
                 }
                 catch(Exception e)
                 {
-                    controller.LogError("An error occurred while printing the name tag of " + controller.ActiveRegistrant.FirstName + " " + controller.ActiveRegistrant.LastName + ".");
+                    Registrant saveRegistrant = controller.ActiveRegistrant;
+
+                    SetMode(Controller.RegistrantMode.RESET);
+
+                    controller.ActiveRegistrant = saveRegistrant;
+
+                    DisplayRegistrant();
+
+                    controller.LogError("An error occurred while printing the name tag of " + controller.ActiveRegistrant.FirstName + " " + controller.ActiveRegistrant.LastName + ".", e.Message);
+
+                    txtbxMessages.Text = String.Format("{1}{0}{2}",
+                        Environment.NewLine,
+                        "An error occurred while printing your name tag.",
+                        "Please verify that the printer is connected and working, and try again.");
                 }
-
-                await Task.Delay(3500);
-
-                SetMode(Controller.RegistrantMode.RESET);
             }
         }
 
@@ -705,13 +796,13 @@ namespace RegistrationKiosk {
                     break;
             }
 
-            /*Placeholder //PICKUP
-            if (IsReadyToCheckIn())
-            */
-            txtbxMessages.Text = String.Format("{1}{0}{2}",
+            if(IsReadyForCheckIn())
+            {
+                txtbxMessages.Text = String.Format("{1}{0}{2}",
                 Environment.NewLine,
                 "Registration found.",
                 "Please verify your info and click 'Check In' to finish.");
+            }
         }
 
         private Boolean IsReadyForCheckIn()
@@ -1471,42 +1562,6 @@ namespace RegistrationKiosk {
             }
 
             #endregion //REGISTER
-        }
-
-        //Handlers for button appearance.
-        Style tempStyle;    //Temproary style variable
-        Style tempCBStyle;
-
-        //This is the handler for mouse hover of any button.
-        private void BtnMouseHover(object sender, MouseEventArgs e)
-        {
-            Button b = (Button)sender;                                          //Create the button from the passed-in object.
-            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
-            tempStyle = b.Style;                                                //Save the current button state for use when the mouse is no longer hovering over it.
-            b.Style = style;                                                    //Apply the new style for the hover effect.
-        }
-
-        //This is the handler for when the mouse hover ends on any button.
-        private void BtnMouseLeave(object sender, MouseEventArgs e)
-        {
-            Button b = (Button)sender;                                          //Create the button from the passed-in object.
-            b.Style = tempStyle;                                                //Use the saved variable from BtnMouseHover to return the button's visual state.
-        }
-
-        //This is the handler for click on any button.
-        private void BtnClick(object sender, RoutedEventArgs e)
-        {
-            Button b = (Button)sender;                                          //Create the button from the passed-in object.
-            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
-            b.Style = style;                                                    //Apply the new style for the click effect.
-        }
-
-        //This is the handler for the enable/disable change on any button.
-        private void EnableBtnChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            Button b = (Button)sender;                                          //Create the button from the passed-in object.
-            Style style = this.FindResource("ButtonFocusVisual") as Style;      //Initialize the style from the App.xaml file with the label "ButtonFocusVisual".
-            b.Style = style;                                                    //Apply the new style for the desired effect.
         }
     }
 }

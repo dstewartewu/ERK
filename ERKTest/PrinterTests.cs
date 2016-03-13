@@ -38,7 +38,7 @@ namespace ERKTest
         {
             Registrant testRegistrant = CreateRegistrant("毛泽东", "Guðmundsdóttir", "Student", "Eastern Washington University", "Computer Science", "Senior");
             string testString = Printer.FormatRegistrant(testRegistrant);
-            Printer.Print(testRegistrant);
+            Printer.Print(testRegistrant, null);
 
         }
 
@@ -49,7 +49,7 @@ namespace ERKTest
             WebAPI API = new WebAPI("http://www.timjunger.com/", "", 1);
             Registrant testRegistrant = await API.GetRegistrantByCode("123456");
             string testString = Printer.FormatRegistrant(testRegistrant);
-            Printer.Print(testRegistrant);
+            Printer.Print(testRegistrant, null);
         }
         public static Registrant CreateRegistrant(string _FirstName, string _LastName, string _RegistrantType, string _College, string _Major, string _ClassStanding)
         {
