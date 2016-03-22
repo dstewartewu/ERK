@@ -14,6 +14,7 @@ namespace RegistrationKiosk
         const string LABEL_NAME = "ERK.label";
         public static Boolean Print(Registrant registrant, Controller controller)
         {
+            // Format the two strings for the label
             var label = (DYMO.Label.Framework.ILabel)null;
             string labelName = registrant.FirstName + ((registrant.FirstName.Length + registrant.LastName.Length >= 16) ? "\n" : " ") + registrant.LastName;
             string labelDetails = FormatRegistrant(registrant);
@@ -64,10 +65,10 @@ namespace RegistrationKiosk
 
             return false;
         }
+
+        // Format the 'details' of the nametag, University/Major/Year
         public static string FormatRegistrant(Registrant registrant)
         {
-            // NAME FORMATTING: 16 Characters Each name; Total longer than 15? Split into two lines
-            //string regString = registrant.Fname + " " + registrant.Lname;
             string regString = "";
             if (registrant.RegistrantType.Equals("Student"))
             {

@@ -7,6 +7,7 @@ namespace ERKTest
     [TestClass]
     public class PrinterTests
     {
+        // Test that formatter has expected results.
         [TestMethod]
         public void FormatTest()
         {
@@ -42,15 +43,18 @@ namespace ERKTest
 
         }
 
+        // Test getting a registrant by code from the net, and printing it.
         [TestMethod]
         [Ignore]    // Ignored due to hardware usage. Comment out in order to run test.
         public async Task NetPrintTest()
         {
-            WebAPI API = new WebAPI("http://www.timjunger.com/", "", 1);
+            WebAPI API = new WebAPI("http://www.timjunger.com/", "");
             Registrant testRegistrant = await API.GetRegistrantByCode("123456");
             string testString = Printer.FormatRegistrant(testRegistrant);
             Printer.Print(testRegistrant, null);
         }
+
+        // Used as a shortcut to create Registrant objects.
         public static Registrant CreateRegistrant(string _FirstName, string _LastName, string _RegistrantType, string _College, string _Major, string _ClassStanding)
         {
             Registrant testRegistrant = new Registrant();

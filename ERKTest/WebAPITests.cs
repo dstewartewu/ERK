@@ -58,7 +58,7 @@ namespace ERKTest
         }
 
         // Update test registrant entry
-        [Ignore] // Currently non-functional. Ignoring until implemented properly.
+        //[Ignore]
         [TestMethod]
         public async Task UpdateRegistrantTest()
         {
@@ -98,13 +98,6 @@ namespace ERKTest
             Registrant testRegistrant = new Registrant();
             testRegistrant = await webAPI.GetRegistrantByEmail("NotAnEmail");
             Assert.IsNull(testRegistrant);
-        }
-
-        [Ignore]    // Ignored until it works at all.
-        [TestMethod]
-        public async Task GetQuestionCountTest()
-        {
-            Assert.AreEqual(1, await webAPI.GetQuestionCount());
         }
     }
 }
