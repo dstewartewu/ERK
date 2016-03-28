@@ -1,7 +1,9 @@
 <?php
 
-	require 'vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
+	require '../../vendor/phpmailer/phpmailer/PHPMailerAutoload.php';
 	include '../../admin/models/config.php';
+    require_once '../../vendor/phpmailer/phpmailer/class.phpmailer.php';
+    require_once '../../vendor/phpmailer/phpmailer/class.smtp.php';
 	$postCode = $_SESSION['code'];
 	$to = $_SESSION['email'];
 
@@ -18,21 +20,21 @@
 
 	<body>
 		<p>'.$string.'</p>
-		<h1><b>$postCode</b></h1>
+		<h1><b>'. $postCode .'</b></h1>
 	</body>
 </html>
 	';
 
-	$mail = new PHPMailer;
-
+	$mail = new PHPMailer();
+    //$mail->SMTPSecure = "ssl";
 	$mail->isSMTP();
 	$mail->Host = $emailHost;
 	
 	$mail->SMTPAuth = true;
-	$mail->Port = $port;
+	$mail->Port = 80;
 	$mail->Username = $fromEmail;
 	$mail->Password = $emailPass;
-	
+
 	$mail->setFrom($fromEmail, '');
 	
 	$mail->Subject = $emailSubject;

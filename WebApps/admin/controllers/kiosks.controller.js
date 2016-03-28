@@ -10,9 +10,9 @@ app.controller( 'kioskController', ['$scope', '$http', function($scope, $http) {
     $scope.getEvents = function () {
         $scope.eventObj.key = document.getElementById('key').value;
         $http({
-            method: 'POST',
+            method: 'GET',
             url: 'models/webModelAPI.php/getEventsWithPreRegList',
-            data: $scope.eventObj,
+            data: null,
             headers: {'Content-Type': 'application/json'}
         })
             .success(function (data) {

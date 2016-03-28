@@ -1,5 +1,5 @@
 
-var app = angular.module("PreRegistration", ['ui.bootstrap', 'ngRoute']);
+var app = angular.module("PreRegistration", ['ngRoute']);
 
 app.config(['$routeProvider', function($routeProvider) {
     $routeProvider

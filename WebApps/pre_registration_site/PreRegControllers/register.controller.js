@@ -2,12 +2,6 @@
 app.controller( 'registerController', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
     $scope.eventNum = $routeParams.eventNum;
 
-    <!-- Will hide the student and employer section when the page is first loaded -->
-
-    $(function() {
-        //$scope.IfGeneral();
-
-    });
 
     <!-- Will show the student section and hide the employer section -->
     $scope.IfStudent = function(){
@@ -35,6 +29,7 @@ app.controller( 'registerController', ['$scope', '$routeParams', '$http', functi
     $scope.questionsResponse={};
     $scope.getData = function(){
         jQuery.support.cors = true;
+
         $http({
             method: 'GET',
             url: '/pre_registration_site/PreRegModels/questions.php?eventNum='+$scope.eventNum,
@@ -100,7 +95,7 @@ app.controller( 'registerController', ['$scope', '$routeParams', '$http', functi
         }
         else
         {	//info is valid, change color back to white and capitalize first character
-            fName.value = capitalizeFirstLetter(fName.value);
+
             fName.style.backgroundColor = "white";
         }
 
@@ -117,7 +112,7 @@ app.controller( 'registerController', ['$scope', '$routeParams', '$http', functi
         }
         else
         {   //info is valid, change color back to white and capitalize first character
-            lName.value = capitalizeFirstLetter(lName.value);
+
             lName.style.backgroundColor = "white";
         }
 
@@ -148,14 +143,6 @@ app.controller( 'registerController', ['$scope', '$routeParams', '$http', functi
         }
 
         //End general info validation
-
-        /*
-         Don't do this part of error checking if Employer is not selected
-         */
-
-        /*
-         Don't do this part of error checking if Student/Alumnus is not selected
-         */
 
         //Start Student/Alumnus info validation
 

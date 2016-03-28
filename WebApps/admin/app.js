@@ -2,7 +2,7 @@
  * Created by Tim Unger
  */
 
-var app = angular.module("AdminPanel", ['ui.bootstrap', 'ngRoute']);
+var app = angular.module("AdminPanel", ['ngRoute']);
 
 app.config(['$routeProvider', function($routeProvider) {
 

@@ -16,8 +16,10 @@ app.controller( 'selectController', ['$scope', '$http', function($scope, $http) 
                 $scope.message = data;
             })
     };
-
+    //Sets Event Header and redirects to the pre-reg form.
     $scope.redirectPreReg = function(){
+        document.getElementById('EventText').innerText = $scope.eventObj.siteHeader;
+
         window.location = '#PreRegister/' + $scope.eventObj.eventNum;
     }
 }]);

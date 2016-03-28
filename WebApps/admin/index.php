@@ -1,5 +1,5 @@
 <?php
-    require_once 'models/authorize.php';
+    //require_once 'models/authorize.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -113,7 +113,7 @@
     <!-- Angular UI Bootstrap Core JavaScript -->
     <script src="dist/js/shared/ui-bootstrap-1.0.3.min.js"></script>
     <script src="dist/js/shared/ui-bootstrap-tpls-1.0.3.min.js"></script>
-    <script src="dist/js/shared/bootstrap.min.js"
+    <script src="dist/js/shared/bootstrap.min.js"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
     <script src="dist/js/shared/metisMenu.min.js"></script>

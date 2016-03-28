@@ -94,7 +94,7 @@ function init()
             try {
                 include '../../admin/models/config.php'; //Holds database information
                 include '../../admin/models/DB.php';
-                $db = getDB(); //Create a connection
+
             } catch (exception $e) {
                 echo $e->getMessage();
             }
@@ -105,7 +105,7 @@ function init()
                     $invalidCode = CheckCode($code, $eventNum); //Get if code already exists. If it does, find a new one
                 }
                 $time = date("Y-m-d H:i:s");
-
+                $db = getDB(); //Create a connection
                 $sql = $db->prepare("INSERT INTO registrant (fName, lName, email, checkedIn, registerDate, regType, codeNum, eventNum, major, college, classStanding)
                                  VALUES (:fName, :lName, :email, :checkedIn, :registerDate, :regType, :codeNum,  :eventNum, :major, :college, :classStanding)");
                 $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
@@ -120,14 +120,17 @@ function init()
                 $sql->bindParam(':college', $college, PDO::PARAM_STR);
                 $sql->bindParam(':classStanding', $class, PDO::PARAM_STR);
 
+                $added = $sql->execute();
+
             } catch (exception $e) {
                 return $e->getMessage();
             }
+            //
             try {
+                AddQuestionsAndAnswers($code, $eventNum);
 
-                //GetQuestionsAndAnswers($code, $db, $eventNum);
                     //Bind the parameters for security purposes
-                if ($sql->execute()) { //This will display if everything goes correctly
+                if ($added) { //This will display if everything goes correctly
 
                     session_start();
                     $_SESSION['code'] = $code;
@@ -140,6 +143,7 @@ function init()
                         $file = fopen('../temp/successRegistrationMessage.txt', 'r');
                         $pageText = fread($file, 25000);
                         echo nl2br($pageText) . '<br/>';
+                        echo '<h1>'.$code.'</h1>';
                     }
                     session_destroy();
                 } else { //There was an error inserting into the database
@@ -159,14 +163,16 @@ function init()
 }
 
 
-    function CheckDatabaseRowSize($db, $eventNum) //Counts how many questions are in the database
+    function GetQuestionIDs($eventNum) //Counts how many questions are in the database
     {
+        $db = getDB();
         try {
-            $sql = $db->prepare("SELECT * from questions WHERE eventNum = :eventNum");
+            $sql = $db->prepare("SELECT questionID from questions WHERE eventNum = :eventNum");
             $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
             $sql->execute();
-
-            return $sql->rowCount();
+            $questionIDs = $sql->fetchAll(PDO::FETCH_ASSOC);
+            $db = null;
+            return $questionIDs;
         }
         catch(exception $e)
         {
@@ -174,20 +180,42 @@ function init()
         }
     }
 
-    function GetQuestionsAndAnswers($code,$con, $eventNum){
-        $rows = CheckDatabaseRowSize($con, $eventNum); //Gets number of questions
+    function AddQuestionsAndAnswers($code, $eventNum){
+        $rows =  GetQuestionIDs($eventNum);
+        $eventN = $eventNum;
 
-        for ($x = 1; $x <= $rows; $x++) { //For each question, grab the answer the user selected and insert it
-            $answer = $_POST['A'.$x];
-            $sql = $con->prepare("INSERT INTO answers (`codeNum`,`questionID`,`choiceID`, `eventNum`) VALUES".
-            "(:codeNum, :questionId, :choiceID, :eventNum)"); //Create a prepared statement
-            $sql->bindParam(':eventNum', $eventNum, PDO::PARAM_INT);
-            $sql->bindParam(':questionID', $answer.questionID, PDO::PARAM_INT);
-            $sql->bindValue(':codeNum', $code, PDO::PARAM_STR);
-            $sql->bindValue(':choiceID', $code, PDO::PARAM_INT);
-            if(!$sql->execute()){ //This will display if there is an error
-                die('There was an error preregistering [' . $con->error . ']');
-            }
+
+        for ($x = 0; $x < sizeof($rows); $x++) { //For each question, grab the answer the user selected and insert it
+            $answer = $_POST['A'.($rows[$x]['questionID'])];
+            try {
+                $db = getDB();
+                $questID = ($rows[$x]['questionID']);
+                $sql = $db->prepare("SELECT choiceID FROM choices WHERE eventNum = :eventNum AND questionID = :questionID AND choice = :choice");
+                $sql->bindValue(':eventNum', $eventN, PDO::PARAM_INT);
+                $sql->bindParam(':questionID', $questID, PDO::PARAM_INT);
+                $sql->bindParam(':choice', $answer, PDO::PARAM_STR);
+
+                $sql->execute();
+
+                $choiceID = $sql->fetch();
+
+                $choiceNum = $choiceID['choiceID'];
+
+                $sql = $db->prepare("INSERT INTO answers (codeNum, questionID, choiceID, eventNum) VALUES
+                (:codeNum, :questionID, :choiceID, :eventNum)"); //Create a prepared statement
+                $sql->bindParam(':codeNum', $code, PDO::PARAM_STR);
+                $sql->bindValue(':questionID', $rows[$x]['questionID'], PDO::PARAM_INT);
+                $sql->bindValue(':choiceID', $choiceNum, PDO::PARAM_INT);
+                $sql->bindValue(':eventNum', $eventNum, PDO::PARAM_INT);
+
+                if(!$sql->execute()){ //This will display if there is an error
+                    $db = null;
+                //die();
+                }
+                $db = null;
+            }  catch(Exception $e) {
+            echo 'error:'. $e->getMessage();
+        }
 
         }
 

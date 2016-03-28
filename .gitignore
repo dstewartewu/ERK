@@ -195,10 +195,6 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
-# Config files for web
-
-*config.php
-
 # Include DLLs
 !/RegistrationKiosk/DYMO.Label.Framework.dll
 !/RegistrationKiosk/DYMO.Common.dll

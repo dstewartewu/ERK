@@ -15,8 +15,6 @@ app.controller( 'manageController', ['$scope', '$http', function($scope, $http) 
             .success(function (data) {
                 //Change data back to proper format to populate form
                 for (var i = 0; i < data.length; i++) {
-                    data[i].startTime = new Date(data[i].eventDate + " " + data[i].startTime);
-                    data[i].endTime = new Date(data[i].eventDate + " " + data[i].endTime);
                     data[i].eventDate = new Date(data[i].eventDate);
                     if (data[i].preReg == 'true') {
                         data[i].preReg = true;
@@ -44,8 +42,7 @@ app.controller( 'manageController', ['$scope', '$http', function($scope, $http) 
         $scope.submitUpdate = jQuery.extend(true, {}, $scope.updateEventForm);
         //Convert Data to Strings that are human read-able before storing.
         $scope.submitUpdate.eventDate = $scope.submitUpdate.eventDate.toDateString();
-        $scope.submitUpdate.startTime = $scope.submitUpdate.startTime.toTimeString();
-        $scope.submitUpdate.endTime = $scope.submitUpdate.endTime.toTimeString();
+
         if($scope.submitUpdate.preReg){
             $scope.submitUpdate.preReg = 'true';
         }
@@ -74,11 +71,6 @@ app.controller( 'manageController', ['$scope', '$http', function($scope, $http) 
                 }
             });
 
-    };
-    //From UI Bootstrap Website - allows for 12hr clock
-    $scope.ismeridian = true;
-    $scope.toggleMode = function() {
-        $scope.ismeridian = ! $scope.ismeridian;
     };
 
     $scope.deleteEvent = function() {

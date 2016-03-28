@@ -16,8 +16,6 @@ app.controller( 'createEventsController', ['$scope', '$http', function($scope, $
         //Below, form values are converted to human readable input for db.
 
         $scope.submitEvent.eventDate = $scope.submitEvent.eventDate.toDateString();
-        $scope.submitEvent.startTime = $scope.submitEvent.startTime.toTimeString();
-        $scope.submitEvent.endTime = $scope.submitEvent.endTime.toTimeString();
         if($scope.submitEvent.preRegistration){
             $scope.submitEvent.preRegistration = 'true';
         }
@@ -42,6 +40,7 @@ app.controller( 'createEventsController', ['$scope', '$http', function($scope, $
                     $scope.created = data.error;
                 } else {
                     $scope.created = 'Event Created';
+                    document.getElementById('eventName').style.backgroundColor = 'green';
                     if($scope.createEventForm.preRegistration && $scope.createEventForm.customQuestions) {
                         window.location = "#/PreRegistrationSetup/" + data.eventNum;
                     }
@@ -55,10 +54,9 @@ app.controller( 'createEventsController', ['$scope', '$http', function($scope, $
             });
 
     };
-    //From UI Bootstrap Website
-    $scope.ismeridian = true;
-    $scope.toggleMode = function() {
-        $scope.ismeridian = ! $scope.ismeridian;
+    $scope.resetFormBG = function(){
+        document.getElementById('eventName').style.backgroundColor = 'white';
     };
+
 }]);
 

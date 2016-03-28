@@ -62,7 +62,7 @@ app.controller( 'questionAddController', ['$scope', '$routeParams', '$http', fun
                 headers: {'Content-Type': 'application/json'}
             });
 
-            if($scope.choice3 !== "" && $scope.choice3 !== null) {
+            if($scope.choice3.choice !== "" && $scope.choice3.choice !== null) {
                 $scope.choice3.questionID = $scope.lastQuestionAdded;
                 $http({
                     method: 'POST',
@@ -72,7 +72,7 @@ app.controller( 'questionAddController', ['$scope', '$routeParams', '$http', fun
                 });
             }
 
-            if($scope.choice4 !== "" && $scope.choice4 !== null) {
+            if($scope.choice4.choice !== "" && $scope.choice4.choice !== null) {
                 $scope.choice4.questionID = $scope.lastQuestionAdded;
                 $http({
                     method: 'POST',
@@ -82,7 +82,7 @@ app.controller( 'questionAddController', ['$scope', '$routeParams', '$http', fun
                 });
             }
 
-            if($scope.choice5 !== "" && $scope.choice5 !== null) {
+            if($scope.choice5.choice !== "" && $scope.choice5.choice !== null) {
                 $scope.choice5.questionID = $scope.lastQuestionAdded;
                 $http({
                     method: 'POST',
@@ -92,7 +92,7 @@ app.controller( 'questionAddController', ['$scope', '$routeParams', '$http', fun
                 });
             }
 
-            if($scope.choice6 !== "" && $scope.choice6 !== null) {
+            if($scope.choice6.choice !== "" && $scope.choice6.choice !== null) {
                 $scope.choice6.questionID = $scope.lastQuestionAdded;
                 $http({
                     method: 'POST',

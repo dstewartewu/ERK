@@ -11,11 +11,9 @@
          <fieldset>
              <legend>Basic Event Information:</legend>
              <div class="form-group">
-                 Event Name:<input class="form-control" name="eventName" id="eventName" type="text" size="30" placeholder="EWU Career Service Event" ng-model="createEventForm.eventName" required="true">
+                 Event Name:<input class="form-control" name="eventName" id="eventName" type="text" size="30" placeholder="EWU Career Service Event" ng-model="createEventForm.eventName" ng-focus="resetFormBG()" required>
                  <span class="help-block">{{created}}</span>
                  Event Date:<input type="date" class="form-control" uib-datepicker-popup ng-model="createEventForm.eventDate" ng-required="true" />
-                 Event Start Time:<uib-timepicker ng-model="createEventForm.startTime" show-meridian="ismeridian" hour-step="1" minute-step="15" show-spinners="false"></uib-timepicker>
-                 Event End TIme:<uib-timepicker ng-model="createEventForm.endTime" show-meridian="ismeridian" hour-step="1" minute-step="15" show-spinners="false"></uib-timepicker>
              </div>
          </fieldset>
      </div>

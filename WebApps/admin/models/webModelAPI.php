@@ -2,11 +2,6 @@
 require_once('DB.php');
 require_once('config.php');
 require '../../vendor/autoload.php';
-/**
- * Created by PhpStorm.
- * User: Tim
- * Date: 1/10/2016
- */
 
 date_default_timezone_set('America/Los_Angeles');
 
@@ -30,9 +25,9 @@ $app->post('/addQuestion', function() use ($app) {
             $db = getDB();
             $sql = $db->prepare("INSERT INTO questions (questionID, question, eventNum)
                              VALUES (:questionID, :question, :eventNum)");
-            $sql->bindParam(':questionID', $validate->questionID, PDO::PARAM_INT);
-            $sql->bindParam(':question', $validate->question, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+            $sql->bindParam(':questionID', filter_var($validate->questionID, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
+            $sql->bindParam(':question', filter_var($validate->question, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':eventNum', filter_var($validate->eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
 
             $sql->execute();
             $questionNum = $db->lastInsertId();
@@ -57,7 +52,7 @@ $app->post('/addAdmin', function() use ($app) {
             $db = getDB();
             $sql = $db->prepare("INSERT INTO admins (userName, adminPrivilege)
                                  VALUES (:userName, true)");
-            $sql->bindParam(':userName', $validate->userName, PDO::PARAM_STR);
+            $sql->bindParam(':userName', filter_var($validate->userName, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
 
             $sql->execute();
             $db = null;
@@ -80,9 +75,9 @@ $app->post('/addChoice', function() use ($app) {
             $db = getDB();
             $sql = $db->prepare("INSERT INTO choices (questionID, choice, eventNum)
                              VALUES (:questionID, :choice, :eventNum)");
-            $sql->bindParam(':questionID', $validate->questionID, PDO::PARAM_INT);
-            $sql->bindParam(':choice', $validate->choice, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+            $sql->bindParam(':questionID', filter_var($validate->questionID, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
+            $sql->bindParam(':choice',filter_var($validate->choice, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':eventNum', filter_var($validate->eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
 
             $sql->execute();
             $db = null;
@@ -108,13 +103,13 @@ $app->post('/createEvent', function() use ($app) {
                                  endTime, siteHeader, preReg, cusQuest)
                                  VALUES (:eventName, :eventDate, :startTime, :endTime,
                                          :siteHeader, :preReg, :cusQuest)");
-            $sql->bindParam(':eventName', $validate->eventName, PDO::PARAM_STR);
-            $sql->bindParam(':eventDate', $validate->eventDate, PDO::PARAM_STR);
-            $sql->bindParam(':startTime', $validate->startTime, PDO::PARAM_STR);
-            $sql->bindParam(':endTime', $validate->endTime, PDO::PARAM_STR);
-            $sql->bindParam(':siteHeader', $validate->siteHeader, PDO::PARAM_STR);
-            $sql->bindParam(':preReg', $validate->preRegistration, PDO::PARAM_STR);
-            $sql->bindParam(':cusQuest', $validate->customQuestions, PDO::PARAM_STR);
+            $sql->bindParam(':eventName', filter_var($validate->eventName, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':eventDate', filter_var($validate->eventDate, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':startTime', filter_var($validate->startTime, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':endTime', filter_var($validate->endTime, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':siteHeader', filter_var($validate->siteHeader, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':preReg', filter_var($validate->preRegistration, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':cusQuest', filter_var($validate->customQuestions, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
 
             $sql->execute();
             $eventNum = $db->lastInsertId();
@@ -153,15 +148,15 @@ $app->post('/getAdmin', function() use ($app) {
     }
 });
 
+// NO AUTH REQUIRED FOR USE /getEventsWithPreRegList ONLY - Used on Pre Registration landing page so no token
 $app->get('/getEventsWithPreRegList', function() use ($app) {
-    $request = $app->request();
-    $validate = json_decode($request->getBody());
+
         try {
 
             $db = getDB();
-            $sql = $db->prepare("SELECT * FROM eventInfo WHERE cusQuest = :cusQuest");
-            $cusQuest = 'true';
-            $sql->bindParam(':cusQuest', $cusQuest, PDO::PARAM_STR);
+            $sql = $db->prepare("SELECT * FROM eventInfo WHERE preReg = :preReg");
+            $preReg = 'true';
+            $sql->bindParam(':preReg', $preReg, PDO::PARAM_STR);
             $sql->execute();
             $events = $sql->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
@@ -196,7 +191,7 @@ $app->post('/getEvent', function() use ($app) {
         try {
             $db = getDB();
             $sql = $db->prepare("SELECT * FROM eventInfo WHERE eventNum = :eventNum");
-            $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+            $sql->bindParam(':eventNum', filter_var($validate->eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
             $sql->execute();
             $events = $sql->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
@@ -215,7 +210,7 @@ $app->post('/getQuestions', function() use ($app) {
         try {
             $db = getDB();
             $sql = $db->prepare("SELECT * FROM questions WHERE eventNum = :eventNum");
-            $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+            $sql->bindParam(':eventNum', filter_var($validate->eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
             $sql->execute();
             $events = $sql->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
@@ -233,8 +228,8 @@ $app->post('/getChoices', function() use ($app) {
         try {
             $db = getDB();
             $sql = $db->prepare("SELECT * FROM choices WHERE eventNum = :eventNum && questionID = :questionNum");
-            $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
-            $sql->bindParam(':questionNum', $validate->questionNum, PDO::PARAM_INT);
+            $sql->bindParam(':eventNum', filter_var($validate->eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
+            $sql->bindParam(':questionNum', filter_var($validate->questionNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
             $sql->execute();
             $events = $sql->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
@@ -253,7 +248,7 @@ $app->post('/getRegistrantNameEmail', function() use ($app) {
 
             $db = getDB();
             $sql = $db->prepare("SELECT fname, lname, email FROM registrant WHERE eventNum = :eventNum AND email <> 'null'");
-            $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_STR);
+            $sql->bindParam(':eventNum', filter_var($validate->eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
             $sql->execute();
             $emaillist = $sql->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
@@ -275,9 +270,9 @@ $app->post('/getRegistrantCSVDump', function() use ($app) {
                              registrant.college, registrant.classStanding, registrant.company, registrant.employeePosition,
                              registrant.checkedIn, registrant.checkInTime, GROUP_CONCAT(choices.choice SEPARATOR ', ') FROM registrant
                              LEFT JOIN answers ON registrant.codeNum = answers.codeNum AND registrant.eventNum = answers.eventNum
-                             LEFT JOIN choices ON answers.questionID = choices.questionID AND registrant.eventNum = choices.eventNum
+                             LEFT JOIN choices ON answers.choiceID = choices.choiceID AND registrant.eventNum = choices.eventNum
                              WHERE registrant.eventNum = :eventNum GROUP BY registrant.codeNum");
-            $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_STR);
+            $sql->bindParam(':eventNum', filter_var($validate->eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
             $sql->execute();
             $reglist = $sql->fetchAll(PDO::FETCH_ASSOC);
             $db = null;
@@ -301,14 +296,14 @@ $app->post('/updateEvent', function() use ($app) {
             $sql = $db->prepare("UPDATE eventInfo SET eventName = :eventName, eventDate = :eventDate,
                              startTime = :startTime, endTime = :endTime, siteHeader = :siteHeader,
                              preReg = :preReg, cusQuest = :cusQuest WHERE eventNum = :eventNum");
-            $sql->bindParam(':eventName', $validate->eventName, PDO::PARAM_STR);
-            $sql->bindParam(':eventDate', $validate->eventDate, PDO::PARAM_STR);
-            $sql->bindParam(':startTime', $validate->startTime, PDO::PARAM_STR);
-            $sql->bindParam(':endTime', $validate->endTime, PDO::PARAM_STR);
-            $sql->bindParam(':siteHeader', $validate->siteHeader, PDO::PARAM_STR);
-            $sql->bindParam(':preReg', $validate->preReg, PDO::PARAM_STR);
-            $sql->bindParam(':cusQuest', $validate->cusQuest, PDO::PARAM_STR);
-            $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+            $sql->bindParam(':eventName', filter_var($validate->eventName, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':eventDate', filter_var($validate->eventDate, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':startTime', filter_var($validate->startTime, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':endTime', filter_var($validate->endTime, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':siteHeader', filter_var($validate->siteHeader, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':preReg', filter_var($validate->preReg, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':cusQuest', filter_var($validate->cusQuest, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':eventNum', filter_var($validate->eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
 
             $sql->execute();
 
@@ -333,9 +328,9 @@ $app->post('/updateQuestion', function() use ($app) {
             $db = getDB();
             $sql = $db->prepare("UPDATE questions SET question = :question
                              WHERE questionID = :questionID AND eventNum = :eventNum");
-            $sql->bindParam(':question', $validate->question, PDO::PARAM_STR);
-            $sql->bindParam(':questionID', $validate->questionID, PDO::PARAM_INT);
-            $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+            $sql->bindParam(':question', filter_var($validate->question, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+            $sql->bindParam(':questionID', filter_var($validate->questionID, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
+            $sql->bindParam(':eventNum', filter_var($validate->eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
 
             $sql->execute();
             $db = null;
@@ -357,10 +352,10 @@ $app->post('/updateChoice', function() use ($app) {
         $db = getDB();
         $sql = $db->prepare("UPDATE choices SET choice = :choice
                              WHERE choiceID = :choiceID AND questionID = :questionID AND eventNum = :eventNum");
-        $sql->bindParam(':choiceID', $validate->choiceID, PDO::PARAM_INT);
-        $sql->bindParam(':choice', $validate->choice, PDO::PARAM_STR);
-        $sql->bindParam(':questionID', $validate->questionID, PDO::PARAM_INT);
-        $sql->bindParam(':eventNum', $validate->eventNum, PDO::PARAM_INT);
+        $sql->bindParam(':choiceID', filter_var($validate->choiceID, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
+        $sql->bindParam(':choice', filter_var($validate->choice, FILTER_SANITIZE_STRING), PDO::PARAM_STR);
+        $sql->bindParam(':questionID', filter_var($validate->questionID, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
+        $sql->bindParam(':eventNum', filter_var($validate->eventNum, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
 
         $sql->execute();
         $db = null;

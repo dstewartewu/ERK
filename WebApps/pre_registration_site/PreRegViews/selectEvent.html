@@ -4,7 +4,7 @@
 </div>
 <div class="row">
     <div class="col-lg-4 col-lg-offset-4">
-        <div class="form-group" ng-init="getEvents()">
+        <div class="form-group" ng-init="getEvents()" ng-show="eventObj">
             <label for="events">Select Event:</label>
             <select class="form-control" id="events" ng-model="eventObj" ng-options="item as item.eventName for item in message track by item.eventNum">
             </select>
