@@ -17,7 +17,7 @@
             <Rectangle x:Name="rctHeader" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Margin="0,10" Height="95" Effect="{DynamicResource DropShadow}"/>
             <Label x:Name="lblHeader" Content="Start Menu" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="72" FontFamily="{DynamicResource HeaderFont}" FontWeight="Bold" Foreground="White" Margin="15,10"/>
             <Rectangle x:Name="rctMessages" Fill="{DynamicResource EWURed}" RadiusY="2" RadiusX="2" Stroke="#00000000" StrokeThickness="0" Grid.Row="1" Margin="0,10" Effect="{DynamicResource DropShadow}"/>
-            <TextBox x:Name="txtbxMessages" TextWrapping="Wrap" Text="Messages" FontSize="24" Grid.Row="1" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Margin="10,15" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Focusable="False" IsTabStop="False" SelectionBrush="{x:Null}" IsHitTestVisible="False" AllowDrop="False" IsUndoEnabled="False" MinLines="3"/>
+            <TextBox x:Name="txtbxMessages" TextWrapping="Wrap" Text="Messages" FontSize="24" Grid.Row="1" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Margin="10,15" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Focusable="False" IsTabStop="False" SelectionBrush="{x:Null}" IsHitTestVisible="False" AllowDrop="False" IsUndoEnabled="False" MinLines="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Grid x:Name="grdControlsColumn" Grid.Row="2" Margin="0,10,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
